@@ -14,6 +14,8 @@ spec:
       labels:
         app: scolx-frontend
     spec:
+      imagePullSecrets:
+        - name: scolx-registry
       containers:
         - name: scolx-frontend
           image: registry.cherkaoui.ch/scolx/scolx/frontend:latest

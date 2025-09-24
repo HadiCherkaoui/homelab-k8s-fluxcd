@@ -3,7 +3,6 @@ kind: Kustomization
 namespace: scolx
 resources:
   - namespace.yaml
-  - pvc.yaml
   - deploy-frontend.yaml
   - svc-frontend.yaml
   - deploy-backend.yaml
