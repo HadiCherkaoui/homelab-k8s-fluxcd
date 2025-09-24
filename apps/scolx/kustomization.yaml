@@ -10,4 +10,5 @@ resources:
   - svc-backend.yaml
   - ingress-frontend.yaml
   - cnpg-cluster.yaml
+  - cnpg-scolx-db.yaml
   - helmrelease-pgadmin.yaml
