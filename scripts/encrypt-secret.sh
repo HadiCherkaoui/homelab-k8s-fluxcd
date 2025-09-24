@@ -64,13 +64,16 @@ stringData: {}
 YAML
   for kv in "${DATA_ARGS[@]:-}"; do
     k="${kv%%=*}"; v="${kv#*=}"
-    yq -i ".stringData[\"${k}\"]=\"${v}\"" "$TMP_FILE"
+    # Strip surrounding single quotes if present
+    if [[ ${v:0:1} == "'" && ${v: -1} == "'" ]]; then
+      v="${v:1:-1}"
+    fi
+    yq -y '.stringData += {"'"${k}"'": "'"${v}"'"}' "$TMP_FILE" > "${TMP_FILE}.tmp" && mv "${TMP_FILE}.tmp" "$TMP_FILE"
   done
 fi
 
 # Encrypt in-place (sops reads .sops.yaml)
-sops --encrypt --in-place "$TMP_FILE"
-
 mv "$TMP_FILE" "$OUT_FILE"
+sops --encrypt --in-place "$OUT_FILE"
 
 echo "Encrypted secret written to: $OUT_FILE"

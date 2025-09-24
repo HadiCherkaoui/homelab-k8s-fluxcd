@@ -48,8 +48,8 @@ spec:
         address: proton-birdge-protonmail-bridge
         port: 25
         password:
-          secret: gitlab-smtp-password
-          key: smtp-password
+          secret: gitlab-smtp
+          key: password
         domain: proton-birdge-protonmail-bridge.gitlab.svc.cluster.local
         authentication: plain
         starttls_auto: true
@@ -89,17 +89,17 @@ spec:
       install: false
   valuesFrom:
     - kind: Secret
-      name: gitlab-protonmail
-      valuesKey: PROTONMAIL_USERNAME
+      name: gitlab-smtp
+      valuesKey: username
       targetPath: global.smtp.user_name
       optional: true
     - kind: Secret
-      name: gitlab-protonmail
-      valuesKey: PROTONMAIL_USERNAME
+      name: gitlab-smtp
+      valuesKey: username
       targetPath: global.email.from
       optional: true
     - kind: Secret
-      name: gitlab-protonmail
-      valuesKey: PROTONMAIL_USERNAME
+      name: gitlab-smtp
+      valuesKey: username
       targetPath: global.email.reply_to
       optional: true
