@@ -1,0 +1,10 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: scolx-db
+  namespace: scolx
+spec:
+  name: scolx
+  owner: scolx
+  cluster:
+    name: scolx-postgres-cluster

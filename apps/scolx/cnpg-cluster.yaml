@@ -10,9 +10,3 @@ spec:
     name: pg-superuser-secret
   storage:
     size: 10Gi
-  users:
-    - name: scolx
-      passwordSecret:
-        name: pg-scolx-secret
-      databases:
-        - scolx
