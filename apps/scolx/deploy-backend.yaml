@@ -5,6 +5,7 @@ metadata:
   namespace: scolx
   labels:
     app: scolx-backend
+    test: test
 spec:
   selector:
     matchLabels:
