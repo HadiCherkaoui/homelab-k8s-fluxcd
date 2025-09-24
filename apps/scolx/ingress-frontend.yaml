@@ -11,7 +11,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`scolx.cherkaoui.ch`) && PathPrefix(`/`)
+    - match: Host(`scolx.com`) && PathPrefix(`/`)
       kind: Rule
       middlewares:
         - name: security-headers
