@@ -1,0 +1,34 @@
+# HelmRelease for GitLab Agent (from modules/gitlab/main.tofu)
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitlab-agent
+  namespace: gitlab
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: gitlab-agent
+      version: 2.15.0
+      sourceRef:
+        kind: HelmRepository
+        name: gitlab
+        namespace: flux-system
+  install:
+    createNamespace: false
+  values:
+    rbac:
+      create: true
+    serviceAccount:
+      create: false
+      name: gitlab-agent
+    config:
+      kasAddress: wss://kas.cherkaoui.ch
+      # token should be provided via SOPS-encrypted Secret `gitlab-agent-token`
+    serviceMonitor:
+      enabled: true
+  valuesFrom:
+    - kind: Secret
+      name: gitlab-agent-token
+      valuesKey: GITLAB_AGENT_TOKEN
+      targetPath: config.token

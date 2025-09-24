@@ -1,0 +1,30 @@
+# Deployment for docs.cherkaoui.ch (from modules/websites/docs.tofu)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docs
+  namespace: websites
+  labels:
+    app: docs
+spec:
+  selector:
+    matchLabels:
+      app: docs
+  template:
+    metadata:
+      labels:
+        app: docs
+    spec:
+      containers:
+        - name: docs
+          image: squidfunk/mkdocs-material:latest
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: website
+              mountPath: /docs
+              subPath: docs
+      volumes:
+        - name: website
+          persistentVolumeClaim:
+            claimName: websites

@@ -1,0 +1,20 @@
+# Kustomization for media apps (from modules/media)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: media
+resources:
+  - namespace.yaml
+  - helmrepository-truecharts.yaml
+  - helmrepository-jellyfin.yaml
+  - plex-pvc.yaml
+  - helmrelease-plex.yaml
+  - ingressroute-plex.yaml
+  - helmrelease-jellyfin.yaml
+  - ingressroute-jellyfin.yaml
+  - pvc-qbit.yaml
+  - helmrelease-qbittorrent.yaml
+  - helmrelease-radarr.yaml
+  - helmrelease-sonarr.yaml
+  - helmrelease-prowlarr.yaml
+  - helmrelease-flaresolverr.yaml
+  - servicemonitor-media.yaml

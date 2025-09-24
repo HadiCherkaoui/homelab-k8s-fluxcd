@@ -1,0 +1,10 @@
+# Kustomization for CraftyController (from modules/craftycontroller)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: craftycontroller
+resources:
+  - namespace.yaml
+  - pvc.yaml
+  - deployment.yaml
+  - svc-web.yaml
+  - svc-minecraft.yaml

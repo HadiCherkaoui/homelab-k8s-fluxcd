@@ -1,0 +1,23 @@
+# Deployment for hadi.cherkaoui.ch (from modules/websites/hadi-portoflio.tofu)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hadi
+  namespace: websites
+  labels:
+    app: hadi
+spec:
+  selector:
+    matchLabels:
+      app: hadi
+  template:
+    metadata:
+      labels:
+        app: hadi
+    spec:
+      containers:
+        - name: hadi
+          image: registry.cherkaoui.ch/hadicherkaoui/portfolio:latest
+          ports:
+            - containerPort: 3000
+              name: main

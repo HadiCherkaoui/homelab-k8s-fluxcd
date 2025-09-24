@@ -1,0 +1,15 @@
+# Service for Scolx frontend (from modules/scolx)
+apiVersion: v1
+kind: Service
+metadata:
+  name: scolx-frontend
+  namespace: scolx
+spec:
+  selector:
+    app: scolx-frontend
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 3000
+      targetPort: 3000
+      protocol: TCP

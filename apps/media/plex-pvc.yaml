@@ -1,0 +1,11 @@
+# PVC for Plex media (from modules/media/plex.tofu)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media
+  namespace: media
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 2Ti

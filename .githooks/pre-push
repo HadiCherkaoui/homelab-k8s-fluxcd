@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Git pre-push hook: verify no plaintext secrets are being pushed
+REPO_ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+"$REPO_ROOT_DIR/scripts/verify-no-plaintext-secrets.sh"

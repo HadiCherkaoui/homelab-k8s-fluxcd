@@ -1,0 +1,15 @@
+# Service for OpenWebUI (from modules/ai/main.tofu)
+apiVersion: v1
+kind: Service
+metadata:
+  name: openwebui
+  namespace: openwebui
+spec:
+  selector:
+    app: openwebui
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP

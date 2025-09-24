@@ -1,0 +1,15 @@
+# Service for CraftyController Minecraft (from modules/craftycontroller)
+apiVersion: v1
+kind: Service
+metadata:
+  name: craftycontroller-minecraft
+  namespace: craftycontroller
+spec:
+  selector:
+    app: craftycontroller
+  type: LoadBalancer
+  ports:
+    - name: minecraft
+      port: 25565
+      targetPort: 25565
+      protocol: TCP

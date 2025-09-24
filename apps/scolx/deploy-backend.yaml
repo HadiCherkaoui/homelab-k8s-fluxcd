@@ -1,0 +1,42 @@
+# Deployment for Scolx backend (from modules/scolx)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scolx-backend
+  namespace: scolx
+  labels:
+    app: scolx-backend
+spec:
+  selector:
+    matchLabels:
+      app: scolx-backend
+  template:
+    metadata:
+      labels:
+        app: scolx-backend
+    spec:
+      imagePullSecrets:
+        # Create this as a SOPS-encrypted dockerconfigjson Secret named 'scolx-registry'
+        - name: scolx-registry
+      containers:
+        - name: scolx-backend
+          image: registry.cherkaoui.ch/scolx/scolx/backend:latest
+          env:
+            - name: SIGNUPS_DISABLED
+              value: true
+            - name: DATABASE_PATH
+              value: /app/data/scolx.db
+          envFrom:
+            - secretRef:
+                # Provide JWT_SECRET, SCOLX_ADMIN_PASSWORD, SCOLX_POSTGRES_PASSWORD in this SOPS Secret
+                name: scolx-backend-env
+          ports:
+            - containerPort: 8080
+              name: web
+          volumeMounts:
+            - name: scolx
+              mountPath: /app/data
+      volumes:
+        - name: scolx
+          persistentVolumeClaim:
+            claimName: scolx

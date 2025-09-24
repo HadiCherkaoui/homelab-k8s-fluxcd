@@ -1,0 +1,7 @@
+# Namespace for VPN (wg-easy)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vpn
+  labels:
+    name: vpn

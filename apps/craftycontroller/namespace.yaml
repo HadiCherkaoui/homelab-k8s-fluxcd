@@ -1,0 +1,7 @@
+# Namespace for CraftyController
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: craftycontroller
+  labels:
+    name: craftycontroller

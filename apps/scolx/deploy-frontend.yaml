@@ -1,0 +1,27 @@
+# Deployment for Scolx frontend (from modules/scolx)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scolx-frontend
+  namespace: scolx
+  labels:
+    app: scolx-frontend
+spec:
+  selector:
+    matchLabels:
+      app: scolx-frontend
+  template:
+    metadata:
+      labels:
+        app: scolx-frontend
+    spec:
+      # TODO: add imagePullSecrets after creating SOPS dockerconfigjson secret
+      containers:
+        - name: scolx-frontend
+          image: registry.cherkaoui.ch/scolx/scolx/frontend:latest
+          env:
+            - name: BACKEND_URL
+              value: http://scolx-backend:8080
+          ports:
+            - containerPort: 3000
+              name: main

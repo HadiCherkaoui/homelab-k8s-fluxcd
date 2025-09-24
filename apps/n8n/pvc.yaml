@@ -1,0 +1,11 @@
+# PVC for n8n data (from modules/n8n/main.tofu)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: n8n
+  namespace: n8n
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi

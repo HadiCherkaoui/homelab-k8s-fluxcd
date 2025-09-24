@@ -1,0 +1,24 @@
+# IngressRoute for Jellyfin (from modules/media/jellyfin.tofu)
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: jellyfin
+  namespace: media
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`jellyfin.cherkaoui.ch`)
+      kind: Rule
+      middlewares:
+        - name: security-headers
+          namespace: traefik
+      services:
+        - name: jellyfin
+          port: 8096
+  tls:
+    certResolver: letsencrypt

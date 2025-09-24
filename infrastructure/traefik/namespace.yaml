@@ -1,0 +1,7 @@
+# Namespace for Traefik
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: traefik
+  labels:
+    name: traefik

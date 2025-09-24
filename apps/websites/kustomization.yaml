@@ -1,0 +1,19 @@
+# Kustomization for personal websites
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: websites
+resources:
+  - namespace.yaml
+  - pvc-websites.yaml
+  - helmrepository-bitnami.yaml
+  - deploy-cherkaoui-homepage.yaml
+  - svc-cherkaoui-homepage.yaml
+  - ingress-cherkaoui-homepage.yaml
+  - helmrelease-nginx-laura.yaml
+  - ingress-laura.yaml
+  - deploy-hadi.yaml
+  - svc-hadi.yaml
+  - ingress-hadi.yaml
+  - deploy-docs.yaml
+  - svc-docs.yaml
+  - ingress-docs.yaml

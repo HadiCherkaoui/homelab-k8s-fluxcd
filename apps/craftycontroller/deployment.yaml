@@ -1,0 +1,49 @@
+# Deployment for CraftyController (from modules/craftycontroller)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: craftycontroller
+  namespace: craftycontroller
+  labels:
+    app: craftycontroller
+spec:
+  selector:
+    matchLabels:
+      app: craftycontroller
+  template:
+    metadata:
+      labels:
+        app: craftycontroller
+    spec:
+      containers:
+        - name: craftycontroller
+          image: registry.gitlab.com/crafty-controller/crafty-4:4.4.9
+          ports:
+            - containerPort: 8443
+              name: https
+            - containerPort: 25565
+              name: mc-srv-1
+            - containerPort: 8123
+              name: dynmap
+          volumeMounts:
+            - name: crafty
+              mountPath: /crafty/app/config
+              subPath: config
+            - name: import
+              mountPath: /crafty/import
+            - name: crafty
+              mountPath: /crafty/servers
+              subPath: servers
+            - name: crafty
+              mountPath: /crafty/logs
+              subPath: logs
+            - name: crafty
+              mountPath: /crafty/backups
+              subPath: backups
+      volumes:
+        - name: crafty
+          persistentVolumeClaim:
+            claimName: craftycontroller
+        - name: import
+          emptyDir:
+            medium: Memory

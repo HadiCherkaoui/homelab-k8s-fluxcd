@@ -1,0 +1,33 @@
+# HelmRelease for Sonarr (from modules/media/sonarr.tofu)
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: sonarr
+  namespace: media
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: sonarr
+      version: 24.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  install:
+    createNamespace: false
+  values:
+    persistence:
+      config:
+        enabled: true
+        size: 2Gi
+      shows:
+        enabled: true
+        existingClaim: plex-media
+        mountPath: /shows
+        subPath: shows
+      qbitshows:
+        enabled: true
+        existingClaim: qbit-media
+        mountPath: /movies-shows
+        subPath: movies-shows

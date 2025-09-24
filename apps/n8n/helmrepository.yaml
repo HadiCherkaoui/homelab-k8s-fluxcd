@@ -1,0 +1,10 @@
+# HelmRepository for n8n (OCI)
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: n8n-oci
+  namespace: flux-system
+spec:
+  type: oci
+  interval: 1h
+  url: oci://8gears.container-registry.com/library

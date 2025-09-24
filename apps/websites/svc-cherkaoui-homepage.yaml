@@ -1,0 +1,15 @@
+# Service for cherkaoui.ch homepage
+apiVersion: v1
+kind: Service
+metadata:
+  name: cherkaoui-homepage
+  namespace: websites
+spec:
+  selector:
+    app: cherkaoui-homepage
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 3000
+      targetPort: 3000
+      protocol: TCP

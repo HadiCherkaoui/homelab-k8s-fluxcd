@@ -1,0 +1,9 @@
+# HelmRepository for local-path-provisioner (containeroo)
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: containeroo
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://charts.containeroo.ch/

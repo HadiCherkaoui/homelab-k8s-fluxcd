@@ -1,0 +1,14 @@
+# Kustomization for Scolx application (from modules/scolx)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: scolx
+resources:
+  - namespace.yaml
+  - pvc.yaml
+  - deploy-frontend.yaml
+  - svc-frontend.yaml
+  - deploy-backend.yaml
+  - svc-backend.yaml
+  - ingress-frontend.yaml
+  - cnpg-cluster.yaml
+  - helmrelease-pgadmin.yaml

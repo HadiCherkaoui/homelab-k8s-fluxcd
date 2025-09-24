@@ -1,0 +1,11 @@
+# PVC for CraftyController data (from modules/craftycontroller)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: craftycontroller
+  namespace: craftycontroller
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 20Gi

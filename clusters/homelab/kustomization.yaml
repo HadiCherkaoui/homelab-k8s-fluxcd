@@ -1,0 +1,8 @@
+# Root Kustomization for homelab cluster
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: flux-system
+resources:
+  - source.yaml
+  - infrastructure.yaml
+  - apps.yaml

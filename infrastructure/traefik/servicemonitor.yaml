@@ -1,0 +1,29 @@
+# ServiceMonitor for Traefik metrics (from modules/traefik/main.tofu)
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: traefik
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-traefik
+    app.kubernetes.io/name: traefik
+    release: monitoring
+spec:
+  jobLabel: app.kubernetes.io/name
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: traefik-traefik
+      app.kubernetes.io/name: traefik
+  namespaceSelector:
+    matchNames:
+      - traefik
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      honorLabels: true
+      honorTimestamps: true
+      relabelings:
+        - action: replace
+          sourceLabels: ["__metrics_path__"]
+          targetLabel: metrics_path

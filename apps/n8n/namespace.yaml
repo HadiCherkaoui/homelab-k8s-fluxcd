@@ -1,0 +1,7 @@
+# Namespace for n8n
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: n8n
+  labels:
+    name: n8n

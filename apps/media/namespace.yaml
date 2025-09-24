@@ -1,0 +1,7 @@
+# Namespace for media applications (from modules/media)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: media
+  labels:
+    name: media

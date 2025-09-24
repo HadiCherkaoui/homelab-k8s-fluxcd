@@ -1,0 +1,14 @@
+# Flux GitRepository source for this repo
+# Derived from: Root of new GitOps repo
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: homelab
+  namespace: flux-system
+spec:
+  interval: 1m
+  url: ssh://git@ssh-gitlab.cherkaoui.ch/HadiCherkaoui/homelab-k8s-fluxcd.git
+  ref:
+    branch: main
+  secretRef:
+    name: flux-git-deploy

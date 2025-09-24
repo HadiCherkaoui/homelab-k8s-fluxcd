@@ -1,0 +1,7 @@
+# Namespace for OpenWebUI (from modules/ai)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openwebui
+  labels:
+    name: openwebui

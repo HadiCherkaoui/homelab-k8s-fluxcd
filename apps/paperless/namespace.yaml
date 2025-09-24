@@ -1,0 +1,7 @@
+# Namespace for Paperless-NGX (from modules/paperless)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: paperless
+  labels:
+    name: paperless

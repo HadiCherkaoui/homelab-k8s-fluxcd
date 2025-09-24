@@ -1,0 +1,26 @@
+# HelmRelease for pgAdmin (Scolx) via TrueCharts
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pgadmin
+  namespace: scolx
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: pgadmin
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  install:
+    createNamespace: false
+  values:
+    persistence:
+      config:
+        enabled: true
+        size: 2Gi
+    service:
+      main:
+        type: ClusterIP
+    # NOTE: Admin email/password must be provided later via SOPS Secret according to the chart docs.

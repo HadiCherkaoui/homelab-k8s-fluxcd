@@ -1,0 +1,13 @@
+# Aggregates all application components
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - media
+  - paperless
+  - openwebui
+  - websites
+  - n8n
+  - wg-easy
+  - craftycontroller
+  - gitlab
+  - scolx

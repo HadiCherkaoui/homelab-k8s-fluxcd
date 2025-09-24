@@ -1,0 +1,14 @@
+# Service for docs.cherkaoui.ch
+apiVersion: v1
+kind: Service
+metadata:
+  name: docs
+  namespace: websites
+spec:
+  selector:
+    app: docs
+  type: ClusterIP
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP

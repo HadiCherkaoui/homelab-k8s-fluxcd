@@ -1,0 +1,7 @@
+# Namespace for websites
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: websites
+  labels:
+    name: websites

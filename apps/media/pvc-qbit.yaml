@@ -1,0 +1,11 @@
+# PVC for qbittorrent downloads (from modules/media/qbit.tofu)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbit-media
+  namespace: media
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 200Gi

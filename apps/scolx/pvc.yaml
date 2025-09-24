@@ -1,0 +1,11 @@
+# PVC for Scolx data (from modules/scolx)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: scolx
+  namespace: scolx
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi

@@ -1,0 +1,108 @@
+# HelmRelease for GitLab (from modules/gitlab/main.tofu)
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitlab
+  namespace: gitlab
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: gitlab
+      version: 9.0.2
+      sourceRef:
+        kind: HelmRepository
+        name: gitlab
+        namespace: flux-system
+  install:
+    createNamespace: false
+  values:
+    global:
+      appConfig:
+        terraformState:
+          enabled: true
+          bucket: gitlab-terraform-state
+      edition: ce
+      hosts:
+        domain: cherkaoui.ch
+        https: true
+        gitlab:
+          name: gitlab.cherkaoui.ch
+          https: true
+        registry:
+          name: registry.cherkaoui.ch
+          https: true
+        minio:
+          name: minio.cherkaoui.ch
+          https: true
+        kas:
+          name: kas.cherkaoui.ch
+          https: true
+        ssh: "ssh-gitlab.cherkaoui.ch"
+      ingress:
+        enabled: false
+        configureCertmanager: false
+        tls:
+          enabled: false
+      # smtp and email fields for usernames will be set via valuesFrom Secret mapping below.
+      smtp:
+        enabled: true
+        address: proton-birdge-protonmail-bridge
+        port: 25
+        password:
+          # Use existing SOPS-encrypted Secret in namespace gitlab
+          secret: gitlab-smtp-password
+          key: smtp-password
+        domain: proton-birdge-protonmail-bridge.gitlab.svc.cluster.local
+        authentication: plain
+        starttls_auto: true
+        openssl_verify_mode: none
+      email:
+        display_name: Cherkaoui Gitlab
+        subject_suffix: ""
+      monitoring:
+        enabled: true
+    gitlab:
+      migrations:
+        resources:
+          requests: {}
+      webservice:
+        minReplicas: 1
+        maxReplicas: 1
+        autoscaling:
+          enabled: true
+      sidekiq:
+        minReplicas: 1
+        maxReplicas: 1
+        autoscaling:
+          enabled: true
+      gitlab-shell:
+        minReplicas: 1
+      registry:
+        minReplicas: 1
+      kas:
+        minReplicas: 1
+        maxReplicas: 1
+        autoscaling:
+          enabled: true
+    installCertmanager: false
+    nginx-ingress:
+      enabled: false
+    prometheus:
+      install: false
+  valuesFrom:
+    - kind: Secret
+      name: gitlab-protonmail
+      valuesKey: PROTONMAIL_USERNAME
+      targetPath: global.smtp.user_name
+      optional: true
+    - kind: Secret
+      name: gitlab-protonmail
+      valuesKey: PROTONMAIL_USERNAME
+      targetPath: global.email.from
+      optional: true
+    - kind: Secret
+      name: gitlab-protonmail
+      valuesKey: PROTONMAIL_USERNAME
+      targetPath: global.email.reply_to
+      optional: true

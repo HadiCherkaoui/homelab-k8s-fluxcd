@@ -1,0 +1,23 @@
+# Deployment for cherkaoui.ch homepage (from modules/websites/Cherkaoui_homepage.tofu)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cherkaoui-homepage
+  namespace: websites
+  labels:
+    app: cherkaoui-homepage
+spec:
+  selector:
+    matchLabels:
+      app: cherkaoui-homepage
+  template:
+    metadata:
+      labels:
+        app: cherkaoui-homepage
+    spec:
+      containers:
+        - name: cherkaoui-homepage
+          image: registry.cherkaoui.ch/hadicherkaoui/cherkaoui-homepage:latest
+          ports:
+            - containerPort: 3000
+              name: main

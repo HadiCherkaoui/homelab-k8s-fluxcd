@@ -1,0 +1,24 @@
+# IngressRoute for GitLab KAS (from modules/gitlab/main.tofu)
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: gitlab-kas
+  namespace: gitlab
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`kas.cherkaoui.ch`)
+      kind: Rule
+      middlewares:
+        - name: security-headers
+          namespace: traefik
+      services:
+        - name: gitlab-kas
+          port: tcp-kas-external-api
+  tls:
+    certResolver: letsencrypt

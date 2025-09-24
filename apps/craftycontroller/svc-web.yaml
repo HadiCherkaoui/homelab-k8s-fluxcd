@@ -1,0 +1,15 @@
+# Service for CraftyController web (from modules/craftycontroller)
+apiVersion: v1
+kind: Service
+metadata:
+  name: craftycontroller
+  namespace: craftycontroller
+spec:
+  selector:
+    app: craftycontroller
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 8443
+      targetPort: 8443
+      protocol: TCP

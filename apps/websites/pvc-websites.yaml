@@ -1,0 +1,11 @@
+# PVC for shared website content
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: websites
+  namespace: websites
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi

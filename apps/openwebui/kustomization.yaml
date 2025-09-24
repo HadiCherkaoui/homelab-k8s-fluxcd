@@ -1,0 +1,10 @@
+# Kustomization for OpenWebUI (from modules/ai)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: openwebui
+resources:
+  - namespace.yaml
+  - pvc.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingressroute.yaml

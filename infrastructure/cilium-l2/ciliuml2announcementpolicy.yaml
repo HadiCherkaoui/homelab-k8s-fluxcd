@@ -1,0 +1,14 @@
+# CiliumL2AnnouncementPolicy (from modules/cilium-l2/main.tofu)
+apiVersion: cilium.io/v2alpha1
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: default-l2-policy
+spec:
+  serviceSelector:
+    matchLabels: {}
+  nodeSelector:
+    matchLabels: {}
+  interfaces:
+    - enp6s18
+  externalIPs: true
+  loadBalancerIPs: true

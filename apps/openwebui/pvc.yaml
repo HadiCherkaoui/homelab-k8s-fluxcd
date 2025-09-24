@@ -1,0 +1,11 @@
+# PVC for OpenWebUI data (from modules/ai/main.tofu)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: openwebui
+  namespace: openwebui
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 5Gi
