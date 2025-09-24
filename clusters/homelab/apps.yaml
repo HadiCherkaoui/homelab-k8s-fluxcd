@@ -10,6 +10,6 @@ spec:
     - name: infrastructure
   sourceRef:
     kind: GitRepository
-    name: homelab
+    name: flux-system
   path: ./apps
   timeout: 2m

@@ -8,6 +8,6 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: homelab
+    name: flux-system
   path: ./infrastructure
   timeout: 2m
