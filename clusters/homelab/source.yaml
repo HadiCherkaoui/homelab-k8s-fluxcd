@@ -8,5 +8,3 @@ spec:
   url: ssh://git@ssh-gitlab.cherkaoui.ch/HadiCherkaoui/homelab-k8s-fluxcd.git
   ref:
     branch: main
-  secretRef:
-    name: flux-git-deploy
