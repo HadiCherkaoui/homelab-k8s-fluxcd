@@ -3,7 +3,6 @@ kind: Kustomization
 namespace: traefik
 resources:
   - namespace.yaml
-  - helmrepository.yaml
   - helmrelease.yaml
   - middleware-security-headers.yaml
   - servicemonitor.yaml

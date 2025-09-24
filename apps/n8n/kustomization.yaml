@@ -4,6 +4,5 @@ namespace: n8n
 resources:
   - namespace.yaml
   - pvc.yaml
-  - helmrepository.yaml
   - helmrelease.yaml
   - ingressroute.yaml

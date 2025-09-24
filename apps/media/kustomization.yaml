@@ -3,8 +3,6 @@ kind: Kustomization
 namespace: media
 resources:
   - namespace.yaml
-  - helmrepository-truecharts.yaml
-  - helmrepository-jellyfin.yaml
   - plex-pvc.yaml
   - helmrelease-plex.yaml
   - ingressroute-plex.yaml

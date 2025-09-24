@@ -4,7 +4,6 @@ namespace: websites
 resources:
   - namespace.yaml
   - pvc-websites.yaml
-  - helmrepository-bitnami.yaml
   - deploy-cherkaoui-homepage.yaml
   - svc-cherkaoui-homepage.yaml
   - ingress-cherkaoui-homepage.yaml
