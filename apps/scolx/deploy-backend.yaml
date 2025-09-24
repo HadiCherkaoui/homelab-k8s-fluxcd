@@ -22,8 +22,6 @@ spec:
           env:
             - name: SIGNUPS_DISABLED
               value: "true"
-            - name: DATABASE_PATH
-              value: /app/data/scolx.db
           envFrom:
             - secretRef:
                 name: scolx-backend-env
