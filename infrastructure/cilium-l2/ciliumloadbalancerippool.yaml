@@ -3,4 +3,8 @@ kind: CiliumLoadBalancerIPPool
 metadata:
   name: default-pool
 spec:
-  blocks: ["172.26.20.10/28", "172.26.20.32/27", "172.26.20.64/26", "172.26.20.128/25"]
+  blocks:
+    - cidr: 172.26.20.10/28
+    - cidr: 172.26.20.32/27
+    - cidr: 172.26.20.64/26
+    - cidr: 172.26.20.128/25
