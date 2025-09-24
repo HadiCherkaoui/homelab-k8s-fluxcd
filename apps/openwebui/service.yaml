@@ -1,4 +1,3 @@
-# Service for OpenWebUI (from modules/ai/main.tofu)
 apiVersion: v1
 kind: Service
 metadata:

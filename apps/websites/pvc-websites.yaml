@@ -1,4 +1,3 @@
-# PVC for shared website content
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

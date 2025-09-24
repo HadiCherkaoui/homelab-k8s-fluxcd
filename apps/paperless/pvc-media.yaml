@@ -1,4 +1,3 @@
-# PVC for Paperless media (from modules/paperless)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

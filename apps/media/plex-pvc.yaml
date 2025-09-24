@@ -1,4 +1,3 @@
-# PVC for Plex media (from modules/media/plex.tofu)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

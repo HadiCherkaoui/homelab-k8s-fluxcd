@@ -1,4 +1,3 @@
-# PVC for qbittorrent downloads (from modules/media/qbit.tofu)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

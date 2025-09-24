@@ -1,4 +1,3 @@
-# Service for hadi.cherkaoui.ch
 apiVersion: v1
 kind: Service
 metadata:

@@ -1,4 +1,3 @@
-# Kustomization for n8n (from modules/n8n)
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: n8n

@@ -1,4 +1,3 @@
-# PVC for OpenWebUI data (from modules/ai/main.tofu)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

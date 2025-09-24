@@ -1,4 +1,3 @@
-# HelmRelease for Notifiarr (from modules/media/notifiarr.tofu)
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:

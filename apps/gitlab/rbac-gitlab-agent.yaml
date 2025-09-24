@@ -1,4 +1,3 @@
-# RBAC for GitLab Agent (from modules/gitlab/main.tofu)
 apiVersion: v1
 kind: ServiceAccount
 metadata:

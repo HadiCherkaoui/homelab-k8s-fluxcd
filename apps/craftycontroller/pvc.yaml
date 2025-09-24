@@ -1,4 +1,3 @@
-# PVC for CraftyController data (from modules/craftycontroller)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

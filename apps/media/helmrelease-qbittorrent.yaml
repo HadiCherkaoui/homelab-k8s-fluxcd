@@ -1,4 +1,3 @@
-# HelmRelease for qbittorrent with gluetun addon (from modules/media/qbit.tofu)
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:

@@ -1,4 +1,3 @@
-# Deployment for hadi.cherkaoui.ch (from modules/websites/hadi-portoflio.tofu)
 apiVersion: apps/v1
 kind: Deployment
 metadata:

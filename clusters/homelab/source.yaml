@@ -1,5 +1,3 @@
-# Flux GitRepository source for this repo
-# Derived from: Root of new GitOps repo
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:

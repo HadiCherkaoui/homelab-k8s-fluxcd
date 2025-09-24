@@ -1,4 +1,3 @@
-# HelmRelease for GitLab (from modules/gitlab/main.tofu)
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -44,13 +43,11 @@ spec:
         configureCertmanager: false
         tls:
           enabled: false
-      # smtp and email fields for usernames will be set via valuesFrom Secret mapping below.
       smtp:
         enabled: true
         address: proton-birdge-protonmail-bridge
         port: 25
         password:
-          # Use existing SOPS-encrypted Secret in namespace gitlab
           secret: gitlab-smtp-password
           key: smtp-password
         domain: proton-birdge-protonmail-bridge.gitlab.svc.cluster.local

@@ -1,4 +1,3 @@
-# HelmRelease for Paperless-NGX (from modules/paperless)
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:

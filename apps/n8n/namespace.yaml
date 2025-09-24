@@ -1,4 +1,3 @@
-# Namespace for n8n
 apiVersion: v1
 kind: Namespace
 metadata:

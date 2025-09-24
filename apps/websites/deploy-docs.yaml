@@ -1,4 +1,3 @@
-# Deployment for docs.cherkaoui.ch (from modules/websites/docs.tofu)
 apiVersion: apps/v1
 kind: Deployment
 metadata:

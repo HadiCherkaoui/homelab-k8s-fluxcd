@@ -1,4 +1,3 @@
-# HelmRelease for Traefik ingress controller (derived from modules/traefik/main.tofu)
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:

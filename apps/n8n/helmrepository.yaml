@@ -1,4 +1,3 @@
-# HelmRepository for n8n (OCI)
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:

@@ -1,4 +1,3 @@
-# PVC for Paperless data (from modules/paperless)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

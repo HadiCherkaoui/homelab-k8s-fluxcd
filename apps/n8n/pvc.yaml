@@ -1,4 +1,3 @@
-# PVC for n8n data (from modules/n8n/main.tofu)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

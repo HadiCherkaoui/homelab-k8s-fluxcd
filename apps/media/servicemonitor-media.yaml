@@ -1,4 +1,3 @@
-# ServiceMonitor for media services (from modules/media/service-monitor.tofu)
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:

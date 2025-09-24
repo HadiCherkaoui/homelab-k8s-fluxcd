@@ -1,4 +1,3 @@
-# Deployment for Scolx backend (from modules/scolx)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,7 +15,6 @@ spec:
         app: scolx-backend
     spec:
       imagePullSecrets:
-        # Create this as a SOPS-encrypted dockerconfigjson Secret named 'scolx-registry'
         - name: scolx-registry
       containers:
         - name: scolx-backend
@@ -28,7 +26,6 @@ spec:
               value: /app/data/scolx.db
           envFrom:
             - secretRef:
-                # Provide JWT_SECRET, SCOLX_ADMIN_PASSWORD, SCOLX_POSTGRES_PASSWORD in this SOPS Secret
                 name: scolx-backend-env
           ports:
             - containerPort: 8080

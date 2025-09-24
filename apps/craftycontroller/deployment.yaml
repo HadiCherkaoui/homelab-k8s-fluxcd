@@ -1,4 +1,3 @@
-# Deployment for CraftyController (from modules/craftycontroller)
 apiVersion: apps/v1
 kind: Deployment
 metadata:

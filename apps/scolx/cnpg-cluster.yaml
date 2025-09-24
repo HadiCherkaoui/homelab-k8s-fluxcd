@@ -1,4 +1,3 @@
-# CloudNativePG Cluster for Scolx (from modules/scolx)
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -7,7 +6,6 @@ metadata:
 spec:
   instances: 1
   enableSuperuserAccess: true
-  # superuserSecret to be provided later via SOPS (name: pg-superuser-secret)
   superuserSecret:
     name: pg-superuser-secret
   storage:

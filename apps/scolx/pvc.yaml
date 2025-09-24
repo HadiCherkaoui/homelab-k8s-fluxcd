@@ -1,4 +1,3 @@
-# PVC for Scolx data (from modules/scolx)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

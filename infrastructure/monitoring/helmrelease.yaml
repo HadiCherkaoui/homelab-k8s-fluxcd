@@ -1,4 +1,3 @@
-# HelmRelease for kube-prometheus-stack (from modules/monitoring/main.tofu)
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -38,10 +37,6 @@ spec:
                   storage: "2Gi"
     grafana:
       enabled: true
-      # adminPassword intentionally not set here to avoid storing secrets in Git.
-      # Options:
-      #  - Provide a SOPS-encrypted Secret and configure grafana.admin.existingSecret
-      #  - Or set via environment at deploy time
       persistence:
         enabled: true
         size: "5Gi"

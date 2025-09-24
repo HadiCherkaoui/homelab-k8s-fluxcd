@@ -1,4 +1,3 @@
-# HelmRelease for n8n (from modules/n8n/main.tofu)
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:

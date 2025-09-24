@@ -1,4 +1,3 @@
-# HelmRelease for FlareSolverr (from modules/media/prowlarr.tofu)
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:

@@ -1,16 +1,7 @@
-# SOPS configuration for this repository
-# Purpose: Configure Mozilla SOPS with Age so that any secrets under secrets/ are encrypted
-# Source: https://fluxcd.io/flux/guides/mozilla-sops/
-
 creation_rules:
   - path_regex: secrets/.*\.(ya?ml)$
     encrypted_regex: '^(data|stringData)$'
-    age: [
-      "age1lkt8h48rt7addnx0a4fjjmlul03xt32wdwh832d5k6xn7x4h24msgs05kn"
-    ]
-  # Allow encrypting app-specific secret files anywhere if they end with .enc.yaml
-  - path_regex: ".*\.enc\.ya?ml$"
+    age: ["age1lkt8h48rt7addnx0a4fjjmlul03xt32wdwh832d5k6xn7x4h24msgs05kn"]
+  - path_regex: .*\.enc\.ya?ml$
     encrypted_regex: '^(data|stringData)$'
-    age: [
-      "age1lkt8h48rt7addnx0a4fjjmlul03xt32wdwh832d5k6xn7x4h24msgs05kn"
-    ]
+    age: ["age1lkt8h48rt7addnx0a4fjjmlul03xt32wdwh832d5k6xn7x4h24msgs05kn"]

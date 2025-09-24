@@ -1,4 +1,3 @@
-# Deployment for Scolx frontend (from modules/scolx)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,7 +14,6 @@ spec:
       labels:
         app: scolx-frontend
     spec:
-      # TODO: add imagePullSecrets after creating SOPS dockerconfigjson secret
       containers:
         - name: scolx-frontend
           image: registry.cherkaoui.ch/scolx/scolx/frontend:latest

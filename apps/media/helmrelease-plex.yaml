@@ -1,4 +1,3 @@
-# HelmRelease for Plex (from modules/media/plex.tofu) via TrueCharts
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:

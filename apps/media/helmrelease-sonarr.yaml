@@ -1,4 +1,3 @@
-# HelmRelease for Sonarr (from modules/media/sonarr.tofu)
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
