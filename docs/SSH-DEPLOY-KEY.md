@@ -29,19 +29,14 @@ This creates:
 When you have kubectl access to the cluster:
 
 ```bash
-# Optional but recommended: generate known_hosts for your Git server
-ssh-keyscan ssh-gitlab.cherkaoui.ch > known_hosts
-
 # Create/update the Secret used by GitRepository.spec.secretRef
 kubectl -n flux-system create secret generic flux-git-deploy \
   --from-file=identity=./flux-deploy \
-  --from-file=known_hosts=./known_hosts \
   --dry-run=client -o yaml | kubectl apply -f -
 ```
 
 Notes:
 - The key file must be named `identity` in the Secret.
-- `known_hosts` prevents MITM attacks during git clones.
 - The `clusters/homelab/source.yaml` is already configured to reference this Secret.
 
 ## 4) Test repository access

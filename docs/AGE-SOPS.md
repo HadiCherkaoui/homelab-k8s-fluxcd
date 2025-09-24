@@ -26,12 +26,6 @@ Keep `age-key.txt` PRIVATE. The line starting with `age1...` is your public key.
 
 The repository contains `.sops.yaml` configured to encrypt any `secrets/*.yaml` files with your public key.
 
-- Public key in use:
-
-```
-age1tjr83dnugjcyvy8tdhd3xp7v6enqczetmfql6cyazen06lcjddrqt93am7
-```
-
 If you ever rotate keys, update `.sops.yaml` accordingly.
 
 ## 3) Storing the Age private key in the cluster (required before Flux can decrypt)

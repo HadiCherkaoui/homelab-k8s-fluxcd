@@ -6,11 +6,11 @@ creation_rules:
   - path_regex: secrets/.*\.(ya?ml)$
     encrypted_regex: '^(data|stringData)$'
     age: [
-      "age1tjr83dnugjcyvy8tdhd3xp7v6enqczetmfql6cyazen06lcjddrqt93am7"
+      "age1lkt8h48rt7addnx0a4fjjmlul03xt32wdwh832d5k6xn7x4h24msgs05kn"
     ]
   # Allow encrypting app-specific secret files anywhere if they end with .enc.yaml
   - path_regex: ".*\.enc\.ya?ml$"
     encrypted_regex: '^(data|stringData)$'
     age: [
-      "age1tjr83dnugjcyvy8tdhd3xp7v6enqczetmfql6cyazen06lcjddrqt93am7"
+      "age1lkt8h48rt7addnx0a4fjjmlul03xt32wdwh832d5k6xn7x4h24msgs05kn"
     ]
