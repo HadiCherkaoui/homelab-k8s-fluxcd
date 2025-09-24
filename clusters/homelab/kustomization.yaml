@@ -4,3 +4,4 @@ namespace: flux-system
 resources:
   - infrastructure.yaml
   - apps.yaml
+  - secrets.yaml
