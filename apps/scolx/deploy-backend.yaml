@@ -21,7 +21,7 @@ spec:
           image: registry.cherkaoui.ch/scolx/scolx/backend:latest
           env:
             - name: SIGNUPS_DISABLED
-              value: true
+              value: "true"
             - name: DATABASE_PATH
               value: /app/data/scolx.db
           envFrom:
