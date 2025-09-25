@@ -30,6 +30,6 @@ helm_chart_bump:
     # Configure git to push with CI job token
     - git config user.name "helm-bump-bot"
     - git config user.email "helm-bump-bot@example.com"
-    - git remote set-url origin "https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+    - git remote set-url origin "https://token:${DEPLOY_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
   script:
     - bash scripts/update_helm_charts.sh
