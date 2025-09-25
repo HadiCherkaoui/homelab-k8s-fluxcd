@@ -22,6 +22,46 @@ spec:
           env:
             - name: BACKEND_URL
               value: http://scolx-backend:8080
+          envFrom:
+            - secretRef:
+                name: scolx-frontend-env
           ports:
             - containerPort: 3000
               name: main
+          livenessProbe:
+            httpGet:
+              path: /api/v1/livez
+              port: 3000
+              httpHeaders:
+                - name: X-HEALTH-CHECK-KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: scolx-frontend-env
+                      key: X_HEALTH_CHECK_KEY
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/v1/readyz
+              port: 3000
+              httpHeaders:
+                - name: X-HEALTH-CHECK-KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: scolx-frontend-env
+                      key: X_HEALTH_CHECK_KEY
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /api/v1/startupz
+              port: 3000
+              httpHeaders:
+                - name: X-HEALTH-CHECK-KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: scolx-frontend-env
+                      key: X_HEALTH_CHECK_KEY
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 30
