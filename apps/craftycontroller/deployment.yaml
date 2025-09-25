@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: craftycontroller
-          image: registry.gitlab.com/crafty-controller/crafty-4:4.4.9
+          image: registry.gitlab.com/crafty-controller/crafty-4:4.5.4
           ports:
             - containerPort: 8443
               name: https
