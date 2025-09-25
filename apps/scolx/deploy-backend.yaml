@@ -6,6 +6,7 @@ metadata:
   labels:
     app: scolx-backend
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: scolx-backend
