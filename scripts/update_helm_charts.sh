@@ -174,14 +174,14 @@ git commit -m "$COMMIT_MSG"
 git push -u origin "$BRANCH"
 
 # Create Merge Request using CI variables if available
-if [[ -n "${CI_API_V4_URL:-}" && -n "${CI_PROJECT_ID:-}" && -n "${CI_JOB_TOKEN:-}" ]]; then
+if [[ -n "${CI_API_V4_URL:-}" && -n "${CI_PROJECT_ID:-}" && -n "${DEPLOY_TOKEN:-}" ]]; then
   TITLE="chore(helm): bump charts"
   TARGET_BRANCH="${CI_DEFAULT_BRANCH:-main}"
   # Check if MR already exists
-  if ! curl --silent --show-error --fail -H "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+  if ! curl --silent --show-error --fail -H "PRIVATE-TOKEN: ${DEPLOY_TOKEN}" \
       --get "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests" \
       --data-urlencode "source_branch=${BRANCH}" --data-urlencode "state=opened" | grep -q '"iid"'; then
-    curl --silent --show-error --fail -H "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+    curl --silent --show-error --fail -H "PRIVATE-TOKEN: ${DEPLOY_TOKEN}" \
       -X POST "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests" \
       --data-urlencode "source_branch=${BRANCH}" \
       --data-urlencode "target_branch=${TARGET_BRANCH}" \
