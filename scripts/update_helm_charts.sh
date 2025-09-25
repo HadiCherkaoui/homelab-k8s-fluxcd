@@ -15,6 +15,15 @@ if ! command -v crane >/dev/null 2>&1; then
   exit 1
 fi
 
+# Ensure yq is mikefarah v4+
+YQ_VER_STR=$(yq --version 2>/dev/null || true)
+if echo "$YQ_VER_STR" | grep -qE '^yq [0-3]\.'; then
+  echo "This script requires mikefarah yq v4+. Detected: $YQ_VER_STR" >&2
+  echo "Install yq v4, e.g.:" >&2
+  echo "  curl -sSL -o /usr/local/bin/yq \"https://github.com/mikefarah/yq/releases/download/v4.44.3/yq_linux_amd64\" && chmod +x /usr/local/bin/yq" >&2
+  exit 1
+fi
+
 log(){ echo "[helm-bump] $*"; }
 
 # Load HelmRepository map: name -> (type,url)
@@ -29,18 +38,22 @@ if [[ -f "$HELMREPO_FILE" ]]; then
     rtype="${rtype:-http}"
     REPO_TYPE["$name"]="$rtype"
     REPO_URL["$name"]="$url"
-  done < <(yq -N -r -d'*' 'select(.kind=="HelmRepository") | (.metadata.name + "|" + (.spec.type // "http") + "|" + .spec.url)' "$HELMREPO_FILE")
+  done < <(yq -r 'select(.kind=="HelmRepository") | (.metadata.name + "|" + (.spec.type // "http") + "|" + .spec.url)' "$HELMREPO_FILE")
 else
   echo "HelmRepository file not found: $HELMREPO_FILE" >&2
   exit 1
 fi
 
 log "Loaded ${#REPO_URL[@]} HelmRepository entries"
+if [[ ${#REPO_URL[@]} -eq 0 ]]; then
+  echo "No HelmRepository entries parsed from $HELMREPO_FILE" >&2
+  exit 1
+fi
 
 # Find HelmRelease specs across repo
 mapfile -t HR_FILES < <(git ls-files '*.yaml' '*.yml' | xargs -r grep -l "kind: HelmRelease" || true)
 
-declare -a UPDATES
+declare -a UPDATES=()
 
 fetch_http_versions(){
   local base_url="$1" chart="$2"
@@ -122,13 +135,13 @@ for f in "${HR_FILES[@]}"; do
         yq -i 'select(.kind=="HelmRelease" and .spec.chart.spec.chart == env(CHART_NAME) and .spec.chart.spec.sourceRef.name == env(REPO_NAME)).spec.chart.spec.version = strenv(NEWVER)' "$f"
       UPDATES+=("$chart|$repo|$ver|$newver|$f")
     fi
-  done < <(yq -N -r -d'*' 'select(.kind=="HelmRelease") | (.spec.chart.spec.chart + "|" + (.spec.chart.spec.version // "") + "|" + .spec.chart.spec.sourceRef.name + "|" + (env(YQ_DOCUMENT_INDEX) | tostring))' "$f" 2>/dev/null)
+  done < <(yq -r 'select(.kind=="HelmRelease") | (.spec.chart.spec.chart + "|" + (.spec.chart.spec.version // "") + "|" + .spec.chart.spec.sourceRef.name + "|" + ("0"))' "$f" 2>/dev/null)
   # Note: The awk NR-1 hack may not map exact doc index in all cases; fallback to -d'*' select by kind works if single HR per file.
   # In practice, most files contain a single HelmRelease document. For multi-doc files, consider enhancing index detection.
 
 done
 
-if [[ ${#UPDATES[@]} -eq 0 ]]; then
+if [[ -z "${UPDATES+x}" || ${#UPDATES[@]} -eq 0 ]]; then
   log "No chart updates available"
   exit 0
 fi
