@@ -20,8 +20,10 @@ spec:
     ingress:
       web:
         enabled: false
+        host: app.defguard.cherkaoui.ch
       grpc:
         enabled: false
+        host: grpc.defguard.cherkaoui.ch
     postgresql:
       enabled: false
       host: "defguard-postgres-cluster-rw.defguard.svc.cluster.local"
