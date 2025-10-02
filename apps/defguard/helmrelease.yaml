@@ -44,6 +44,8 @@ spec:
     defguard-gateway:
       enabled: true
       grpcUrl: "https://grpc.defguard.cherkaoui.ch"
+      existingTokenSecret: "defguard-gateway-token"
+      existingTokenSecretKey: "token"
       service:
         wireguard:
           type: LoadBalancer
