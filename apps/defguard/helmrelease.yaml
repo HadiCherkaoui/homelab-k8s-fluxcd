@@ -27,9 +27,9 @@ spec:
       host: "defguard-postgres-cluster-rw.defguard.svc.cluster.local"
       port: 5432
       auth:
-        database: defguard
-        username: postgres
-        existingSecret: defguard-postgres-cluster-superuser
+        database: app
+        username: app
+        existingSecret: defguard-postgres-cluster-app
         existingSecretPasswordKey: password
     defguard-proxy:
       enabled: true
