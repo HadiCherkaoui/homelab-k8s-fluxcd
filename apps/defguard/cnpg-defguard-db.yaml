@@ -1,0 +1,10 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: defguard-db
+  namespace: defguard
+spec:
+  name: defguard
+  owner: defguard
+  cluster:
+    name: defguard-postgres-cluster

@@ -8,3 +8,5 @@ resources:
   - ingressroute-core-grpc.yaml
   - ingressroute-proxy-web.yaml
   - ingressroute-proxy-grpc.yaml
+  - cnpg-cluster.yaml
+  - cnpg-defguard-db.yaml
