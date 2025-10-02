@@ -11,7 +11,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`enroller-grpc.cherkaoui.ch`)
+    - match: Host(`enroller-grpc.defguard.cherkaoui.ch`)
       kind: Rule
       middlewares:
         - name: security-headers

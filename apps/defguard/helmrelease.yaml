@@ -15,8 +15,8 @@ spec:
   install:
     createNamespace: false
   values:
-    publicUrl: "https://defguard.cherkaoui.ch"
-    proxyUrl: "https://enroller-grpc.cherkaoui.ch"
+    publicUrl: "https://app.defguard.cherkaoui.ch"
+    proxyUrl: "https://enroller-grpc.defguard.cherkaoui.ch"
     ingress:
       web:
         enabled: false
@@ -26,7 +26,7 @@ spec:
       enabled: true
     defguard-proxy:
       enabled: true
-      publicUrl: "https://enroller.cherkaoui.ch"
+      publicUrl: "https://enroller.defguard.cherkaoui.ch"
       ingress:
         web:
           enabled: false
@@ -34,7 +34,7 @@ spec:
           enabled: false
     defguard-gateway:
       enabled: true
-      grpcUrl: "https://defguard-grpc.cherkaoui.ch"
+      grpcUrl: "https://grpc.defguard.cherkaoui.ch"
       service:
         wireguard:
           type: LoadBalancer
