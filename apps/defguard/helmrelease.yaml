@@ -1,0 +1,41 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: defguard
+  namespace: defguard
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: charts/defguard
+      sourceRef:
+        kind: GitRepository
+        name: defguard-deployment
+        namespace: flux-system
+  install:
+    createNamespace: false
+  values:
+    publicUrl: "https://defguard.cherkaoui.ch"
+    proxyUrl: "https://enroller-grpc.cherkaoui.ch"
+    ingress:
+      web:
+        enabled: false
+      grpc:
+        enabled: false
+    postgresql:
+      enabled: true
+    defguard-proxy:
+      enabled: true
+      publicUrl: "https://enroller.cherkaoui.ch"
+      ingress:
+        web:
+          enabled: false
+        grpc:
+          enabled: false
+    defguard-gateway:
+      enabled: true
+      grpcUrl: "https://defguard-grpc.cherkaoui.ch"
+      service:
+        wireguard:
+          type: LoadBalancer
+          port: 51820

@@ -6,7 +6,7 @@ resources:
   - openwebui
   - websites
   - n8n
-  - wg-easy
+  - defguard
   - craftycontroller
   - gitlab
   - scolx
