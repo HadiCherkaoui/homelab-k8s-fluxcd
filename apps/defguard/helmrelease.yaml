@@ -16,14 +16,12 @@ spec:
     createNamespace: false
   values:
     publicUrl: "https://app.defguard.cherkaoui.ch"
-    proxyUrl: "https://enroller-grpc.defguard.cherkaoui.ch"
     ingress:
       web:
         enabled: false
         host: app.defguard.cherkaoui.ch
       grpc:
         enabled: false
-        host: grpc.defguard.cherkaoui.ch
     postgresql:
       enabled: false
       host: "defguard-postgres-cluster-rw.defguard.svc.cluster.local"
@@ -34,8 +32,7 @@ spec:
         existingSecret: defguard-postgres-cluster-app
         existingSecretPasswordKey: password
     defguard-proxy:
-      enabled: true
-      publicUrl: "https://enroller.defguard.cherkaoui.ch"
+      enabled: false
       ingress:
         web:
           enabled: false
@@ -43,7 +40,7 @@ spec:
           enabled: false
     defguard-gateway:
       enabled: true
-      grpcUrl: "https://grpc.defguard.cherkaoui.ch"
+      grpcUrl: "http://defguard-grpc.defguard.svc.cluster.local:50055"
       existingTokenSecret: "defguard-gateway-token"
       existingTokenSecretKey: "token"
       service:

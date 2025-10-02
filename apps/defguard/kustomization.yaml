@@ -5,7 +5,4 @@ resources:
   - gitrepository.yaml
   - helmrelease.yaml
   - ingressroute-core-web.yaml
-  - ingressroute-core-grpc.yaml
-  - ingressroute-proxy-web.yaml
-  - ingressroute-proxy-grpc.yaml
   - cnpg-cluster.yaml
