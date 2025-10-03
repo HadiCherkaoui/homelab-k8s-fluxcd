@@ -1,0 +1,21 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: searxng
+  namespace: searxng
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: searxng
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  install:
+    createNamespace: false
+  values:
+    persistence:
+      config:
+        enabled: true
+        size: 1Gi

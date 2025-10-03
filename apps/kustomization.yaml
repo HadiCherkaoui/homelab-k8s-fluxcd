@@ -10,3 +10,4 @@ resources:
   - craftycontroller
   - gitlab
   - scolx
+  - searxng
