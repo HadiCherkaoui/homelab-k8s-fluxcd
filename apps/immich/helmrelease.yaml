@@ -30,7 +30,7 @@ spec:
       enabled: true
     env:
       - name: DB_HOSTNAME
-        value: immich-postgres-rw
+        value: immich-database-rw
       - name: DB_PORT
         value: "5432"
       - name: DB_DATABASE_NAME
@@ -38,10 +38,10 @@ spec:
       - name: DB_USERNAME
         valueFrom:
           secretKeyRef:
-            name: immich-postgres-app
+            name: immich-database-app
             key: username
       - name: DB_PASSWORD
         valueFrom:
           secretKeyRef:
-            name: immich-postgres-app
+            name: immich-database-app
             key: password
