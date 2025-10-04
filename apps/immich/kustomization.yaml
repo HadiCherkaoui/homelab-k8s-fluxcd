@@ -3,6 +3,5 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - pvc-library.yaml
-  - cnpg-cluster.yaml
   - helmrelease.yaml
   - ingressroute.yaml
