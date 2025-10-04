@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: immich
-      version: 0.9.3
+      version: 1.0.1
       sourceRef:
         kind: HelmRepository
         name: immich
@@ -16,32 +16,28 @@ spec:
   install:
     createNamespace: false
   values:
+    common:
+      config:
+        vectorExtension: pgvector
+      postgres:
+        host: immich-database-rw
+        existingSecret:
+          enabled: true
+          secretName: immich-database-app
+          usernameKey: username
+          passwordKey: password
+      redis:
+        host: immich-redis-master
+        existingSecret:
+          enabled: true
     server:
-      ingress:
-        main:
-          enabled: false
-    immich:
-      metrics:
-        enabled: true
-      persistence:
-        library:
-          existingClaim: immich-library
-    valkey:
+      volumeMounts:
+        - mountPath: /usr/src/app/upload
+          name: uploads
+      volumes:
+        - name: uploads
+          hostPath:
+            path: /data/media/immich
+            type: Directory
+    machineLearning:
       enabled: true
-    env:
-      - name: DB_HOSTNAME
-        value: immich-database-rw
-      - name: DB_PORT
-        value: "5432"
-      - name: DB_DATABASE_NAME
-        value: app
-      - name: DB_USERNAME
-        valueFrom:
-          secretKeyRef:
-            name: immich-database-app
-            key: username
-      - name: DB_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: immich-database-app
-            key: password

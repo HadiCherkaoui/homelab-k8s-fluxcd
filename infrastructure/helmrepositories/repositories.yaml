@@ -88,7 +88,8 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://immich-app.github.io/immich-charts
+  type: oci
+  url: oci://ghcr.io/secustor/helm-charts
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
@@ -107,3 +108,12 @@ metadata:
 spec:
   interval: 1h
   url: https://charts.min.io
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: redis
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://charts.pascaliske.dev
