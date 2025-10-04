@@ -7,4 +7,3 @@ resources:
   - cnpg-operator
   - monitoring
   - cilium-l2
-  - minio-operator

@@ -102,8 +102,8 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: minio-operator
+  name: minio
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://operator.min.io
+  url: https://charts.min.io
