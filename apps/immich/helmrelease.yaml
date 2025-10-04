@@ -29,7 +29,21 @@ spec:
     valkey:
       enabled: true
     env:
-      DB_HOSTNAME: immich-postgres-rw
-      DB_PORT: "5432"
-      DB_DATABASE_NAME: app
-      DB_VECTOR_EXTENSION: pgvecto.rs
+      - name: DB_HOSTNAME
+        value: immich-postgres-rw
+      - name: DB_PORT
+        value: "5432"
+      - name: DB_DATABASE_NAME
+        value: app
+      - name: DB_VECTOR_EXTENSION
+        value: pgvecto.rs
+      - name: DB_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: immich-postgres-app
+            key: username
+      - name: DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: immich-postgres-app
+            key: password
