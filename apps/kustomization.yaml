@@ -11,5 +11,3 @@ resources:
   - gitlab
   - scolx
   - searxng
-  - immich
-  - nextcloud
