@@ -30,8 +30,9 @@ spec:
           enabled: true
           type: pvc
           size: 10Gi
-    valkey:
-      enabled: true
+          accessModes:
+            - ReadWriteOnce
+          storageClass: local-path
     env:
       DB_HOSTNAME: immich-postgres-rw
       DB_PORT: "5432"

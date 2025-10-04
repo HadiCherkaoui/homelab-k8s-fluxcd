@@ -24,6 +24,7 @@ spec:
         - servers: 1
           name: pool-0
           volumesPerServer: 1
+          storageClassName: local-path
           size: 1Ti
       services:
         console:
