@@ -4,5 +4,6 @@ resources:
   - namespace.yaml
   - pvc-library.yaml
   - helmrelease.yaml
+  - helmrelease-redis.yaml
   - ingressroute.yaml
   - cnpg-cluster.yaml
