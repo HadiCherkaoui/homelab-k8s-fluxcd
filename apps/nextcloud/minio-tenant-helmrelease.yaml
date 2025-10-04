@@ -16,7 +16,7 @@ spec:
   install:
     createNamespace: false
   values:
-    objectStore:
+    tenant:
       name: nextcloud-minio
       configuration:
         name: nextcloud-minio-env

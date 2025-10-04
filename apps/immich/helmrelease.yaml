@@ -24,15 +24,6 @@ spec:
       persistence:
         library:
           existingClaim: immich-library
-    machine-learning:
-      persistence:
-        cache:
-          enabled: true
-          type: pvc
-          size: 10Gi
-          accessModes:
-            - ReadWriteOnce
-          storageClass: local-path
     env:
       DB_HOSTNAME: immich-postgres-rw
       DB_PORT: "5432"
