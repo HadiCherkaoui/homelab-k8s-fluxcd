@@ -35,8 +35,6 @@ spec:
         value: "5432"
       - name: DB_DATABASE_NAME
         value: app
-      - name: DB_VECTOR_EXTENSION
-        value: pgvecto.rs
       - name: DB_USERNAME
         valueFrom:
           secretKeyRef:
