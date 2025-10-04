@@ -1,0 +1,48 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: nextcloud
+      version: 8.3.0
+      sourceRef:
+        kind: HelmRepository
+        name: nextcloud
+        namespace: flux-system
+  install:
+    createNamespace: false
+  values:
+    ingress:
+      enabled: false
+    persistence:
+      enabled: true
+    redis:
+      enabled: true
+    postgresql:
+      enabled: true
+      primary:
+        persistence:
+          size: 10Gi
+    nextcloud:
+      host: nextcloud.cherkaoui.ch
+      existingSecret:
+        enabled: true
+        secretName: nextcloud-admin
+      objectStore:
+        s3:
+          enabled: true
+          host: "nextcloud-minio-hl.nextcloud.svc.cluster.local"
+          port: "9000"
+          ssl: false
+          bucket: "nextcloud"
+          autoCreate: true
+          existingSecret: nextcloud-s3
+          secretKeys:
+            host: s3-endpoint
+            accessKey: s3-access-key
+            secretKey: s3-secret-key
+            bucket: s3-bucket
