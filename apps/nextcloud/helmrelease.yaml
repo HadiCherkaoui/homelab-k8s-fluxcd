@@ -43,6 +43,6 @@ spec:
           existingSecret: nextcloud-s3
           secretKeys:
             host: s3-endpoint
-            accessKey: s3-access-key
-            secretKey: s3-secret-key
+            accessKey: accesskey
+            secretKey: secretkey
             bucket: s3-bucket
