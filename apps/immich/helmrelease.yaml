@@ -21,26 +21,15 @@ spec:
         main:
           enabled: false
     immich:
+      metrics:
+        enabled: true
       persistence:
         library:
           existingClaim: immich-library
+    valkey:
+      enabled: true
     env:
       DB_HOSTNAME: immich-postgres-rw
       DB_PORT: "5432"
       DB_DATABASE_NAME: app
       DB_VECTOR_EXTENSION: pgvecto.rs
-    controllers:
-      main:
-        containers:
-          main:
-            env:
-              - name: DB_USERNAME
-                valueFrom:
-                  secretKeyRef:
-                    name: immich-postgres-app
-                    key: username
-              - name: DB_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: immich-postgres-app
-                    key: password
