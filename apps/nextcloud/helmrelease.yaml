@@ -40,9 +40,7 @@ spec:
           ssl: false
           bucket: "nextcloud"
           autoCreate: true
-          existingSecret: nextcloud-s3
+          existingSecret: minio
           secretKeys:
-            host: s3-endpoint
-            accessKey: accesskey
-            secretKey: secretkey
-            bucket: s3-bucket
+            accessKey: rootPassword
+            secretKey: rootUser

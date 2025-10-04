@@ -19,6 +19,8 @@ spec:
     - kind: Secret
       name: minio-credentials
   values:
+    replicas: 1
+    mode: standalone
     console:
       enabled: true
     persistence:

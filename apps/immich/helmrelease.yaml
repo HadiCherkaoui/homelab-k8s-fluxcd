@@ -27,9 +27,7 @@ spec:
           usernameKey: username
           passwordKey: password
       redis:
-        host: immich-redis-master
-        existingSecret:
-          enabled: true
+        host: immich-redis
     server:
       volumeMounts:
         - mountPath: /usr/src/app/upload
