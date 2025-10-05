@@ -15,7 +15,6 @@ spec:
   install:
     createNamespace: false
   values:
-    proxyUrl: https://enroller-grpc.defguard.cherkaoui.ch
     publicUrl: https://app.defguard.cherkaoui.ch
     ingress:
       web:
@@ -33,15 +32,13 @@ spec:
         existingSecret: defguard-postgres-cluster-app
         existingSecretPasswordKey: password
     defguard-proxy:
-      enabled: true
+      enabled: false
       ingress:
         web:
           enabled: false
           host: enroller.defguard.cherkaoui.ch
         grpc:
           enabled: false
-          host: enroller-grpc.defguard.cherkaoui.ch
-          port: 50055
     defguard-gateway:
       enabled: true
       grpcUrl: http://defguard-grpc.defguard.svc.cluster.local:50055
