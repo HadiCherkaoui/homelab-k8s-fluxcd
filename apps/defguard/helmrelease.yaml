@@ -15,6 +15,7 @@ spec:
   install:
     createNamespace: false
   values:
+    proxyUrl: "http://defguard-defguard-proxy-grpc.defguard.svc.cluster.local:50055"
     publicUrl: "https://app.defguard.cherkaoui.ch"
     ingress:
       web:
@@ -39,11 +40,13 @@ spec:
           host: enroller.defguard.cherkaoui.ch
         grpc:
           enabled: false
+          host: http://defguard-defguard-proxy-grpc.defguard.svc.cluster.local
+          port: 50055
     defguard-gateway:
       enabled: true
-      grpcUrl: "http://defguard-grpc.defguard.svc.cluster.local:50055"
-      existingTokenSecret: "defguard-gateway-token"
-      existingTokenSecretKey: "token"
+      grpcUrl: http://defguard-grpc.defguard.svc.cluster.local:50055
+      existingTokenSecret: defguard-gateway-token
+      existingTokenSecretKey: token
       service:
         wireguard:
           type: LoadBalancer

@@ -17,7 +17,7 @@ spec:
         - name: security-headers
           namespace: traefik
       services:
-        - name: defguard-proxy
+        - name: defguard-defguard-proxy-web
           port: http
   tls:
     certResolver: letsencrypt
