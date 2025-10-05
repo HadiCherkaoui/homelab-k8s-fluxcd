@@ -16,6 +16,8 @@ spec:
   install:
     createNamespace: false
   values:
+    deployment:
+      replicas: 2
     providers:
       kubernetesCRD:
         enabled: true
