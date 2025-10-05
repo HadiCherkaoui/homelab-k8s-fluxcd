@@ -15,8 +15,8 @@ spec:
   install:
     createNamespace: false
   values:
-    proxyUrl: "http://defguard-defguard-proxy-grpc.defguard.svc.cluster.local:50055"
-    publicUrl: "https://app.defguard.cherkaoui.ch"
+    proxyUrl: https://enroller-grpc.defguard.cherkaoui.ch
+    publicUrl: https://app.defguard.cherkaoui.ch
     ingress:
       web:
         enabled: false
@@ -40,7 +40,7 @@ spec:
           host: enroller.defguard.cherkaoui.ch
         grpc:
           enabled: false
-          host: http://defguard-defguard-proxy-grpc.defguard.svc.cluster.local
+          host: enroller-grpc.defguard.cherkaoui.ch
           port: 50055
     defguard-gateway:
       enabled: true

@@ -11,13 +11,13 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`enroller.defguard.cherkaoui.ch`)
+    - match: Host(`enroller-grpc.defguard.cherkaoui.ch`)
       kind: Rule
       middlewares:
         - name: security-headers
           namespace: traefik
       services:
-        - name: defguard-defguard-proxy-web
-          port: http
+        - name: defguard-defguard-proxy-grpc
+          port: grpc
   tls:
     certResolver: letsencrypt
