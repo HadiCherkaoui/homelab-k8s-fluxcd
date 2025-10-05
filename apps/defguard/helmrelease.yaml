@@ -32,10 +32,11 @@ spec:
         existingSecret: defguard-postgres-cluster-app
         existingSecretPasswordKey: password
     defguard-proxy:
-      enabled: false
+      enabled: true
       ingress:
         web:
           enabled: false
+          host: enroller.defguard.cherkaoui.ch
         grpc:
           enabled: false
     defguard-gateway:

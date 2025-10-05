@@ -6,3 +6,4 @@ resources:
   - helmrelease.yaml
   - ingressroute-core-web.yaml
   - cnpg-cluster.yaml
+  - ingressroute-enroller.yaml
