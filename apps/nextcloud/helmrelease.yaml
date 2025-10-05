@@ -16,7 +16,5 @@ spec:
   install:
     createNamespace: false
   values:
-    hostAliases:
-    - ip: 178.39.28.30
-      hostnames:
-        - nextcloud.cherkaoui.ch
+    general:
+      accessIP: 178.39.28.30
