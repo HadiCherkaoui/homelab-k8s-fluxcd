@@ -23,9 +23,6 @@ spec:
           volumeMounts:
             - name: openwebui
               mountPath: /app/backend/data
-          envFrom:
-            - secretRef:
-                name: openwebui-oauth
       volumes:
         - name: openwebui
           persistentVolumeClaim:
