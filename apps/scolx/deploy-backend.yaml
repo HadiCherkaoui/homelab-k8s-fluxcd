@@ -23,6 +23,8 @@ spec:
           env:
             - name: SIGNUPS_DISABLED
               value: "true"
+            - name: SMTP_PORT
+              value: "25"
           envFrom:
             - secretRef:
                 name: scolx-backend-env
