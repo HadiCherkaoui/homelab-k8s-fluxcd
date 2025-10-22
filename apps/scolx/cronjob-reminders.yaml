@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scolx-reminders
+  namespace: scolx
+spec:
+  schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: scolx-reminders
+        spec:
+          restartPolicy: Never
+          imagePullSecrets:
+            - name: scolx-registry
+          containers:
+            - name: reminders
+              image: registry.cherkaoui.ch/scolx/scolx/backend:latest
+              env:
+                - name: REMINDERS_RUN_ONCE
+                  value: "true"
+                - name: REMINDERS_ENABLED
+                  value: "true"
+                - name: REMINDERS_INTERNAL_ENABLED
+                  value: "false"
+                - name: APP_BASE_URL
+                  value: "scolx.com"
+              envFrom:
+                - secretRef:
+                    name: scolx-backend-env

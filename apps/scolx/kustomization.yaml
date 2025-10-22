@@ -11,3 +11,4 @@ resources:
   - cnpg-cluster.yaml
   - cnpg-scolx-db.yaml
   - helmrelease-pgadmin.yaml
+  - cronjob-reminders.yaml

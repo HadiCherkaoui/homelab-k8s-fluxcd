@@ -25,6 +25,10 @@ spec:
               value: "true"
             - name: SMTP_PORT
               value: "25"
+            - name: REMINDERS_INTERNAL_ENABLED
+              value: "false"
+            - name: APP_BASE_URL
+              value: "scolx.com"
           envFrom:
             - secretRef:
                 name: scolx-backend-env
