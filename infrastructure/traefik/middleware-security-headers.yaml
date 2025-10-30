@@ -10,7 +10,6 @@ spec:
     stsSeconds: 63072000
     stsIncludeSubdomains: true
     stsPreload: true
-    customFrameOptionsValue: "SAMEORIGIN"
     referrerPolicy: "no-referrer-when-downgrade"
-    contentSecurityPolicy: "default-src *; script-src *; style-src *; img-src *; font-src *; connect-src *; object-src *; base-uri *; frame-ancestors *;"
+    contentSecurityPolicy: "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval' data: blob:; style-src * 'unsafe-inline' data: blob:; img-src * data: blob:; font-src * data:; connect-src * data: blob:; media-src * data: blob:; worker-src * data: blob:; frame-src *; frame-ancestors *; child-src *; object-src *; base-uri *; form-action *; manifest-src *; prefetch-src *;"
     permissionsPolicy: "geolocation=(), microphone=(), camera=(), fullscreen=()"
