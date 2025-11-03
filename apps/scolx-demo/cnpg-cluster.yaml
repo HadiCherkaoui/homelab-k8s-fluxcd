@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: scolx-postgres-cluster
+  namespace: scolx-demo
+  labels:
+    app: scolx-postgres-cluster
+spec:
+  instances: 1
+  enableSuperuserAccess: false
+  imageName: ghcr.io/cloudnative-pg/postgresql:18
+  storage:
+    size: 10Gi

@@ -10,5 +10,6 @@ resources:
   - craftycontroller
   - gitlab
   - scolx
+  - scolx-demo
   - searxng
   - immich

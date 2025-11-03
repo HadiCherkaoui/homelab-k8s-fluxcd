@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scolx-frontend
+  namespace: scolx-demo
+  labels:
+    app: scolx-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scolx-frontend
+  template:
+    metadata:
+      labels:
+        app: scolx-frontend
+    spec:
+      imagePullSecrets:
+        - name: scolx-registry
+      containers:
+        - name: scolx-frontend
+          image: registry.cherkaoui.ch/scolx/scolx/frontend:latest
+          env:
+            - name: BACKEND_URL
+              value: http://scolx-backend:8080
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          envFrom:
+            - secretRef:
+                name: scolx-frontend-env
+          ports:
+            - containerPort: 3000
+              name: main
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  wget --spider --quiet \
+                    --header="X-HEALTH-CHECK-KEY: ${X_HEALTH_CHECK_KEY}" \
+                    "http://${POD_IP}:3000/api/v1/livez"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  wget --spider --quiet \
+                    --header="X-HEALTH-CHECK-KEY: ${X_HEALTH_CHECK_KEY}" \
+                    "http://${POD_IP}:3000/api/v1/readyz"
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          startupProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  wget --spider --quiet \
+                    --header="X-HEALTH-CHECK-KEY: ${X_HEALTH_CHECK_KEY}" \
+                    "http://${POD_IP}:3000/api/v1/startupz"
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 30

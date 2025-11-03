@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scolx-backend
+  namespace: scolx-demo
+  labels:
+    app: scolx-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scolx-backend
+  template:
+    metadata:
+      labels:
+        app: scolx-backend
+    spec:
+      imagePullSecrets:
+        - name: scolx-registry
+      containers:
+        - name: scolx-backend
+          image: registry.cherkaoui.ch/scolx/scolx/backend:latest
+          env:
+            - name: SIGNUPS_DISABLED
+              value: "false"
+            - name: OPENAI_MODEL
+              value: "x-ai/grok-4-fast"
+            - name: REMINDERS_INTERNAL_ENABLED
+              value: "false"
+            - name: APP_BASE_URL
+              value: "demo.scolx.com"
+          envFrom:
+            - secretRef:
+                name: scolx-backend-env
+          ports:
+            - containerPort: 8080
+              name: web
+          livenessProbe:
+            httpGet:
+              path: /api/v1/livez
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/v1/readyz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /api/v1/startupz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 30
