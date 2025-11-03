@@ -37,8 +37,14 @@ spec:
         acme:
           email: "encrypt@hide.cherkaoui.ch"
           storage: "/data/acme.json"
-          httpChallenge:
-            entryPoint: web
+          dnsChallenge:
+            provider: cloudflare
+            resolvers:
+              - "1.1.1.1:53"
+              - "8.8.8.8:53"
+    envFrom:
+      - secretRef:
+          name: cloudflare-dns
     persistence:
       enabled: true
       path: "/data"
