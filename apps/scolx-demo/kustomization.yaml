@@ -8,3 +8,4 @@ resources:
   - deploy-backend.yaml
   - svc-backend.yaml
   - ingress-frontend.yaml
+  - cnpg-cluster.yaml
