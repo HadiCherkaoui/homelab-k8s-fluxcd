@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: scolx-backend
   namespace: scolx
+  labels:
+    app.kubernetes.io/name: scolx-backend
+    app.kubernetes.io/instance: scolx-backend
 spec:
   selector:
     app: scolx-backend
