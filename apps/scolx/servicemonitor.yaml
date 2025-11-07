@@ -1,0 +1,28 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: scolx-backend
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-scolx-backend
+    app.kubernetes.io/name: scolx-backend
+    release: monitoring
+spec:
+  jobLabel: app.kubernetes.io/name
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: scolx-backend
+      app.kubernetes.io/name: scolx-backend
+  namespaceSelector:
+    matchNames:
+      - scolx
+  endpoints:
+    - port: web
+      path: /metrics
+      interval: 30s
+      honorLabels: true
+      honorTimestamps: true
+      relabelings:
+        - action: replace
+          sourceLabels: ["__metrics_path__"]
+          targetLabel: metrics_path
