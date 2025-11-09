@@ -11,4 +11,4 @@ resources:
   - gitlab
   - scolx
   - searxng
-  - immich
+#  - immich
