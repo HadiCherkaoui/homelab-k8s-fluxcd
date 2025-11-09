@@ -80,3 +80,12 @@ metadata:
 spec:
   interval: 1h
   url: https://traefik.github.io/charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: minio
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://charts.min.io

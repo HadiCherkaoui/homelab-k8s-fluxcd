@@ -13,3 +13,4 @@ resources:
   - helmrelease-pgadmin.yaml
   - cronjob-reminders.yaml
   - servicemonitor.yaml
+  - helmrelease-minio.yaml
