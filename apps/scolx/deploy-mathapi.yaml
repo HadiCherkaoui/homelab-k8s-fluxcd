@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scolx-math
+  namespace: scolx
+  labels:
+    app: scolx-math
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: scolx-math
+  template:
+    metadata:
+      labels:
+        app: scolx-math
+    spec:
+      imagePullSecrets:
+        - name: scolx-registry
+      containers:
+        - name: scolx-math
+          image: registry.cherkaoui.ch/scolx/scolx-math/scolx-math:latest
+          ports:
+            - containerPort: 8000
+              name: web
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /startupz
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 30

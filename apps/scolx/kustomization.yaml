@@ -14,3 +14,5 @@ resources:
   - cronjob-reminders.yaml
   - servicemonitor.yaml
   - helmrelease-minio.yaml
+  - svc-mathapi.yaml
+  - deploy-mathapi.yaml

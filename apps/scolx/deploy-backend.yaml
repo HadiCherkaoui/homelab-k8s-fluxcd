@@ -29,6 +29,8 @@ spec:
               value: "false"
             - name: APP_BASE_URL
               value: "scolx.com"
+            - name: MATH_API_BASE_URL
+              value: "http://scolx-math:8000"
           envFrom:
             - secretRef:
                 name: scolx-backend-env

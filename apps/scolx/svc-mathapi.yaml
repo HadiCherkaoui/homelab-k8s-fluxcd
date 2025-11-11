@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: scolx-math
+  namespace: scolx
+  labels:
+    app.kubernetes.io/name: scolx-math
+    app.kubernetes.io/instance: scolx-math
+spec:
+  selector:
+    app: scolx-math
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 8000
+      targetPort: 8000
+      protocol: TCP
