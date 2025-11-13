@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: scolx-reminders
+  name: scolx-rt-cleanup
   namespace: scolx
 spec:
   schedule: "0 0 * * *"
@@ -13,16 +13,16 @@ spec:
       template:
         metadata:
           labels:
-            app: scolx-reminders
+            app: scolx-rt-cleanup
         spec:
           restartPolicy: Never
           imagePullSecrets:
             - name: scolx-registry
           containers:
-            - name: reminders
+            - name: rt-cleanup
               image: registry.cherkaoui.ch/scolx/scolx/backend:latest
               env:
-                - name: REMINDERS_RUN_ONCE
+                - name: REFRESH_CLEANUP_RUN_ONCE
                   value: "true"
                 - name: OPENAI_MODEL
                   value: "x-ai/grok-4-fast"

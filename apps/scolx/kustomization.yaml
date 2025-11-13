@@ -12,6 +12,7 @@ resources:
   - cnpg-scolx-db.yaml
   - helmrelease-pgadmin.yaml
   - cronjob-reminders.yaml
+  - cronjob-rt-cleanup.yaml
   - servicemonitor.yaml
   - helmrelease-minio.yaml
   - svc-mathapi.yaml

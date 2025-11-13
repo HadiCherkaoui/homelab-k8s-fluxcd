@@ -25,8 +25,6 @@ spec:
               value: "true"
             - name: OPENAI_MODEL
               value: "x-ai/grok-4-fast"
-            - name: REMINDERS_INTERNAL_ENABLED
-              value: "false"
             - name: APP_BASE_URL
               value: "scolx.com"
             - name: MATH_API_BASE_URL
