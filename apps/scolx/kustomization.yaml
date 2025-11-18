@@ -13,6 +13,7 @@ resources:
   - helmrelease-pgadmin.yaml
   - cronjob-reminders.yaml
   - cronjob-rt-cleanup.yaml
+  - cronjob-stripe-cleanup.yaml
   - servicemonitor.yaml
   - helmrelease-minio.yaml
   - svc-mathapi.yaml

@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scolx-stripe-cleanup
+  namespace: scolx
+spec:
+  schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: scolx-stripe-cleanup
+        spec:
+          restartPolicy: Never
+          imagePullSecrets:
+            - name: scolx-registry
+          containers:
+            - name: stripe-cleanup
+              image: registry.cherkaoui.ch/scolx/scolx/backend:latest
+              env:
+                - name: STRIPE_EVENT_CLEANUP_RUN_ONCE
+                  value: "true"
+                - name: OPENAI_MODEL
+                  value: "x-ai/grok-4-fast"
+                - name: APP_BASE_URL
+                  value: "scolx.com"
+                - name: MATH_API_BASE_URL
+                  value: "http://scolx-math:8000"
+              envFrom:
+                - secretRef:
+                    name: scolx-backend-env
