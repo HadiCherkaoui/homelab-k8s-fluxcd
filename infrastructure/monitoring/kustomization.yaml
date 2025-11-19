@@ -5,4 +5,5 @@ resources:
   - namespace.yaml
   - helmrelease.yaml
   - grafana-ingressroute.yaml
-  - loki-stack.yaml
+  - loki.yaml
+  - alloy.yaml
