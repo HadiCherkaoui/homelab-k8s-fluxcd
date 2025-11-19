@@ -18,14 +18,14 @@ spec:
   values:
     prometheus:
       prometheusSpec:
-        retention: "10d"
+        retention: "30d"
         storageSpec:
           volumeClaimTemplate:
             spec:
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
-                  storage: "10Gi"
+                  storage: "20Gi"
     alertmanager:
       alertmanagerSpec:
         storage:
@@ -34,7 +34,7 @@ spec:
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
-                  storage: "2Gi"
+                  storage: "5Gi"
     grafana:
       enabled: true
       persistence:
@@ -52,6 +52,12 @@ spec:
             gnetId: 1860
             revision: 21
             datasource: Prometheus
+      additionalDataSources:
+        - name: Loki
+          type: loki
+          url: http://loki-stack.monitoring.svc.cluster.local:3100
+          access: proxy
+          isDefault: false
     nodeExporter:
       enabled: true
     kubeStateMetrics:
