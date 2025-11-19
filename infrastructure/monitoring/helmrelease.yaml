@@ -35,6 +35,7 @@ spec:
               resources:
                 requests:
                   storage: "5Gi"
+        configSecret: alertmanager-discord
     grafana:
       enabled: true
       persistence:
