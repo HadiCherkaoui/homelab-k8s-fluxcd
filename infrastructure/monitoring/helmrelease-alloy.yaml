@@ -17,17 +17,50 @@ spec:
     controller:
       type: daemonset
     config:
-      content: |
+      content: |-
+        // Discovery component to find Kubernetes pods
+        discovery.kubernetes "pods" {
+          role = "pod"
+        }
+
+        // Relabel component to add metadata labels
+        discovery.relabel "pods" {
+          targets = discovery.kubernetes.pods.targets
+
+          // Add namespace label
+          rule {
+            source_labels = ["__meta_kubernetes_namespace"]
+            target_label  = "namespace"
+          }
+
+          // Add pod name label
+          rule {
+            source_labels = ["__meta_kubernetes_pod_name"]
+            target_label  = "pod"
+          }
+
+          // Add container name label
+          rule {
+            source_labels = ["__meta_kubernetes_pod_container_name"]
+            target_label  = "container"
+          }
+
+          // Add node name label
+          rule {
+            source_labels = ["__meta_kubernetes_pod_node_name"]
+            target_label  = "node"
+          }
+        }
+
+        // Source component to tail logs from pods
+        loki.source.kubernetes "pods" {
+          targets    = discovery.relabel.pods.output
+          forward_to = [loki.write.default.receiver]
+        }
+
+        // Write component to send logs to Loki
         loki.write "default" {
           endpoint {
             url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
           }
-        }
-
-        loki.source.kubernetes "pods" {
-          # This is a simplified example; you may need to adjust selectors/paths.
-        }
-
-        loki.relabel "default" {
-          forward_to = [loki.write.default.receiver]
         }
