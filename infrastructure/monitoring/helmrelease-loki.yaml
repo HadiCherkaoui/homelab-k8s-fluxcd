@@ -41,6 +41,13 @@ spec:
               period: 24h
     minio:
       enabled: true
+    # Explicitly disable simple scalable components for SingleBinary mode
+    read:
+      replicas: 0
+    write:
+      replicas: 0
+    backend:
+      replicas: 0
     singleBinary:
       replicas: 1
     persistence:
