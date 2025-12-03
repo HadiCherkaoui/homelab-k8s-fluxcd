@@ -4,10 +4,9 @@ namespace: media
 resources:
   - namespace.yaml
   - plex-pvc.yaml
-  - helmrelease-plex.yaml
-  - ingressroute-plex.yaml
   - helmrelease-jellyfin.yaml
   - ingressroute-jellyfin.yaml
+  - helmrelease-jellyseerr.yaml
   - pvc-qbit.yaml
   - helmrelease-qbittorrent.yaml
   - helmrelease-radarr.yaml
