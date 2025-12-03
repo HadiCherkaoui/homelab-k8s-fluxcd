@@ -13,5 +13,4 @@ resources:
   - helmrelease-sonarr.yaml
   - helmrelease-prowlarr.yaml
   - helmrelease-flaresolverr.yaml
-  - helmrelease-notifiarr.yaml
   - servicemonitor-media.yaml
