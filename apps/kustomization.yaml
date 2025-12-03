@@ -11,3 +11,4 @@ resources:
   - scolx
   - searxng
   - immich
+  - authentik

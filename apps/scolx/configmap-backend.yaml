@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scolx-backend-config
+  namespace: scolx
+data:
+  OPENAI_MODEL: "x-ai/grok-4-fast"
+  APP_BASE_URL: "scolx.com"
+  MATH_API_BASE_URL: "http://scolx-math:8000"
+  APP_ENV: "prod"

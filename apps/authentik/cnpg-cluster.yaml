@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: authentik-postgres-cluster
+  namespace: authentik
+  labels:
+    app: authentik-postgres-cluster
+spec:
+  instances: 1
+  enableSuperuserAccess: false
+  imageName: ghcr.io/cloudnative-pg/postgresql:18
+  storage:
+    size: 20Gi

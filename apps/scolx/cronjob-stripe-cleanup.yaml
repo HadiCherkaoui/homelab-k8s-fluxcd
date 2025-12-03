@@ -24,14 +24,8 @@ spec:
               env:
                 - name: STRIPE_EVENT_CLEANUP_RUN_ONCE
                   value: "true"
-                - name: OPENAI_MODEL
-                  value: "x-ai/grok-4-fast"
-                - name: APP_BASE_URL
-                  value: "scolx.com"
-                - name: MATH_API_BASE_URL
-                  value: "http://scolx-math:8000"
-                - name: APP_ENV
-                  value: "prod"
               envFrom:
+                - configMapRef:
+                    name: scolx-backend-config
                 - secretRef:
                     name: scolx-backend-env

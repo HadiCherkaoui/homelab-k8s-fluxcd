@@ -18,3 +18,4 @@ resources:
   - helmrelease-minio.yaml
   - svc-mathapi.yaml
   - deploy-mathapi.yaml
+  - configmap-backend.yaml
