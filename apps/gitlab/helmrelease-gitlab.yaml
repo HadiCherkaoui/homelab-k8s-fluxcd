@@ -30,7 +30,7 @@ spec:
             - openid_connect
           # Enable this only after confirming SSO + linking works:
           # autoSignInWithProvider: openid_connect
-          externalProviders:
+          providers:
             - name: openid_connect
               label: Authentik
               args:
@@ -133,8 +133,8 @@ spec:
     - kind: Secret
       name: gitlab-authentik
       valuesKey: client_id
-      targetPath: global.appConfig.omniauth.externalProviders[0].args.client_options.identifier
+      targetPath: global.appConfig.omniauth.providers[0].args.client_options.identifier
     - kind: Secret
       name: gitlab-authentik
       valuesKey: client_secret
-      targetPath: global.appConfig.omniauth.externalProviders[0].args.client_options.secret
+      targetPath: global.appConfig.omniauth.providers[0].args.client_options.secret
