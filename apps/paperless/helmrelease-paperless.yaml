@@ -49,6 +49,7 @@ spec:
                 PAPERLESS_LOGOUT_REDIRECT_URL: "https://authentik.cherkaoui.ch/application/o/paperless/end-session/"
                 PAPERLESS_SOCIALACCOUNT_PROVIDERS:
                   secretKeyRef:
+                    expandObjectName: false
                     name: paperless-authentik
                     key: PAPERLESS_SOCIALACCOUNT_PROVIDERS
   valuesFrom:
