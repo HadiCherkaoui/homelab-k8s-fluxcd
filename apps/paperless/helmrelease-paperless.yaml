@@ -34,9 +34,6 @@ spec:
         podSpec:
           containers:
             main:
-              envFrom:
-                - secretRef:
-                    name: paperless-authentik
               env:
                 PAPERLESS_OCR_LANGUAGE: "deu"
                 PAPERLESS_OCR_LANGUAGES: "eng fra deu spa ita"
@@ -50,6 +47,10 @@ spec:
                 PAPERLESS_AUTO_LOGIN: "true"
                 PAPERLESS_AUTO_CREATE: "true"
                 PAPERLESS_LOGOUT_REDIRECT_URL: "https://authentik.cherkaoui.ch/application/o/paperless/end-session/"
+                PAPERLESS_SOCIALACCOUNT_PROVIDERS:
+                  secretKeyRef:
+                    name: paperless-authentik
+                    key: PAPERLESS_SOCIALACCOUNT_PROVIDERS
   valuesFrom:
     - kind: Secret
       name: paperless-admin
