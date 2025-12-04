@@ -21,6 +21,33 @@ spec:
         terraformState:
           enabled: true
           bucket: gitlab-terraform-state
+        omniauth:
+          enabled: true
+          allowSingleSignOn:
+            - openid_connect
+          blockAutoCreatedUsers: false
+          autoLinkUser:
+            - openid_connect
+          # Enable this only after confirming SSO + linking works:
+          # autoSignInWithProvider: openid_connect
+          externalProviders:
+            - name: openid_connect
+              label: Authentik
+              args:
+                name: openid_connect
+                scope:
+                  - openid
+                  - profile
+                  - email
+                response_type: code
+                issuer: "https://authentik.cherkaoui.ch/application/o/git-lab/"
+                discovery: true
+                client_auth_method: client_secret_post
+                uid_field: email
+                send_scope_to_token_endpoint: true
+                pkce: true
+                client_options:
+                  redirect_uri: "https://gitlab.cherkaoui.ch/users/auth/openid_connect/callback"
       edition: ce
       hosts:
         domain: cherkaoui.ch
@@ -103,3 +130,11 @@ spec:
       valuesKey: username
       targetPath: global.email.reply_to
       optional: true
+    - kind: Secret
+      name: gitlab-authentik
+      valuesKey: client_id
+      targetPath: global.appConfig.omniauth.externalProviders[0].args.client_options.identifier
+    - kind: Secret
+      name: gitlab-authentik
+      valuesKey: client_secret
+      targetPath: global.appConfig.omniauth.externalProviders[0].args.client_options.secret
