@@ -37,6 +37,9 @@ spec:
                   storage: "5Gi"
         configSecret: alertmanager-discord
     grafana:
+      grafana.ini:
+        server:
+          root_url: https://grafana.cherkaoui.ch
       enabled: true
       persistence:
         enabled: true

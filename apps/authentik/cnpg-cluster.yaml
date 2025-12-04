@@ -10,4 +10,4 @@ spec:
   enableSuperuserAccess: false
   imageName: ghcr.io/cloudnative-pg/postgresql:18
   storage:
-    size: 20Gi
+    size: 10Gi
