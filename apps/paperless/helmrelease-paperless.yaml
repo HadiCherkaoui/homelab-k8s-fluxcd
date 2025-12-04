@@ -42,6 +42,11 @@ spec:
                 PAPERLESS_ALLOWED_HOSTS: "paperless.cherkaoui.ch"
                 PAPERLESS_SECURE_PROXY_SSL_HEADER: "HTTP_X_FORWARDED_PROTO,https"
                 PAPERLESS_FILENAME_FORMAT: "{owner_username}/{created_year}/{correspondent}/{doc_pk}"
+                PAPERLESS_ENABLE_ALLAUTH: "true"
+                PAPERLESS_APPS: "allauth.socialaccount.providers.openid_connect"
+                PAPERLESS_AUTO_LOGIN: "true"
+                PAPERLESS_AUTO_CREATE: "true"
+                PAPERLESS_LOGOUT_REDIRECT_URL: "https://authentik.cherkaoui.ch/application/o/paperless/end-session/"
   valuesFrom:
     - kind: Secret
       name: paperless-admin
@@ -55,3 +60,7 @@ spec:
       name: paperless-admin
       valuesKey: PAPERLESS_ADMIN_MAIL
       targetPath: workload.main.podSpec.containers.main.env.PAPERLESS_ADMIN_MAIL
+    - kind: Secret
+      name: paperless-authentik
+      valuesKey: PAPERLESS_SOCIALACCOUNT_PROVIDERS
+      targetPath: workload.main.podSpec.containers.main.env.PAPERLESS_SOCIALACCOUNT_PROVIDERS
