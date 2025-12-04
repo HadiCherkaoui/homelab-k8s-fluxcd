@@ -46,6 +46,8 @@ spec:
                 PAPERLESS_APPS: "allauth.socialaccount.providers.openid_connect"
                 PAPERLESS_AUTO_LOGIN: "true"
                 PAPERLESS_AUTO_CREATE: "true"
+                PAPERLESS_DISABLE_REGULAR_LOGIN: "true"
+                PAPERLESS_REDIRECT_LOGIN_TO_SSO: "true"
                 PAPERLESS_LOGOUT_REDIRECT_URL: "https://authentik.cherkaoui.ch/application/o/paperless/end-session/"
                 PAPERLESS_SOCIALACCOUNT_PROVIDERS:
                   secretKeyRef:
