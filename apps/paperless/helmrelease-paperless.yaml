@@ -34,6 +34,9 @@ spec:
         podSpec:
           containers:
             main:
+              envFrom:
+                - secretRef:
+                    name: paperless-authentik
               env:
                 PAPERLESS_OCR_LANGUAGE: "deu"
                 PAPERLESS_OCR_LANGUAGES: "eng fra deu spa ita"
@@ -60,7 +63,3 @@ spec:
       name: paperless-admin
       valuesKey: PAPERLESS_ADMIN_MAIL
       targetPath: workload.main.podSpec.containers.main.env.PAPERLESS_ADMIN_MAIL
-    - kind: Secret
-      name: paperless-authentik
-      valuesKey: PAPERLESS_SOCIALACCOUNT_PROVIDERS
-      targetPath: workload.main.podSpec.containers.main.env.PAPERLESS_SOCIALACCOUNT_PROVIDERS
