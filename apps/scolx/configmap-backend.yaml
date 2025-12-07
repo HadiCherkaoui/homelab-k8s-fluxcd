@@ -8,3 +8,4 @@ data:
   APP_BASE_URL: "scolx.com"
   MATH_API_BASE_URL: "http://scolx-math:8000"
   APP_ENV: "prod"
+  EMBEDDING_MODEL: "openai/text-embedding-3-small"
