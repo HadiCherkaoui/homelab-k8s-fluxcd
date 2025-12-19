@@ -24,47 +24,30 @@ spec:
     serverName: matrix.cherkaoui.ch
     labels:
       app.kubernetes.io/part-of: matrix
-    ingress:
-      enabled: false
+
     synapse:
       enabled: true
-
       ingress:
-        enabled: false
         host: matrix.cherkaoui.ch
-      config:
-        server_name: matrix.cherkaoui.ch
-        public_baseurl: https://matrix.cherkaoui.ch
-        federation_domain_whitelist: []
-        enable_registration: true
-        enable_registration_without_verification: false
-        registrations_require_3pid:
-          - email
-        email_validation:
-          enabled: true
-        enable_password_auth: true
-        password_config:
-          enabled: true
-        max_upload_size: 100M
-        media_retention:
-          remote_media_lifetime: 90d
-        rc_message:
-          per_second: 10
-          burst_count: 50
-        enable_metrics: true
-        presence:
-          enabled: true
-        experimental_features:
-          msc3575_enabled: true
-          msc4186_enabled: true
+        tlsEnabled: false
+      media:
+        storage:
+          size: 100Gi
+        maxUploadSize: 100M
       additional:
-        1-enhanced-features:
+        1-base-config:
           config: |
-            turn_uris: []
-            turn_shared_secret: ""
-            turn_user_lifetime: 86400000
-            turn_allow_guests: true
-
+            public_baseurl: https://matrix.cherkaoui.ch
+            enable_registration: true
+            enable_registration_without_verification: false
+            registrations_require_3pid:
+              - email
+            presence:
+              enabled: true
+            enable_metrics: true
+            report_stats: false
+            admin_contact: "mailto:admin@cherkaoui.ch"
+            enable_search: true
             url_preview_enabled: true
             url_preview_ip_range_blacklist:
               - '127.0.0.0/8'
@@ -76,130 +59,87 @@ spec:
               - '::1/128'
               - 'fe80::/64'
               - 'fc00::/7'
-
-            enable_search: true
-
-            admin_contact: "mailto:admin@cherkaoui.ch"
-
-            report_stats: false
+            rc_message:
+              per_second: 10
+              burst_count: 50
+            experimental_features:
+              msc3575_enabled: true
+              msc4186_enabled: true
         2-email-config:
           configSecret: matrix-synapse-email
           configSecretKey: email.yaml
-      persistence:
-        enabled: true
-        size: 100Gi
+
     matrixAuthenticationService:
       enabled: true
-
       ingress:
-        enabled: false
         host: auth.cherkaoui.ch
-      config:
-        email:
-          from: "auth@cherkaoui.ch"
-          reply_to: "noreply@cherkaoui.ch"
+        tlsEnabled: false
+      additional:
+        1-mas-config:
+          config: |
+            branding:
+              service_name: "Cherkaoui Matrix"
+            passwords:
+              enabled: true
+              minimum_length: 12
+            account:
+              email_change_allowed: true
+              displayname_change_allowed: true
 
-        branding:
-          service_name: "Cherkaoui Matrix"
-        passwords:
-          enabled: true
-          min_length: 12
-        account:
-          email_change_allowed: true
-          display_name_change_allowed: true
     matrixRTC:
       enabled: true
-
       ingress:
-        enabled: false
         host: rtc.cherkaoui.ch
+        tlsEnabled: false
       sfu:
         useStunToDiscoverPublicIP: false
         manualIP: "178.82.120.243"
         additional:
-          rtc:
+          config: |
             port_range_start: 50000
             port_range_end: 60000
             use_external_ip: true
-          webrtc:
-            ice_servers:
-              - urls:
-                - stun:stun.l.google.com:19302
-                - stun:stun1.l.google.com:19302
-          logging:
-            level: info
-          rtc_config:
-            enable_simulcast: true
-            video_codec: vp9
-            audio_codec: opus
-            opus_max_bandwidth: fullband
-            opus_dtx: true
-            opus_fec: true
-          room:
-            max_participants: 50
-            empty_timeout: 300
-          network:
-            max_bitrate: 5000000
-            min_bitrate: 100000
-      service:
-        type: LoadBalancer
-        ports:
-          http:
-            port: 7880
-            targetPort: 7880
-          rtc-tcp:
-            port: 7881
-            targetPort: 7881
-            protocol: TCP
-          rtc-udp:
-            port: 7882
-            targetPort: 7882
-            protocol: UDP
+
     elementWeb:
       enabled: true
-
       ingress:
-        enabled: false
         host: element.cherkaoui.ch
-      config:
-        default_server_config:
-          m.homeserver:
-            base_url: https://matrix.cherkaoui.ch
-            server_name: matrix.cherkaoui.ch
-          m.identity_server:
-            base_url: https://vector.im
-        brand: "Cherkaoui Matrix"
-        features:
-          feature_video_rooms: true
-          feature_element_call_video_rooms: true
-          feature_group_calls: true
-        default_theme: "dark"
-        permalink_prefix: "https://element.cherkaoui.ch"
-        jitsi:
-          preferred_domain: meet.jit.si
-        show_labs_settings: true
+        tlsEnabled: false
       additional:
         extra-config.json: |
           {
-            "setting_defaults": {
-              "custom_themes": [],
-              "FTUE.userOnboardingButton": false
+            "brand": "Cherkaoui Matrix",
+            "default_theme": "dark",
+            "show_labs_settings": true,
+            "default_server_config": {
+              "m.homeserver": {
+                "base_url": "https://matrix.cherkaoui.ch",
+                "server_name": "matrix.cherkaoui.ch"
+              },
+              "m.identity_server": {
+                "base_url": "https://vector.im"
+              }
             },
             "features": {
               "feature_video_rooms": true,
               "feature_element_call_video_rooms": true,
               "feature_group_calls": true,
               "feature_native_sliding_sync": true
-            }
+            },
+            "setting_defaults": {
+              "FTUE.userOnboardingButton": false
+            },
+            "jitsi": {
+              "preferred_domain": "meet.jit.si"
+            },
+            "permalink_prefix": "https://element.cherkaoui.ch"
           }
+
     wellKnownDelegation:
       enabled: true
-
       ingress:
-        enabled: false
         host: cherkaoui.ch
-
-      # Additional well-known configuration
+        tlsEnabled: false
       additional:
         server: |
           {
@@ -225,14 +165,8 @@ spec:
               "rtc_backend": "https://rtc.cherkaoui.ch"
             }
           }
+
     postgres:
       enabled: true
-      persistence:
+      storage:
         size: 50Gi
-
-  valuesFrom:
-    - kind: ConfigMap
-      name: matrix-rtc-config
-      valuesKey: public-ip
-      targetPath: matrixRTC.sfu.manualIP
-      optional: true
