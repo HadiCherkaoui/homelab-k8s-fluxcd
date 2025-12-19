@@ -29,6 +29,7 @@ spec:
       enabled: true
       ingress:
         host: matrix.cherkaoui.ch
+        className: disabled
         tlsEnabled: false
       media:
         storage:
@@ -72,6 +73,7 @@ spec:
       enabled: true
       ingress:
         host: auth.cherkaoui.ch
+        className: disabled
         tlsEnabled: false
       additional:
         1-mas-config:
@@ -89,6 +91,7 @@ spec:
       enabled: true
       ingress:
         host: rtc.cherkaoui.ch
+        className: disabled
         tlsEnabled: false
       sfu:
         useStunToDiscoverPublicIP: false
@@ -98,12 +101,14 @@ spec:
       enabled: true
       ingress:
         host: admin.cherkaoui.ch
+        className: disabled
         tlsEnabled: false
 
     elementWeb:
       enabled: true
       ingress:
         host: element.cherkaoui.ch
+        className: disabled
         tlsEnabled: false
       additional:
         extra-config.json: |
@@ -138,6 +143,7 @@ spec:
     wellKnownDelegation:
       enabled: true
       ingress:
+        className: disabled
         tlsEnabled: false
       additional:
         server: |
