@@ -14,7 +14,7 @@ spec:
     - match: Host(`cherkaoui.ch`) && PathPrefix(`/.well-known/matrix`)
       kind: Rule
       services:
-        - name: matrix-well-known-delegation
-          port: 80
+        - name: matrix-well-known
+          port: 8010
   tls:
     certResolver: letsencrypt
