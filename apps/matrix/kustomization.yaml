@@ -8,5 +8,6 @@ resources:
   - ingressroute-element.yaml
   - ingressroute-auth.yaml
   - ingressroute-rtc.yaml
+  - ingressroute-admin.yaml
   - ingressroute-wellknown.yaml
   - service-rtc-loadbalancer.yaml

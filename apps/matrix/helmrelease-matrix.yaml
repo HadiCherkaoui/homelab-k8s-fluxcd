@@ -101,6 +101,12 @@ spec:
               port_range_end: 60000
               use_external_ip: true
 
+    elementAdmin:
+      enabled: true
+      ingress:
+        host: admin.cherkaoui.ch
+        tlsEnabled: false
+
     elementWeb:
       enabled: true
       ingress:
