@@ -10,4 +10,3 @@ resources:
   - ingressroute-rtc.yaml
   - ingressroute-admin.yaml
   - ingressroute-wellknown.yaml
-  - service-rtc-loadbalancer.yaml
