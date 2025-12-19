@@ -12,3 +12,4 @@ resources:
   - searxng
   - immich
   - authentik
+  - matrix
