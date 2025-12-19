@@ -77,23 +77,14 @@ spec:
               - 'fe80::/64'
               - 'fc00::/7'
 
-            # Email configuration
-            # SMTP credentials will be injected via valuesFrom
-            email:
-              smtp_host: "proton-bridge-protonmail-bridge.gitlab.svc.cluster.local"
-              smtp_port: 25
-              # smtp_user and smtp_pass injected via valuesFrom below
-              require_transport_security: false  # Local Proton Bridge
-              notif_from: "Matrix <noreply@cherkaoui.ch>"
-              app_name: "Cherkaoui Matrix"
-              enable_notifs: true
-              client_base_url: "https://element.cherkaoui.ch"
-
             enable_search: true
 
             admin_contact: "mailto:admin@cherkaoui.ch"
 
             report_stats: false
+        2-email-config:
+          configSecret: matrix-synapse-email
+          configSecretKey: email.yaml
       persistence:
         enabled: true
         size: 100Gi
@@ -245,13 +236,3 @@ spec:
       valuesKey: public-ip
       targetPath: matrixRTC.sfu.manualIP
       optional: true
-    - kind: Secret
-      name: matrix-smtp
-      valuesKey: username
-      targetPath: synapse.additional.1-enhanced-features.config.email.smtp_user
-      optional: false
-    - kind: Secret
-      name: matrix-smtp
-      valuesKey: password
-      targetPath: synapse.additional.1-enhanced-features.config.email.smtp_pass
-      optional: false
