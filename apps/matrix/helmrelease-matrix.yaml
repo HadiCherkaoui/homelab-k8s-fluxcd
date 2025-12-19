@@ -95,10 +95,11 @@ spec:
         useStunToDiscoverPublicIP: false
         manualIP: "178.82.120.243"
         additional:
-          config: |
-            port_range_start: 50000
-            port_range_end: 60000
-            use_external_ip: true
+          1-rtc-config:
+            config: |
+              port_range_start: 50000
+              port_range_end: 60000
+              use_external_ip: true
 
     elementWeb:
       enabled: true
@@ -138,7 +139,6 @@ spec:
     wellKnownDelegation:
       enabled: true
       ingress:
-        host: cherkaoui.ch
         tlsEnabled: false
       additional:
         server: |
