@@ -38,14 +38,13 @@ spec:
         1-base-config:
           config: |
             public_baseurl: https://matrix.cherkaoui.ch
-            enable_registration: true
-            enable_registration_without_verification: false
-            registrations_require_3pid:
-              - email
             presence:
               enabled: true
             enable_metrics: true
             report_stats: false
+            suppress_key_server_warning: true
+            trusted_key_servers:
+              - server_name: "matrix.org"
             admin_contact: "mailto:admin@cherkaoui.ch"
             enable_search: true
             url_preview_enabled: true
