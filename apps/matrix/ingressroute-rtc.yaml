@@ -11,7 +11,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`rtc.cherkaoui.ch`)
+    - match: Host(`rtc.cherkaoui.ch`) && (PathPrefix(`/sfu/get`) || PathPrefix(`/healthz`))
       kind: Rule
       middlewares:
         - name: security-headers
@@ -19,5 +19,13 @@ spec:
       services:
         - name: matrix-matrix-rtc-authorisation-service
           port: 8080
+    - match: Host(`rtc.cherkaoui.ch`)
+      kind: Rule
+      middlewares:
+        - name: security-headers
+          namespace: traefik
+      services:
+        - name: matrix-matrix-rtc-sfu
+          port: 7880
   tls:
     certResolver: letsencrypt
