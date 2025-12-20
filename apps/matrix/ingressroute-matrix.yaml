@@ -11,6 +11,14 @@ spec:
   entryPoints:
     - websecure
   routes:
+    - match: Host(`matrix.cherkaoui.ch`) && (PathPrefix(`/_matrix/client/`) && (PathRegexp(`^/_matrix/client/[^/]+/login`) || PathRegexp(`^/_matrix/client/[^/]+/logout`) || PathRegexp(`^/_matrix/client/[^/]+/refresh`)))
+      kind: Rule
+      middlewares:
+        - name: security-headers
+          namespace: traefik
+      services:
+        - name: matrix-matrix-authentication-service
+          port: 8080
     - match: Host(`matrix.cherkaoui.ch`)
       kind: Rule
       middlewares:
