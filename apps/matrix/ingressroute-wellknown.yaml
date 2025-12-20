@@ -11,7 +11,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`cherkaoui.ch`) && PathPrefix(`/.well-known/matrix`)
+    - match: Host(`matrix.cherkaoui.ch`) && PathPrefix(`/.well-known/matrix`)
       kind: Rule
       services:
         - name: matrix-well-known
