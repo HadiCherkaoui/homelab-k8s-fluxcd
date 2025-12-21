@@ -34,7 +34,6 @@ spec:
       media:
         storage:
           size: 100Gi
-        maxUploadSize: 100M
       additional:
         1-base-config:
           config: |
