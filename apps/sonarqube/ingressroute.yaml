@@ -1,0 +1,23 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: sonarqube
+  namespace: sonarqube
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`sonarqube.cherkaoui.ch`) && PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: security-headers
+          namespace: traefik
+      services:
+        - name: sonarqube-sonarqube
+          port: 9000
+  tls:
+    certResolver: letsencrypt
