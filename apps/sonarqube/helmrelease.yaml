@@ -20,6 +20,8 @@ spec:
     ingress:
       enabled: false
     monitoringPasscode: "REDACTED-ROTATED"
+    sonarProperties:
+      sonar.core.serverBaseURL: "https://sonarqube.cherkaoui.ch"
     postgresql:
       enabled: true
       persistence:
