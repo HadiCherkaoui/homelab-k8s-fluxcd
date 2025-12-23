@@ -20,6 +20,8 @@ spec:
     ingress:
       enabled: false
     monitoringPasscode: "SonarQubeMonitoringPass123"
+    sonarProperties:
+      sonar.core.serverBaseURL: "https://sonarqube.cherkaoui.ch"
     postgresql:
       enabled: true
       persistence:
