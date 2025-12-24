@@ -8,14 +8,13 @@ spec:
   chart:
     spec:
       chart: authentik
-      version: 2025.10.2
+      version: 2025.10.3
       sourceRef:
         kind: HelmRepository
         name: authentik
         namespace: flux-system
   install:
     createNamespace: false
-
   valuesFrom:
     - kind: Secret
       name: authentik-core
@@ -56,7 +55,6 @@ spec:
       valuesKey: dbname
       targetPath: authentik.postgresql.name
       optional: false
-
   values:
     authentik:
       error_reporting:
@@ -68,7 +66,6 @@ spec:
         use_ssl: false
         timeout: 30
         from: "noreply@cherkaoui.ch"
-
     server:
       ingress:
         enabled: false

@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: matrix-stack
-      version: 25.12.1
+      version: 25.12.2
       sourceRef:
         kind: HelmRepository
         name: ess-helm
@@ -24,7 +24,6 @@ spec:
     serverName: matrix.cherkaoui.ch
     labels:
       app.kubernetes.io/part-of: matrix
-
     synapse:
       enabled: true
       ingress:
@@ -67,7 +66,6 @@ spec:
         2-email-config:
           configSecret: matrix-synapse-email
           configSecretKey: email.yaml
-
     matrixAuthenticationService:
       enabled: true
       ingress:
@@ -85,7 +83,6 @@ spec:
             account:
               email_change_allowed: true
               displayname_change_allowed: true
-
     matrixRTC:
       enabled: true
       ingress:
@@ -95,14 +92,12 @@ spec:
       sfu:
         useStunToDiscoverPublicIP: false
         manualIP: "178.82.120.243"
-
     elementAdmin:
       enabled: true
       ingress:
         host: admin.cherkaoui.ch
         className: disabled
         tlsEnabled: false
-
     elementWeb:
       enabled: true
       ingress:
@@ -138,7 +133,6 @@ spec:
             },
             "permalink_prefix": "https://element.cherkaoui.ch"
           }
-
     wellKnownDelegation:
       enabled: true
       ingress:
@@ -169,7 +163,6 @@ spec:
               "rtc_backend": "https://rtc.cherkaoui.ch"
             }
           }
-
     postgres:
       enabled: true
       storage:
