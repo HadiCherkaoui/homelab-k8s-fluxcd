@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: qbittorrent
-      version: 24.2.5
+      version: '[helm-bump] crane ls tccr.io/truecharts/qbittorrent'
       sourceRef:
         kind: HelmRepository
         name: truecharts

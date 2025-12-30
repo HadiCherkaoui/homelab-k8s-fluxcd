@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: paperless-ngx
-      version: 11.35.7
+      version: '[helm-bump] crane ls tccr.io/truecharts/paperless-ngx'
       sourceRef:
         kind: HelmRepository
         name: truecharts

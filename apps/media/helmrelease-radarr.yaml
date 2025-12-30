@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: radarr
-      version: 26.3.4
+      version: '[helm-bump] crane ls tccr.io/truecharts/radarr'
       sourceRef:
         kind: HelmRepository
         name: truecharts
