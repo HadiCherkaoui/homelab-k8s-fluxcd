@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: pgadmin
-      version: 19.19.2
+      version: '[helm-bump] crane ls tccr.io/truecharts/pgadmin'
       sourceRef:
         kind: HelmRepository
         name: truecharts
