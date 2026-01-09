@@ -163,7 +163,7 @@ done
 
 # Guardrail: never allow committing invalid versions
 invalid_versions="$(
-  yq -r 'select(.kind=="HelmRelease") | (.metadata.namespace // "default") + "/" + (.metadata.name // "") + ":" + (.spec.chart.spec.chart // "") + "=" + (.spec.chart.spec.version // "")' "${HR_FILES[@]}" 2>/dev/null \
+  yq -r --no-doc 'select(.kind=="HelmRelease" and ((.spec.chart.spec.version // "") != "")) | (.metadata.namespace // "default") + "/" + (.metadata.name // "") + ":" + (.spec.chart.spec.chart // "") + "=" + (.spec.chart.spec.version // "")' "${HR_FILES[@]}" 2>/dev/null \
     | grep -Ev '=[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z\.-]+)?$' || true
 )"
 if [[ -n "$invalid_versions" ]]; then
