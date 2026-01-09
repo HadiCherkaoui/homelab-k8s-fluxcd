@@ -34,7 +34,7 @@ helm_chart_bump:
   script:
     - bash scripts/update_helm_charts.sh
     - |
-      if yq -r 'select(.kind=="HelmRelease") | (.spec.chart.spec.version // "")' $(git ls-files '*.yml' '*.yaml') \
+      if yq -r --no-doc 'select(.kind=="HelmRelease" and ((.spec.chart.spec.version // "") != "")) | (.spec.chart.spec.version // "")' $(git ls-files '*.yml' '*.yaml') \
         | grep -vE '^[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z\.-]+)?$' -m 1; then
         echo "ERROR: Non-semver HelmRelease chart version detected" >&2
         exit 1
