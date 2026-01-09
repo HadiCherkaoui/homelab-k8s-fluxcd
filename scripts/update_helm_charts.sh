@@ -24,7 +24,13 @@ if echo "$YQ_VER_STR" | grep -qE '^yq [0-3]\.'; then
   exit 1
 fi
 
-log(){ echo "[helm-bump] $*"; }
+log(){ echo "[helm-bump] $*" >&2; }
+
+is_semver(){
+  # Accepts common Helm chart semver: MAJOR.MINOR.PATCH with optional pre-release/build metadata
+  # Examples: 1.2.3, 1.2.3-rc.1, 1.2.3+meta
+  [[ "${1:-}" =~ ^[0-9]+\.[0-9]+\.[0-9]+([\-+][0-9A-Za-z\.-]+)?$ ]]
+}
 
 # Load HelmRepository map: name -> (type,url)
 # Requires mikefarah/yq v4
@@ -125,8 +131,22 @@ for f in "${HR_FILES[@]}"; do
     fi
     [[ -z "$available" ]] && continue
 
+    # Filter out any non-version lines (e.g., log output, HTML, etc.)
+    available="$(printf '%s\n' "$available" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+([\-+][0-9A-Za-z\.-]+)?$' || true)"
+    [[ -z "$available" ]] && continue
+
     newver="$(printf '%s\n' "$available" | pick_latest || true)"
     [[ -z "$newver" ]] && continue
+
+    if ! is_semver "$newver"; then
+      log "Skipping non-semver candidate version '$newver' for $chart ($repo) in $f"
+      continue
+    fi
+
+    if ! is_semver "$ver"; then
+      log "Skipping update because current version '$ver' is not semver for $chart ($repo) in $f"
+      continue
+    fi
 
     if version_gt "$ver" "$newver"; then
       log "Update available for $chart ($repo): $ver -> $newver in $f"
@@ -140,6 +160,17 @@ for f in "${HR_FILES[@]}"; do
   # In practice, most files contain a single HelmRelease document. For multi-doc files, consider enhancing index detection.
 
 done
+
+# Guardrail: never allow committing invalid versions
+invalid_versions="$(
+  yq -r 'select(.kind=="HelmRelease") | (.metadata.namespace // "default") + "/" + (.metadata.name // "") + ":" + (.spec.chart.spec.chart // "") + "=" + (.spec.chart.spec.version // "")' "${HR_FILES[@]}" 2>/dev/null \
+    | grep -Ev '=[0-9]+\.[0-9]+\.[0-9]+([\-+][0-9A-Za-z\.-]+)?$' || true
+)"
+if [[ -n "$invalid_versions" ]]; then
+  log "ERROR: Detected HelmRelease chart versions that are not semver. Refusing to commit."
+  printf '%s\n' "$invalid_versions" >&2
+  exit 1
+fi
 
 if [[ -z "${UPDATES+x}" || ${#UPDATES[@]} -eq 0 ]]; then
   log "No chart updates available"
