@@ -29,7 +29,7 @@ log(){ echo "[helm-bump] $*" >&2; }
 is_semver(){
   # Accepts common Helm chart semver: MAJOR.MINOR.PATCH with optional pre-release/build metadata
   # Examples: 1.2.3, 1.2.3-rc.1, 1.2.3+meta
-  [[ "${1:-}" =~ ^[0-9]+\.[0-9]+\.[0-9]+([\-+][0-9A-Za-z\.-]+)?$ ]]
+  [[ "${1:-}" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z\.-]+)?$ ]]
 }
 
 # Load HelmRepository map: name -> (type,url)
@@ -132,7 +132,7 @@ for f in "${HR_FILES[@]}"; do
     [[ -z "$available" ]] && continue
 
     # Filter out any non-version lines (e.g., log output, HTML, etc.)
-    available="$(printf '%s\n' "$available" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+([\-+][0-9A-Za-z\.-]+)?$' || true)"
+    available="$(printf '%s\n' "$available" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z\.-]+)?$' || true)"
     [[ -z "$available" ]] && continue
 
     newver="$(printf '%s\n' "$available" | pick_latest || true)"
@@ -164,7 +164,7 @@ done
 # Guardrail: never allow committing invalid versions
 invalid_versions="$(
   yq -r 'select(.kind=="HelmRelease") | (.metadata.namespace // "default") + "/" + (.metadata.name // "") + ":" + (.spec.chart.spec.chart // "") + "=" + (.spec.chart.spec.version // "")' "${HR_FILES[@]}" 2>/dev/null \
-    | grep -Ev '=[0-9]+\.[0-9]+\.[0-9]+([\-+][0-9A-Za-z\.-]+)?$' || true
+    | grep -Ev '=[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z\.-]+)?$' || true
 )"
 if [[ -n "$invalid_versions" ]]; then
   log "ERROR: Detected HelmRelease chart versions that are not semver. Refusing to commit."
