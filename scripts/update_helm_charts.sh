@@ -114,7 +114,7 @@ version_gt(){
 for f in "${HR_FILES[@]}"; do
   # Extract per-doc chart info: chart|version|repoName|docIndex
   while IFS='|' read -r chart ver repo dindex; do
-    [[ -z "${chart:-}" || -z "${repo:-}" || -z "${ver:-}" ]] && continue
+    [[ -z "${chart:-}" || -z "${repo:-}" ]] && continue
     if [[ -z "${REPO_URL[$repo]:-}" ]]; then
       log "Repo $repo not found for $f"
       continue
@@ -143,6 +143,14 @@ for f in "${HR_FILES[@]}"; do
       continue
     fi
 
+    if [[ -z "${ver:-}" ]]; then
+      log "Pinning version for $chart ($repo): -> $newver in $f"
+      CHART_NAME="$chart" REPO_NAME="$repo" NEWVER="$newver" \
+        yq -i 'select(.kind=="HelmRelease" and .spec.chart.spec.chart == env(CHART_NAME) and .spec.chart.spec.sourceRef.name == env(REPO_NAME)).spec.chart.spec.version = strenv(NEWVER)' "$f"
+      UPDATES+=("$chart|$repo|<unpinned>|$newver|$f")
+      continue
+    fi
+
     if ! is_semver "$ver"; then
       log "Skipping update because current version '$ver' is not semver for $chart ($repo) in $f"
       continue
@@ -161,9 +169,9 @@ for f in "${HR_FILES[@]}"; do
 
 done
 
-# Guardrail: never allow committing invalid versions
+# Guardrail: never allow committing invalid versions (including unpinned)
 invalid_versions="$(
-  yq -r --no-doc 'select(.kind=="HelmRelease" and ((.spec.chart.spec.version // "") != "")) | (.metadata.namespace // "default") + "/" + (.metadata.name // "") + ":" + (.spec.chart.spec.chart // "") + "=" + (.spec.chart.spec.version // "")' "${HR_FILES[@]}" 2>/dev/null \
+  yq -r --no-doc 'select(.kind=="HelmRelease") | (.metadata.namespace // "default") + "/" + (.metadata.name // "") + ":" + (.spec.chart.spec.chart // "") + "=" + (.spec.chart.spec.version // "")' "${HR_FILES[@]}" 2>/dev/null \
     | grep -Ev '=[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z\.-]+)?$' || true
 )"
 if [[ -n "$invalid_versions" ]]; then
