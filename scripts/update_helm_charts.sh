@@ -29,7 +29,13 @@ log(){ echo "[helm-bump] $*" >&2; }
 is_semver(){
   # Accepts common Helm chart semver: MAJOR.MINOR.PATCH with optional pre-release/build metadata
   # Examples: 1.2.3, 1.2.3-rc.1, 1.2.3+meta
-  [[ "${1:-}" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z\.-]+)?$ ]]
+  [[ "${1:-}" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z\.-]+)?$ ]]
+}
+
+normalize_semver(){
+  # Remove optional leading 'v' from tags like v1.2.3
+  local v="${1:-}"
+  printf '%s' "${v#v}"
 }
 
 # Load HelmRepository map: name -> (type,url)
@@ -131,8 +137,10 @@ for f in "${HR_FILES[@]}"; do
     fi
     [[ -z "$available" ]] && continue
 
-    # Filter out any non-version lines (e.g., log output, HTML, etc.)
-    available="$(printf '%s\n' "$available" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z\.-]+)?$' || true)"
+    # Filter out any non-version lines (e.g., log output, HTML, etc.) and normalize optional leading 'v'
+    available="$(printf '%s\n' "$available" \
+      | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z\.-]+)?$' \
+      | sed 's/^v//' || true)"
     [[ -z "$available" ]] && continue
 
     newver="$(printf '%s\n' "$available" | pick_latest || true)"
@@ -142,6 +150,8 @@ for f in "${HR_FILES[@]}"; do
       log "Skipping non-semver candidate version '$newver' for $chart ($repo) in $f"
       continue
     fi
+
+    newver="$(normalize_semver "$newver")"
 
     if [[ -z "${ver:-}" ]]; then
       log "Pinning version for $chart ($repo): -> $newver in $f"
@@ -171,7 +181,7 @@ done
 
 # Guardrail: never allow committing invalid versions (including unpinned)
 invalid_versions="$(
-  yq -r --no-doc 'select(.kind=="HelmRelease") | (.metadata.namespace // "default") + "/" + (.metadata.name // "") + ":" + (.spec.chart.spec.chart // "") + "=" + (.spec.chart.spec.version // "")' "${HR_FILES[@]}" 2>/dev/null \
+  yq -r --no-doc 'select(type=="!!map" and .kind=="HelmRelease") | (.metadata.namespace // "default") + "/" + (.metadata.name // "") + ":" + (.spec.chart.spec.chart // "") + "=" + ((.spec.chart.spec.version // "") | tostring | sub("^v";""))' "${HR_FILES[@]}" 2>/dev/null \
     | grep -Ev '=[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z\.-]+)?$' || true
 )"
 if [[ -n "$invalid_versions" ]]; then
