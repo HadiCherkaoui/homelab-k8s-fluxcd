@@ -181,7 +181,13 @@ done
 
 # Guardrail: never allow committing invalid versions (including unpinned)
 invalid_versions="$(
-  yq -r --no-doc 'select(type=="!!map" and .kind=="HelmRelease") | (.metadata.namespace // "default") + "/" + (.metadata.name // "") + ":" + (.spec.chart.spec.chart // "") + "=" + ((.spec.chart.spec.version // "") | tostring | sub("^v";""))' "${HR_FILES[@]}" 2>/dev/null \
+  for hf in "${HR_FILES[@]}"; do
+    yq -r 'select(.kind=="HelmRelease") | (.metadata.namespace // "default") + "/" + (.metadata.name // "") + ":" + (.spec.chart.spec.chart // "") + "=" + ((.spec.chart.spec.version // "") | tostring | sub("^v";""))' "$hf" 2>/dev/null
+  done \
+    | grep -v '^---$' \
+    | grep -v '^$' \
+    | grep -v '^null' \
+    | grep -v '^default/:=$' \
     | grep -Ev '=[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z\.-]+)?$' || true
 )"
 if [[ -n "$invalid_versions" ]]; then
