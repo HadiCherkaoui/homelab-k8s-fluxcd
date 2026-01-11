@@ -37,6 +37,9 @@ spec:
       gluetun:
         enabled: true
         type: gluetun
+        image:
+          repository: ghcr.io/qdm12/gluetun
+          tag: v3.40.0
         killSwitch: true
         excludedNetworks_IPv4: ["192.168.1.0/24"]
         excludedNetworks_IPv6: []
