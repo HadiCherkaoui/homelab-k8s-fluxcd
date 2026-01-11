@@ -37,9 +37,6 @@ spec:
       gluetun:
         enabled: true
         type: gluetun
-        image:
-          repository: ghcr.io/qdm12/gluetun
-          tag: v3.40.0
         killSwitch: true
         excludedNetworks_IPv4: ["192.168.1.0/24"]
         excludedNetworks_IPv6: []
@@ -47,6 +44,9 @@ spec:
           capabilities:
             add: ["NET_ADMIN", "SYS_MODULE"]
         container:
+          image:
+            repository: ghcr.io/qdm12/gluetun
+            tag: v3.40.0
           env:
             FIREWALL: "on"
             DNS_ADDRESS: "1.1.1.1"
@@ -65,7 +65,3 @@ spec:
       name: qbittorrent-openvpn
       valuesKey: OPENVPN_PASSWORD
       targetPath: addons.gluetun.container.env.OPENVPN_PASSWORD
-    - kind: Secret
-      name: qbittorrent-openvpn
-      valuesKey: openvpn.conf
-      targetPath: addons.gluetun.container.env.OPENVPN_CONFIG
