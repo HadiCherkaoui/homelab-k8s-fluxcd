@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caddy-laura
+  namespace: websites
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: caddy-laura
+  template:
+    metadata:
+      labels:
+        app: caddy-laura
+    spec:
+      containers:
+        - name: caddy
+          image: caddy:2-alpine
+          ports:
+            - containerPort: 80
+          command: ["caddy", "file-server", "--root", "/srv", "--listen", ":80"]
+          volumeMounts:
+            - name: website
+              mountPath: /srv
+              subPath: laura
+      volumes:
+        - name: website
+          persistentVolumeClaim:
+            claimName: websites
