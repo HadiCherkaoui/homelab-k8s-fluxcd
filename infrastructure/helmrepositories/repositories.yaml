@@ -39,11 +39,11 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: bitnami
+  name: nginx
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://charts.bitnami.com/bitnami
+  url: https://helm.nginx.com/stable
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository

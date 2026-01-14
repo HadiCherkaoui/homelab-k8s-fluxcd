@@ -7,7 +7,8 @@ resources:
   - deploy-cherkaoui-homepage.yaml
   - svc-cherkaoui-homepage.yaml
   - ingress-cherkaoui-homepage.yaml
-  - helmrelease-nginx-laura.yaml
+  - deploy-caddy-laura.yaml
+  - svc-laura.yaml
   - ingress-laura.yaml
   - deploy-hadi.yaml
   - svc-hadi.yaml
