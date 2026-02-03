@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: truecharts
         namespace: flux-system
-      version: 10.13.26
+      version: 10.13.36
   install:
     createNamespace: false
   values:
