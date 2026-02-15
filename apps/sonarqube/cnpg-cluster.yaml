@@ -8,6 +8,6 @@ metadata:
 spec:
   instances: 1
   enableSuperuserAccess: false
-  imageName: ghcr.io/cloudnative-pg/postgresql:18
+  imageName: ghcr.io/cloudnative-pg/postgresql:17
   storage:
     size: 20Gi
