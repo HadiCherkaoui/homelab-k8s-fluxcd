@@ -18,28 +18,8 @@ spec:
   valuesFrom:
     - kind: Secret
       name: sonarqube-postgres-cluster-app
-      valuesKey: host
-      targetPath: jdbcOverwrite.jdbcHost
-      optional: false
-    - kind: Secret
-      name: sonarqube-postgres-cluster-app
-      valuesKey: port
-      targetPath: jdbcOverwrite.jdbcPort
-      optional: false
-    - kind: Secret
-      name: sonarqube-postgres-cluster-app
-      valuesKey: dbname
-      targetPath: jdbcOverwrite.jdbcDatabase
-      optional: false
-    - kind: Secret
-      name: sonarqube-postgres-cluster-app
-      valuesKey: username
-      targetPath: jdbcOverwrite.jdbcUsername
-      optional: false
-    - kind: Secret
-      name: sonarqube-postgres-cluster-app
-      valuesKey: password
-      targetPath: jdbcOverwrite.jdbcPassword
+      valuesKey: jdbc-uri
+      targetPath: jdbcOverwrite.jdbcUrl
       optional: false
   values:
     community:
