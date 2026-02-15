@@ -21,6 +21,11 @@ spec:
       valuesKey: jdbc-uri
       targetPath: jdbcOverwrite.jdbcUrl
       optional: false
+    - kind: Secret
+      name: sonarqube-postgres-cluster-app
+      valuesKey: username
+      targetPath: jdbcOverwrite.jdbcUsername
+      optional: false
   values:
     community:
       enabled: true
