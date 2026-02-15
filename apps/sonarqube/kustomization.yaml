@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: sonarqube
 resources:
   - namespace.yaml
+  - cnpg-cluster.yaml
   - helmrelease.yaml
   - ingressroute.yaml

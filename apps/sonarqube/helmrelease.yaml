@@ -15,6 +15,32 @@ spec:
         namespace: flux-system
   install:
     createNamespace: false
+  valuesFrom:
+    - kind: Secret
+      name: sonarqube-postgres-cluster-app
+      valuesKey: host
+      targetPath: jdbcOverwrite.jdbcHost
+      optional: false
+    - kind: Secret
+      name: sonarqube-postgres-cluster-app
+      valuesKey: port
+      targetPath: jdbcOverwrite.jdbcPort
+      optional: false
+    - kind: Secret
+      name: sonarqube-postgres-cluster-app
+      valuesKey: dbname
+      targetPath: jdbcOverwrite.jdbcDatabase
+      optional: false
+    - kind: Secret
+      name: sonarqube-postgres-cluster-app
+      valuesKey: username
+      targetPath: jdbcOverwrite.jdbcUsername
+      optional: false
+    - kind: Secret
+      name: sonarqube-postgres-cluster-app
+      valuesKey: password
+      targetPath: jdbcOverwrite.jdbcPassword
+      optional: false
   values:
     community:
       enabled: true
@@ -24,7 +50,6 @@ spec:
     sonarProperties:
       sonar.core.serverBaseURL: "https://sonarqube.cherkaoui.ch"
     postgresql:
+      enabled: false
+    jdbcOverwrite:
       enabled: true
-      persistence:
-        enabled: true
-        size: 10Gi
