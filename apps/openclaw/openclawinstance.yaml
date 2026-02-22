@@ -37,8 +37,5 @@ spec:
         - ReadWriteOnce
   chromium:
     enabled: true
-    image:
-      repository: ghcr.io/browserless/chromium
-      tag: "v2.0.0"
   selfConfigure:
     enabled: false
