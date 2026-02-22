@@ -13,7 +13,6 @@ spec:
   runtimeDeps:
     pnpm: true
     python: true
-  skills: ["npm:@openclaw/clawhub"]
   initContainers:
     - name: install-kimi-claw
       image: nikolaik/python-nodejs:python3.12-nodejs22
