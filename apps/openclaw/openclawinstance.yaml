@@ -74,3 +74,4 @@ spec:
     enabled: true
   selfConfigure:
     enabled: true
+    allowedActions: [skills, config, envVars, workspaceFiles]
