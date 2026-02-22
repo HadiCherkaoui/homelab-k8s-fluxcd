@@ -30,8 +30,6 @@ spec:
   envFrom:
     - secretRef:
         name: openclaw-secrets
-  skills:
-    - "@openclaw/core"
   storage:
     persistence:
       enabled: true
