@@ -73,4 +73,4 @@ spec:
   chromium:
     enabled: true
   selfConfigure:
-    enabled: false
+    enabled: true
