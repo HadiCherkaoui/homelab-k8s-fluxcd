@@ -15,18 +15,25 @@ spec:
     python: true
   initContainers:
     - name: install-kimi-claw
-      image: node:22-alpine
+      image: node:22-slim
+      securityContext:
+        runAsUser: 0
       command:
         - sh
         - -c
         - |
-          apk add --no-cache curl tar
+          set -e
+          apt-get update && apt-get install -y --no-install-recommends curl tar ca-certificates
+          rm -rf /var/lib/apt/lists/*
           mkdir -p /extensions/kimi-claw
-          curl -fsSL https://cdn.kimi.com/kimi-claw/kimi-claw-latest.tgz | \
-            tar -xz -C /extensions/kimi-claw --strip-components=1
+          curl -fsSL https://cdn.kimi.com/kimi-claw/kimi-claw-latest.tgz -o /tmp/kimi-claw.tgz
+          tar -xzf /tmp/kimi-claw.tgz -C /extensions/kimi-claw --strip-components=1
+          rm /tmp/kimi-claw.tgz
           cd /extensions/kimi-claw
           npm install --omit=dev
-          echo "Kimi Claw plugin installed"
+          chown -R 1000:1000 /extensions/kimi-claw
+          chmod -R 755 /extensions/kimi-claw
+          echo "Kimi Claw plugin installed successfully"
       volumeMounts:
         - name: extensions
           mountPath: /extensions
