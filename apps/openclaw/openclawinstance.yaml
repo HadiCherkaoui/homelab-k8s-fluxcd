@@ -51,6 +51,7 @@ spec:
               bridge:
                 token: "${KIMI_CLAW_TOKEN}"
                 promptTimeoutMs: 1800000
+                kimiFileDownloadDir: "/tmp/kimi-files"
               gateway:
                 url: "ws://localhost:18789"
       agents:
