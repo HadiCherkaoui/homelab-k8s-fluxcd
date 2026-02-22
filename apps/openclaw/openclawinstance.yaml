@@ -1,0 +1,47 @@
+apiVersion: openclaw.rocks/v1alpha1
+kind: OpenClawInstance
+metadata:
+  name: openclaw
+  namespace: openclaw
+  labels:
+    app.kubernetes.io/name: openclaw
+    app.kubernetes.io/part-of: openclaw
+spec:
+  autoUpdate:
+    enabled: true
+    checkInterval: "24h"
+    backupBeforeUpdate: true
+    rollbackOnFailure: true
+    healthCheckTimeout: "10m"
+  runtimeDeps:
+    pnpm: true
+    python: true
+  config:
+    raw:
+      agents:
+        defaults:
+          model:
+            primary: "kimi-coding/k2p5"
+          sandbox: true
+      session:
+        scope: "per-sender"
+      gateway:
+        bind: lan
+  envFrom:
+    - secretRef:
+        name: openclaw-secrets
+  skills:
+    - "@openclaw/core"
+  storage:
+    persistence:
+      enabled: true
+      size: 10Gi
+      accessModes:
+        - ReadWriteOnce
+  chromium:
+    enabled: true
+    image:
+      repository: ghcr.io/browserless/chromium
+      tag: "v2.0.0"
+  selfConfigure:
+    enabled: false
