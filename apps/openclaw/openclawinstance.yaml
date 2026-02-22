@@ -52,7 +52,7 @@ spec:
                 token: "${KIMI_CLAW_TOKEN}"
                 promptTimeoutMs: 1800000
               gateway:
-                url: "ws://localhost:8080"
+                url: "ws://localhost:18789"
       agents:
         defaults:
           model:
