@@ -74,5 +74,4 @@ spec:
   chromium:
     enabled: true
   selfConfigure:
-    enabled: true
-    allowedActions: [skills, config, envVars, workspaceFiles]
+    enabled: false
