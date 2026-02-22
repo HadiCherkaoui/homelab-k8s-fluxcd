@@ -4,4 +4,4 @@ namespace: openclaw
 resources:
   - namespace.yaml
   - helmrelease-operator.yaml
-#  - openclawinstance.yaml
+  - openclawinstance.yaml
