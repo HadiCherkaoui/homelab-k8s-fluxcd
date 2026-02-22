@@ -22,7 +22,6 @@ spec:
         defaults:
           model:
             primary: "kimi-coding/k2p5"
-          sandbox: true
       session:
         scope: "per-sender"
       gateway:
