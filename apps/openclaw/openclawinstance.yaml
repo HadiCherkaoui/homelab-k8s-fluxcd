@@ -52,8 +52,8 @@ spec:
         defaults:
           model:
             primary: "kimi-coding/k2p5"
-          session:
-            scope: "per-sender"
+        session:
+          scope: "per-sender"
       gateway:
         bind: lan
   envFrom:
