@@ -13,11 +13,9 @@ spec:
   runtimeDeps:
     pnpm: true
     python: true
-  podSecurityContext:
-    fsGroup: 1000
   initContainers:
-    - name: download-kimi-claw
-      image: curlimages/curl:latest
+    - name: install-kimi-claw
+      image: nikolaik/python-nodejs:python3.12-nodejs22-slim
       command:
         - sh
         - -c
@@ -27,18 +25,10 @@ spec:
           curl -fsSL https://cdn.kimi.com/kimi-claw/kimi-claw-latest.tgz -o /tmp/kimi-claw.tgz
           tar -xzf /tmp/kimi-claw.tgz -C /extensions/kimi-claw --strip-components=1
           rm /tmp/kimi-claw.tgz
+          cd /extensions/kimi-claw
+          npm install --omit=dev
           chmod -R 755 /extensions/kimi-claw
-          echo "Kimi Claw plugin downloaded successfully"
-      volumeMounts:
-        - name: extensions
-          mountPath: /extensions
-    - name: install-npm-deps
-      image: node:22-slim
-      workingDir: /extensions/kimi-claw
-      command:
-        - npm
-        - install
-        - --omit=dev
+          echo "Kimi Claw plugin installed successfully"
       volumeMounts:
         - name: extensions
           mountPath: /extensions
