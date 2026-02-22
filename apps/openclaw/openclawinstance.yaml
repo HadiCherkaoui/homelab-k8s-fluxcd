@@ -15,7 +15,7 @@ spec:
     python: true
   initContainers:
     - name: install-kimi-claw
-      image: nikolaik/python-nodejs:python3.12-nodejs22-slim
+      image: nikolaik/python-nodejs:python3.12-nodejs22
       command:
         - sh
         - -c
