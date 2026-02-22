@@ -14,4 +14,3 @@ resources:
   - authentik
   - matrix
   - sonarqube
-  - openclaw

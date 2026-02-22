@@ -126,13 +126,3 @@ metadata:
 spec:
   interval: 1h
   url: https://SonarSource.github.io/helm-chart-sonarqube
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: openclaw
-  namespace: flux-system
-spec:
-  type: oci
-  interval: 1h
-  url: oci://ghcr.io/openclaw-rocks/charts
