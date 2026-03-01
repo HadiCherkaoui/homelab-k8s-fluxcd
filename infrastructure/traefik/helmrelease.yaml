@@ -67,6 +67,8 @@ spec:
       ssh:
         port: 22
         exposedPort: 22
+        expose:
+          default: true
     hostNetwork: false
     service:
       type: LoadBalancer
