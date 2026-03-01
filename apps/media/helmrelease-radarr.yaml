@@ -18,11 +18,12 @@ spec:
   values:
     persistence:
       config:
+        storageClass: fast
         enabled: true
         size: 2Gi
       movies:
         enabled: true
-        existingClaim: plex-media
+        existingClaim: jellyfin-media
         mountPath: /movies
         subPath: movies
       qbitmovies:

@@ -61,16 +61,12 @@ spec:
       websecure:
         port: 443
         exposedPort: 443
-        tls:
-          enabled: true
       metrics:
         port: 9101
         exposedPort: 9101
       ssh:
         port: 22
         exposedPort: 22
-        tls:
-          passthrough: true
     hostNetwork: false
     service:
       type: LoadBalancer

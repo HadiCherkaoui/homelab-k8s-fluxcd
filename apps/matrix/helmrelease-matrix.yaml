@@ -166,4 +166,5 @@ spec:
     postgres:
       enabled: true
       storage:
+        storageClassName: fast
         size: 50Gi

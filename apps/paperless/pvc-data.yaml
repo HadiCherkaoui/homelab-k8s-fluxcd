@@ -4,6 +4,7 @@ metadata:
   name: paperless-data
   namespace: paperless
 spec:
+  storageClassName: fast
   accessModes: ["ReadWriteOnce"]
   resources:
     requests:

@@ -15,3 +15,14 @@ spec:
         namespace: flux-system
   install:
     createNamespace: false
+  values:
+    cnpg:
+      main:
+        cluster:
+          instances: 1
+          storage:
+            size: 50Gi
+            storageClass: fast
+          walStorage:
+            size: 10Gi
+            storageClass: fast

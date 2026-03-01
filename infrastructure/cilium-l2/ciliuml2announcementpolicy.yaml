@@ -8,6 +8,6 @@ spec:
   nodeSelector:
     matchLabels: {}
   interfaces:
-    - enp6s18
+    - eno1
   externalIPs: true
   loadBalancerIPs: true

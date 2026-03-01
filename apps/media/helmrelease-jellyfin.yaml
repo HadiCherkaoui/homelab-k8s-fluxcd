@@ -18,11 +18,12 @@ spec:
   values:
     persistence:
       config:
+        storageClass: fast
         enabled: true
         size: 5Gi
       media:
         enabled: true
-        existingClaim: plex-media
+        existingClaim: jellyfin-media
         mountPath: /media
     metrics:
       enabled: true

@@ -16,6 +16,11 @@ spec:
   install:
     createNamespace: false
   values:
+    cnpg:
+      main:
+        cluster:
+          storage:
+            storageClass: fast
     persistence:
       data:
         enabled: true

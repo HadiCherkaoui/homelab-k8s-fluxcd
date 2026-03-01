@@ -3,11 +3,8 @@ kind: Kustomization
 namespace: gitlab
 resources:
   - namespace.yaml
-  - helmrelease-gitlab.yaml
-  - helmrelease-gitlab-agent.yaml
-  - rbac-gitlab-agent.yaml
+  - helmrelease.yaml
   - ingressroute-gitlab.yaml
   - ingressroute-registry.yaml
   - ingressroute-minio.yaml
-  - ingressroute-kas.yaml
   - ingressroutetcp-ssh.yaml

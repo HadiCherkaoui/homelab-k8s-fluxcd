@@ -1,27 +1,36 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: local-path-provisioner
-  namespace: kube-system
+  name: openebs
+  namespace: openebs
 spec:
   interval: 10m
   chart:
     spec:
-      chart: local-path-provisioner
-      version: 0.0.35
+      chart: openebs
+      version: 4.4.0
       sourceRef:
         kind: HelmRepository
-        name: containeroo
+        name: openebs
         namespace: flux-system
   install:
     createNamespace: false
   values:
-    storageClass:
-      defaultClass: true
-    nodePathMap:
-      - node: "k8s-homelab"
-        paths:
-          - "/mnt/k8s"
-      - node: "DEFAULT_PATH_FOR_NON_LISTED_NODES"
-        paths:
-          - "/mnt/k8s"
+    zfs-localpv:
+      zfsNode:
+        kubeletDir: /var/lib/k0s/kubelet
+      analytics:
+        enabled: false
+    engines:
+      local:
+        lvm:
+          enabled: false
+        zfs:
+          enabled: true
+      replicated:
+        mayastor:
+          enabled: false
+    loki:
+      enabled: false
+    alloy:
+      enabled: false

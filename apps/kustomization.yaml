@@ -3,9 +3,7 @@ kind: Kustomization
 resources:
   - media
   - paperless
-  - openwebui
   - websites
-  - n8n
   - craftycontroller
   - gitlab
   - scolx

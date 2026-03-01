@@ -1,0 +1,27 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: tank
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+allowVolumeExpansion: true
+parameters:
+  shared: "yes"
+  fstype: "zfs"
+  poolname: "tank/k0s"
+  thinProvision: "yes"
+provisioner: zfs.csi.openebs.io
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast
+allowVolumeExpansion: true
+parameters:
+  shared: "yes"
+  fstype: "zfs"
+  poolname: "fast/k0s"
+  thinProvision: "yes"
+provisioner: zfs.csi.openebs.io
+volumeBindingMode: WaitForFirstConsumer

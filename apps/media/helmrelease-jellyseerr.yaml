@@ -18,5 +18,6 @@ spec:
   values:
     persistence:
       config:
+        storageClass: fast
         enabled: true
         size: 1Gi

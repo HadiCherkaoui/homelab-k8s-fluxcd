@@ -4,6 +4,7 @@ metadata:
   name: paperless-consume
   namespace: paperless
 spec:
+  storageClassName: fast
   accessModes: ["ReadWriteOnce"]
   resources:
     requests:

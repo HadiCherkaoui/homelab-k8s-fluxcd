@@ -5,6 +5,7 @@ metadata:
   namespace: media
 spec:
   accessModes: ["ReadWriteOnce"]
+  storageClassName: fast
   resources:
     requests:
-      storage: 200Gi
+      storage: 1Ti

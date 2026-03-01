@@ -17,10 +17,11 @@ spec:
     createNamespace: false
   values:
     global:
+      kas:
+        enabled: false
+      gitaly:
+        enabled: true
       appConfig:
-        terraformState:
-          enabled: true
-          bucket: gitlab-terraform-state
         omniauth:
           enabled: true
           allowSingleSignOn:
@@ -28,8 +29,6 @@ spec:
           blockAutoCreatedUsers: false
           autoLinkUser:
             - openid_connect
-          # Enable this only after confirming SSO + linking works:
-          # autoSignInWithProvider: openid_connect
           providers:
             - secret: gitlab-authentik
               key: provider
@@ -45,9 +44,6 @@ spec:
           https: true
         minio:
           name: minio.cherkaoui.ch
-          https: true
-        kas:
-          name: kas.cherkaoui.ch
           https: true
         ssh: "gitlab.cherkaoui.ch"
       ingress:
@@ -89,16 +85,32 @@ spec:
         minReplicas: 1
       registry:
         minReplicas: 1
-      kas:
-        minReplicas: 1
-        maxReplicas: 1
-        autoscaling:
-          enabled: true
+      
+      # Gitaly - fast storage for Git repositories
+      gitaly:
+        persistence:
+          storageClass: fast
+          size: 50Gi
+    
     installCertmanager: false
     nginx-ingress:
       enabled: false
     prometheus:
       install: false
+    postgresql:
+      primary:
+        persistence:
+          storageClass: fast
+          size: 20Gi
+    redis:
+      master:
+        persistence:
+          storageClass: fast
+          size: 8Gi
+    minio:
+      persistence:
+        storageClass: tank
+        size: 50Gi
   valuesFrom:
     - kind: Secret
       name: gitlab-smtp

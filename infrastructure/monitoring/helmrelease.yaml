@@ -42,6 +42,7 @@ spec:
           root_url: https://grafana.cherkaoui.ch
       enabled: true
       persistence:
+        storageClassName: "fast"
         enabled: true
         size: "5Gi"
       ingress:

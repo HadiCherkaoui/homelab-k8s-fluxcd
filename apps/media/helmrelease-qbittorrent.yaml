@@ -26,6 +26,7 @@ spec:
             value: "1"
     persistence:
       config:
+        storageClass: fast
         enabled: true
         size: 2Gi
       movies-shows:

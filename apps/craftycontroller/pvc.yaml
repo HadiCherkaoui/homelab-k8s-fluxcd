@@ -5,6 +5,7 @@ metadata:
   namespace: craftycontroller
 spec:
   accessModes: ["ReadWriteOnce"]
+  storageClassName: fast
   resources:
     requests:
-      storage: 20Gi
+      storage: 100Gi

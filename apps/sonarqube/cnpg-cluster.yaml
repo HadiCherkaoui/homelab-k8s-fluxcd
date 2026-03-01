@@ -10,4 +10,5 @@ spec:
   enableSuperuserAccess: false
   imageName: ghcr.io/cloudnative-pg/postgresql:17
   storage:
+    storageClass: fast
     size: 20Gi

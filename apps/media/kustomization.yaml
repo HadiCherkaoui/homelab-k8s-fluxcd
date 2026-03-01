@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: media
 resources:
   - namespace.yaml
-  - plex-pvc.yaml
+  - pvc-jellyfin.yaml
   - helmrelease-jellyfin.yaml
   - ingressroute-jellyfin.yaml
   - helmrelease-jellyseerr.yaml

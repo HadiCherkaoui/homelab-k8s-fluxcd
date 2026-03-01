@@ -4,5 +4,5 @@ namespace: authentik
 resources:
   - namespace.yaml
   - cnpg-cluster.yaml
-  - helmrelease-authentik.yaml
-  - ingressroute-authentik.yaml
+  - helmrelease.yaml
+  - ingressroute.yaml
