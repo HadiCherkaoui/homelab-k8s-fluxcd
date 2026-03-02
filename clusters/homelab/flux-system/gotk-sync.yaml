@@ -11,7 +11,7 @@ spec:
     branch: main
   secretRef:
     name: flux-system
-  url: ssh://git@ssh-gitlab.cherkaoui.ch/HadiCherkaoui/homelab-k8s-fluxcd.git
+  url: ssh://git@gitlab.cherkaoui.ch/HadiCherkaoui/homelab-k8s-fluxcd.git
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
