@@ -58,7 +58,7 @@ spec:
         password:
           secret: gitlab-smtp
           key: password
-        domain: proton-birdge-protonmail-bridge.gitlab.svc.cluster.local
+        domain: proton-bridge.gitlab.svc.cluster.local
         authentication: plain
         starttls_auto: true
         openssl_verify_mode: none
