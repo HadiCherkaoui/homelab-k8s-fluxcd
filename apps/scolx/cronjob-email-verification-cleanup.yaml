@@ -32,4 +32,4 @@ spec:
                 - configMapRef:
                     name: scolx-server-config
                 - secretRef:
-                    name: scolx-backend-env
+                    name: scolx-server-env
