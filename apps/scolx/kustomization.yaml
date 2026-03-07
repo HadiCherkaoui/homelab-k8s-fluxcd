@@ -3,18 +3,18 @@ kind: Kustomization
 namespace: scolx
 resources:
   - namespace.yaml
-  - deploy-frontend.yaml
-  - svc-frontend.yaml
-  - deploy-backend.yaml
-  - svc-backend.yaml
-  - ingress-frontend.yaml
+  - deploy-server.yaml
+  - svc-server.yaml
+  - ingress-server.yaml
+  - configmap-server.yaml
+  - middleware-internal-only.yaml
   - cnpg-cluster.yaml
   - helmrelease-pgadmin.yaml
   - cronjob-reminders.yaml
   - cronjob-rt-cleanup.yaml
   - cronjob-stripe-cleanup.yaml
+  - cronjob-email-verification-cleanup.yaml
   - servicemonitor.yaml
-  - helmrelease-minio.yaml
+  - helmrelease-rustfs.yaml
   - svc-mathapi.yaml
   - deploy-mathapi.yaml
-  - configmap-backend.yaml

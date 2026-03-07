@@ -1,28 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: scolx-backend
+  name: scolx-server
   namespace: scolx
   labels:
-    app: scolx-backend
+    app: scolx-server
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: scolx-backend
+      app: scolx-server
   template:
     metadata:
       labels:
-        app: scolx-backend
+        app: scolx-server
     spec:
       imagePullSecrets:
         - name: scolx-registry
       containers:
-        - name: scolx-backend
-          image: registry.cherkaoui.ch/scolx/scolx/backend:latest
+        - name: scolx-server
+          image: registry.cherkaoui.ch/scolx/scolx-v2/server:latest
           env:
-            - name: SIGNUPS_DISABLED
-              value: "true"
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
@@ -30,27 +28,27 @@ spec:
                   key: fqdn-uri
           envFrom:
             - configMapRef:
-                name: scolx-backend-config
+                name: scolx-server-config
             - secretRef:
-                name: scolx-backend-env
+                name: scolx-server-env
           ports:
             - containerPort: 8080
               name: web
           livenessProbe:
             httpGet:
-              path: /api/v1/livez
+              path: /livez
               port: 8080
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /api/v1/readyz
+              path: /readyz
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 5
           startupProbe:
             httpGet:
-              path: /api/v1/startupz
+              path: /startupz
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 10

@@ -39,15 +39,6 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: nginx
-  namespace: flux-system
-spec:
-  interval: 1h
-  url: https://helm.nginx.com/stable
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
   name: cloudnative-pg
   namespace: flux-system
 spec:
@@ -71,15 +62,6 @@ metadata:
 spec:
   interval: 1h
   url: https://traefik.github.io/charts
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: minio
-  namespace: flux-system
-spec:
-  interval: 1h
-  url: https://charts.min.io
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
@@ -126,3 +108,12 @@ metadata:
 spec:
   interval: 1h
   url: https://openebs.github.io/openebs
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: rustfs
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://charts.rustfs.com

@@ -20,10 +20,9 @@ spec:
             - name: scolx-registry
           containers:
             - name: stripe-cleanup
-              image: registry.cherkaoui.ch/scolx/scolx/backend:latest
+              image: registry.cherkaoui.ch/scolx/scolx-v2/jobs:latest
+              args: ["cleanup-stripe-events"]
               env:
-                - name: STRIPE_EVENT_CLEANUP_RUN_ONCE
-                  value: "true"
                 - name: DATABASE_URL
                   valueFrom:
                     secretKeyRef:
@@ -31,6 +30,6 @@ spec:
                       key: fqdn-uri
               envFrom:
                 - configMapRef:
-                    name: scolx-backend-config
+                    name: scolx-server-config
                 - secretRef:
                     name: scolx-backend-env

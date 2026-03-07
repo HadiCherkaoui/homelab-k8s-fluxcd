@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: scolx-rt-cleanup
+  name: scolx-email-verification-cleanup
   namespace: scolx
 spec:
   schedule: "0 0 * * *"
@@ -13,15 +13,15 @@ spec:
       template:
         metadata:
           labels:
-            app: scolx-rt-cleanup
+            app: scolx-email-verification-cleanup
         spec:
           restartPolicy: Never
           imagePullSecrets:
             - name: scolx-registry
           containers:
-            - name: rt-cleanup
+            - name: email-verification-cleanup
               image: registry.cherkaoui.ch/scolx/scolx-v2/jobs:latest
-              args: ["cleanup-refresh-tokens"]
+              args: ["cleanup-email-verifications"]
               env:
                 - name: DATABASE_URL
                   valueFrom:

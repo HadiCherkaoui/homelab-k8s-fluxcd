@@ -1,18 +1,18 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: scolx-backend
+  name: scolx-server
   namespace: monitoring
   labels:
-    app: kube-prometheus-stack-scolx-backend
-    app.kubernetes.io/name: scolx-backend
+    app: kube-prometheus-stack-scolx-server
+    app.kubernetes.io/name: scolx-server
     release: monitoring
 spec:
   jobLabel: app.kubernetes.io/name
   selector:
     matchLabels:
-      app.kubernetes.io/instance: scolx-backend
-      app.kubernetes.io/name: scolx-backend
+      app.kubernetes.io/instance: scolx-server
+      app.kubernetes.io/name: scolx-server
   namespaceSelector:
     matchNames:
       - scolx

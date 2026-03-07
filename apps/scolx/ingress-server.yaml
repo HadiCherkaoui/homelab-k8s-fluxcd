@@ -1,7 +1,7 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: scolx-frontend
+  name: scolx-server
   namespace: scolx
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
@@ -11,13 +11,22 @@ spec:
   entryPoints:
     - websecure
   routes:
+    - match: Host(`scolx.com`) && (Path(`/startupz`) || Path(`/livez`) || Path(`/readyz`) || Path(`/metrics`))
+      kind: Rule
+      priority: 100
+      middlewares:
+        - name: internal-only
+          namespace: scolx
+      services:
+        - name: scolx-server
+          port: web
     - match: Host(`scolx.com`) && PathPrefix(`/`)
       kind: Rule
       middlewares:
         - name: security-headers
           namespace: traefik
       services:
-        - name: scolx-frontend
+        - name: scolx-server
           port: web
   tls:
     certResolver: letsencrypt
