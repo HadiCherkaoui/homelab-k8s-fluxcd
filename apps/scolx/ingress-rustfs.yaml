@@ -11,7 +11,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`s3.scolx.com`) && (Path(`/`)
+    - match: Host(`s3.scolx.com`) && PathPrefix(`/`)
       kind: Rule
       priority: 100
       middlewares:
@@ -19,6 +19,6 @@ spec:
           namespace: traefik
       services:
         - name: rustfs-svc
-          port: 9000
+          port: endpoint
   tls:
     certResolver: letsencrypt
