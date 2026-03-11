@@ -18,3 +18,4 @@ resources:
   - helmrelease-rustfs.yaml
   - svc-mathapi.yaml
   - deploy-mathapi.yaml
+  - ingress-rustfs.yaml
