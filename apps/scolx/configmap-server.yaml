@@ -16,4 +16,4 @@ data:
   S3_ENDPOINT: "s3.scolx.com"
   S3_REGION: "eu-central-2"
   S3_BUCKET: "scolx"
-  S3_USE_SSL: "false"
+  S3_USE_SSL: "true"
