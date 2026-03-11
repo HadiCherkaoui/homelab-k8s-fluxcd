@@ -13,7 +13,7 @@ data:
   OPENAI_CHAT_MODEL: "x-ai/grok-4-fast"
   OPENAI_EMBEDDING_MODEL: "openai/text-embedding-3-small"
   LEPTOS_SITE_ROOT: "/app/site"
-  S3_ENDPOINT: "rustfs-svc:9000"
+  S3_ENDPOINT: "s3.scolx.com"
   S3_REGION: "eu-central-2"
   S3_BUCKET: "scolx"
   S3_USE_SSL: "false"
