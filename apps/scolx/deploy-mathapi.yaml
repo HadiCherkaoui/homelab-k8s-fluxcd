@@ -6,7 +6,7 @@ metadata:
   labels:
     app: scolx-math
 spec:
-  replicas: 4
+  replicas: 1
   selector:
     matchLabels:
       app: scolx-math
