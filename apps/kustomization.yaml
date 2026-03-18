@@ -11,5 +11,4 @@ resources:
   - immich
   - authentik
   - matrix
-  - nextcloud
   - sonarqube
