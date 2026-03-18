@@ -32,9 +32,6 @@ spec:
           region: eu-central-2
           bucket: nextcloud
           usePathStyle: true
-          existingSecret: rustfs-credentials
-          accessKeyKey: RUSTFS_ACCESS_KEY
-          secretKeyKey: RUSTFS_SECRET_KEY
       extraEnv:
         - name: NEXTCLOUD_TRUSTED_PROXIES
           value: "10.0.0.0/8"
@@ -42,6 +39,16 @@ spec:
           value: "https"
         - name: OVERWRITECLIURL
           value: "https://cloud.cherkaoui.ch"
+        - name: NC_S3_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rustfs-credentials
+              key: RUSTFS_ACCESS_KEY
+        - name: NC_S3_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rustfs-credentials
+              key: RUSTFS_SECRET_KEY
         - name: OIDC_CLIENT_ID
           valueFrom:
             secretKeyRef:
@@ -52,7 +59,40 @@ spec:
             secretKeyRef:
               name: nextcloud-admin
               key: OIDC_CLIENT_SECRET
+      hooks:
+        before-starting: |
+          php /var/www/html/occ app:list --output=json | grep -q '"oidc_login"' || \
+          php /var/www/html/occ app:install oidc_login || true
+      defaultConfigs:
+        s3.config.php: false
       configs:
+        s3.config.php: |-
+          <?php
+          if (getenv('OBJECTSTORE_S3_BUCKET')) {
+            $use_ssl = getenv('OBJECTSTORE_S3_SSL');
+            $use_path = getenv('OBJECTSTORE_S3_USEPATH_STYLE');
+            $use_legacyauth = getenv('OBJECTSTORE_S3_LEGACYAUTH');
+            $autocreate = getenv('OBJECTSTORE_S3_AUTOCREATE');
+            $CONFIG = array(
+              'objectstore' => array(
+                'class' => '\OC\Files\ObjectStore\S3',
+                'arguments' => array(
+                  'bucket' => getenv('OBJECTSTORE_S3_BUCKET'),
+                  'region' => getenv('OBJECTSTORE_S3_REGION') ?: '',
+                  'hostname' => getenv('OBJECTSTORE_S3_HOST') ?: '',
+                  'port' => getenv('OBJECTSTORE_S3_PORT') ?: '',
+                  'storageClass' => getenv('OBJECTSTORE_S3_STORAGE_CLASS') ?: '',
+                  'objectPrefix' => getenv('OBJECTSTORE_S3_OBJECT_PREFIX') ?: 'urn:oid:',
+                  'autocreate' => strtolower($autocreate) !== 'false',
+                  'use_ssl' => strtolower($use_ssl) !== 'false',
+                  'use_path_style' => $use_path == true && strtolower($use_path) !== 'false',
+                  'legacy_auth' => $use_legacyauth == true && strtolower($use_legacyauth) !== 'false',
+                  'key' => getenv('NC_S3_ACCESS_KEY') ?: '',
+                  'secret' => getenv('NC_S3_SECRET_KEY') ?: '',
+                )
+              )
+            );
+          }
         oidc.config.php: |-
           <?php
           $CONFIG = [
