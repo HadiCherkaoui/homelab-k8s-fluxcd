@@ -1,0 +1,91 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: nextcloud
+      version: "9.0.3"
+      sourceRef:
+        kind: HelmRepository
+        name: nextcloud
+        namespace: flux-system
+  install:
+    createNamespace: false
+  values:
+    nextcloud:
+      host: cloud.cherkaoui.ch
+      existingSecret:
+        enabled: true
+        secretName: nextcloud-admin
+        usernameKey: admin-username
+        passwordKey: admin-password
+      objectStore:
+        s3:
+          enabled: true
+          host: rustfs-svc
+          ssl: false
+          port: 9000
+          region: eu-central-2
+          bucket: nextcloud
+          usePathStyle: true
+          existingSecret: rustfs-credentials
+          accessKeyKey: RUSTFS_ACCESS_KEY
+          secretKeyKey: RUSTFS_SECRET_KEY
+      extraEnv:
+        - name: NEXTCLOUD_TRUSTED_PROXIES
+          value: "10.0.0.0/8"
+        - name: OVERWRITEPROTOCOL
+          value: "https"
+        - name: OVERWRITECLIURL
+          value: "https://cloud.cherkaoui.ch"
+        - name: OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-admin
+              key: OIDC_CLIENT_ID
+        - name: OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-admin
+              key: OIDC_CLIENT_SECRET
+      configs:
+        oidc.config.php: |-
+          <?php
+          $CONFIG = [
+            'oidc_login_provider_url'       => 'https://authentik.cherkaoui.ch/application/o/nextcloud/',
+            'oidc_login_client_id'          => getenv('OIDC_CLIENT_ID'),
+            'oidc_login_client_secret'      => getenv('OIDC_CLIENT_SECRET'),
+            'oidc_login_auto_redirect'      => false,
+            'oidc_login_redir_fallback'     => true,
+            'oidc_login_end_session_redirect' => false,
+            'oidc_login_button_text'        => 'Login with Authentik',
+            'oidc_login_hide_password_form' => false,
+            'oidc_login_use_id_token'       => true,
+            'oidc_login_scope'              => 'openid profile email',
+          ];
+    internalDatabase:
+      enabled: false
+    postgresql:
+      enabled: false
+    mariadb:
+      enabled: false
+    externalDatabase:
+      enabled: true
+      type: postgresql
+      existingSecret:
+        enabled: true
+        secretName: nextcloud-postgres-cluster-app
+        hostKey: host
+        usernameKey: user
+        passwordKey: password
+        databaseKey: dbname
+    persistence:
+      enabled: true
+      storageClass: tank
+      size: 10Gi
+    ingress:
+      enabled: false
