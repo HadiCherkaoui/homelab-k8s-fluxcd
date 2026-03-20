@@ -24,7 +24,7 @@ spec:
       kind: Rule
       middlewares:
         - name: security-headers
-          namespace: traefik
+          namespace: scolx
       services:
         - name: scolx-server
           port: web

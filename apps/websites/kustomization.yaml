@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: websites
 resources:
   - namespace.yaml
+  - middleware-security-headers.yaml
   - pvc-websites.yaml
   - deploy-cherkaoui-homepage.yaml
   - svc-cherkaoui-homepage.yaml

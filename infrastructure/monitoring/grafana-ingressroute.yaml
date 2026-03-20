@@ -14,7 +14,7 @@ spec:
     - match: Host(`grafana.cherkaoui.ch`) && PathPrefix(`/`)
       kind: Rule
       middlewares:
-        - name: security-headers
+        - name: security-headers-permissive
           namespace: traefik
       services:
         - name: monitoring-grafana

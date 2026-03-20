@@ -14,7 +14,7 @@ spec:
     - match: Host(`immich.cherkaoui.ch`)
       kind: Rule
       middlewares:
-        - name: security-headers
+        - name: security-headers-permissive
           namespace: traefik
       services:
         - name: immich

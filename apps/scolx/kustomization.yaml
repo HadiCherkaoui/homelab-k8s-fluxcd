@@ -8,6 +8,7 @@ resources:
   - ingress-server.yaml
   - configmap-server.yaml
   - middleware-internal-only.yaml
+  - middleware-security-headers.yaml
   - cnpg-cluster.yaml
   - helmrelease-pgadmin.yaml
   - cronjob-reminders.yaml

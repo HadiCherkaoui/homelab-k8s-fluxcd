@@ -2,7 +2,7 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: security-headers
-  namespace: traefik
+  namespace: websites
 spec:
   headers:
     browserXssFilter: true
@@ -11,5 +11,5 @@ spec:
     stsIncludeSubdomains: true
     stsPreload: true
     referrerPolicy: "no-referrer-when-downgrade"
-    contentSecurityPolicy: "default-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; frame-ancestors 'self'; object-src 'none'; base-uri 'self'"
+    contentSecurityPolicy: "default-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: blob:; font-src * data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net; connect-src 'self'; worker-src 'self' blob:; frame-ancestors 'self'; object-src 'none'; base-uri 'self'"
     permissionsPolicy: "geolocation=(), microphone=(), camera=(), fullscreen=()"

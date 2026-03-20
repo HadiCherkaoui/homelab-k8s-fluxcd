@@ -14,7 +14,7 @@ spec:
     - match: Host(`rtc.cherkaoui.ch`) && (PathPrefix(`/sfu/get`) || PathPrefix(`/healthz`))
       kind: Rule
       middlewares:
-        - name: security-headers
+        - name: security-headers-permissive
           namespace: traefik
       services:
         - name: matrix-matrix-rtc-authorisation-service
@@ -22,7 +22,7 @@ spec:
     - match: Host(`rtc.cherkaoui.ch`)
       kind: Rule
       middlewares:
-        - name: security-headers
+        - name: security-headers-permissive
           namespace: traefik
       services:
         - name: matrix-matrix-rtc-sfu
