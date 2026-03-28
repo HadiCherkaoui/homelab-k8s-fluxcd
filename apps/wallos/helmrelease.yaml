@@ -17,7 +17,13 @@ spec:
     createNamespace: false
   values:
     persistence:
-      config:
-        storageClass: fast
+      database:
         enabled: true
+        mountPath: "/var/www/html/db"
+        storageClass: fast
+        size: 1Gi
+      logos:
+        enabled: true
+        mountPath: "/var/www/html/images/uploads/logos"
+        storageClass: fast
         size: 1Gi
