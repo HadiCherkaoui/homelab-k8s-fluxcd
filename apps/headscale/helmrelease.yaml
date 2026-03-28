@@ -59,4 +59,4 @@ spec:
           auto_update_enabled: true
           update_frequency: 24h
         dns:
-          base_domain: headscale.cherkaoui.ch
+          base_domain: tail.cherkaoui.ch
