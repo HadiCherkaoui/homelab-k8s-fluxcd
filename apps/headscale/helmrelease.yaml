@@ -57,7 +57,7 @@ spec:
           urls: []
           auto_update_enabled: false
         acl:
-          policy_mode: "database"
+          policy_mode: "db"
         dns:
           base_domain: tail.cherkaoui.ch
         oidc:
