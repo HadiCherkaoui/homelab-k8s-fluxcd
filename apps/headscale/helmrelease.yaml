@@ -58,6 +58,8 @@ spec:
             - "https://controlplane.tailscale.com/derpmap/default"
           auto_update_enabled: true
           update_frequency: 24h
+        acl:
+          policy_mode: "db"
         dns:
           base_domain: tail.cherkaoui.ch
         oidc:
