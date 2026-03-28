@@ -66,7 +66,7 @@ spec:
             - openid
             - profile
             - email
-          strip_email_domain: false
+          only_start_if_oidc_is_available: false
   valuesFrom:
     - kind: Secret
       name: headscale-oidc
