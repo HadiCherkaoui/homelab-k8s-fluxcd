@@ -60,3 +60,21 @@ spec:
           update_frequency: 24h
         dns:
           base_domain: tail.cherkaoui.ch
+        oidc:
+          issuer: "https://authentik.cherkaoui.ch/application/o/headscale/"
+          scope:
+            - openid
+            - profile
+            - email
+          strip_email_domain: false
+  valuesFrom:
+    - kind: Secret
+      name: headscale-oidc
+      valuesKey: client_id
+      targetPath: headscale.config.oidc.client_id
+      optional: false
+    - kind: Secret
+      name: headscale-oidc
+      valuesKey: client_secret
+      targetPath: headscale.config.oidc.client_secret
+      optional: false
