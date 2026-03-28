@@ -55,6 +55,8 @@ spec:
             region_code: "headscale"
             region_name: "Headscale Embedded DERP"
           urls: []
+          paths:
+            - /var/lib/headscale/derp-map.json
           auto_update_enabled: false
         acl:
           policy_mode: "db"
