@@ -22,7 +22,9 @@ spec:
           containers:
             main:
               env:
-                NTFY_AUTH_FILE: "/var/lib/ntfy/user.db"
+                NTFY_BASE_URL: "https://ntfy.cherkaoui.ch"
+                NTFY_BEHIND_PROXY: true
+                ENABLE_AUTH_FILE: true
                 NTFY_AUTH_DEFAULT_ACCESS: "deny-all"
     persistence:
       config:
