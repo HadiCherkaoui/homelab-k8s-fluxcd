@@ -12,3 +12,8 @@ resources:
   - authentik
   - matrix
   - sonarqube
+  - ntfy
+  - uptime-kuma
+  - headscale
+  - changedetection
+  - wallos

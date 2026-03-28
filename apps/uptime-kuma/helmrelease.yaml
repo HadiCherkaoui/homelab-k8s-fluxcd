@@ -1,0 +1,22 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: uptime-kuma
+  namespace: uptime-kuma
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: uptime-kuma
+      version: "4.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: uptime-kuma
+        namespace: flux-system
+  install:
+    createNamespace: false
+  values:
+    volume:
+      enabled: true
+      size: 2Gi
+      storageClassName: fast

@@ -1,0 +1,23 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: wallos
+  namespace: wallos
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: wallos
+      version: "10.1.0"
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  install:
+    createNamespace: false
+  values:
+    persistence:
+      config:
+        storageClass: fast
+        enabled: true
+        size: 1Gi

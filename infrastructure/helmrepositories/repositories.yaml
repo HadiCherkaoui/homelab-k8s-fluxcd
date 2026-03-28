@@ -126,3 +126,31 @@ metadata:
 spec:
   interval: 1h
   url: https://nextcloud.github.io/helm/
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: uptime-kuma
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://dirsigler.github.io/uptime-kuma-helm
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: wrenix
+  namespace: flux-system
+spec:
+  type: oci
+  interval: 1h
+  url: oci://codeberg.org/wrenix/helm-charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: alekc
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://charts.alekc.dev

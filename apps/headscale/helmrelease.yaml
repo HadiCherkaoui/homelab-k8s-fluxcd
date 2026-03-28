@@ -1,0 +1,57 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: headscale
+  namespace: headscale
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: headscale
+      version: "1.0.14"
+      sourceRef:
+        kind: HelmRepository
+        name: wrenix
+        namespace: flux-system
+  install:
+    createNamespace: false
+  values:
+    service:
+      type: LoadBalancer
+      port:
+        http: 8080
+        metrics: 9090
+      derp:
+        type: LoadBalancer
+        port: 3478
+    persistence:
+      enabled: true
+      storageClass: fast
+      size: 1Gi
+    headscale:
+      certmanager:
+        enabled: false
+      config:
+        server_url: "https://headscale.cherkaoui.ch"
+        tls_cert_path: ""
+        tls_key_path: ""
+        database:
+          type: sqlite
+          sqlite:
+            path: /var/lib/headscale/db.sqlite
+        prefixes:
+          v4: 100.64.0.0/10
+          v6: fd7a:115c:a1e0::/48
+          allocation: sequential
+        derp:
+          server:
+            enabled: true
+            region_id: 999
+            region_code: "headscale"
+            region_name: "Headscale Embedded DERP"
+          urls:
+            - "https://controlplane.tailscale.com/derpmap/default"
+          auto_update_enabled: true
+          update_frequency: 24h
+        dns:
+          base_domain: headscale.cherkaoui.ch

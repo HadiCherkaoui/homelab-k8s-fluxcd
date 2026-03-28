@@ -1,0 +1,23 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ntfy
+  namespace: ntfy
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: ntfy
+      version: "13.1.1"
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  install:
+    createNamespace: false
+  values:
+    persistence:
+      config:
+        storageClass: fast
+        enabled: true
+        size: 1Gi
