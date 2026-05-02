@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mc
+  labels:
+    name: mc
+    app.kubernetes.io/part-of: anvil
