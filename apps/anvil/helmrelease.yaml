@@ -29,7 +29,8 @@ spec:
       repo: gitlab.cherkaoui.ch/hadicherkaoui/anvil
       tag: latest
       pullPolicy: Always
-
+    secrets:
+      cfApiKeyExistingSecret: anvil-cf
     mcNamespace: mc
 
     # mcDefaults.storageClassName is REQUIRED — the chart fails to render
@@ -54,5 +55,15 @@ spec:
       tls:
         enabled: true
         certResolver: letsencrypt
+
+    # Authentik OIDC. clientSecret + sessionKey live in the SOPS-encrypted
+    # `anvil-oidc` Secret (referenced by `existingSecret`). The redirectUrl
+    # must match the Redirect URIs field in the Authentik provider exactly.
+    oidc:
+      enabled: true
+      issuerUrl: "https://authentik.cherkaoui.ch/application/o/anvil/"
+      clientId: "8JPIVp0vfqq3M0GloOkymTnJfrsYxq37gSgt02Oi"
+      redirectUrl: "https://anvil.cherkaoui.ch/api/auth/callback"
+      existingSecret: anvil-oidc
 
     logLevel: info
