@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: anvil
-      version: "1.0.2"
+      version: "^1.0.2"
       sourceRef:
         kind: HelmRepository
         name: anvil
@@ -32,6 +32,9 @@ spec:
     # backend requires a snapshots PVC for tar-based modpack backups —
     # startup fails closed otherwise (ANVIL_MODPACK_SNAPSHOTS_PVC unset).
     modpack:
+      # Hourly poll cadence for new ServerFiles versions. One HTTPS hit
+      # per CF-backed server per tick; CF rate-limits at much higher rates.
+      pollIntervalMinutes: 60
       snapshotsPvc:
         enabled: true
         storageClass: tank
@@ -45,11 +48,38 @@ spec:
     mcDefaults:
       storageClassName: tank
       serviceType: LoadBalancer
+      # External hostname/IP that resolves to a cluster node. Used by the
+      # panel to display NodePort server addresses (host:nodePort) when a
+      # user picks NodePort exposure. Adjust if the homelab gets a different
+      # public hostname.
+      nodeHost: homelab.cherkaoui.ch
+      # Cilium LB-IPAM is configured on this cluster (see cluster-profile.md),
+      # so LoadBalancer Services actually get external IPs.
+      loadbalancerSupported: true
+      # Per-server "files-helper" Pod image — pinned by digest so a tag
+      # mutation can't swap it out from under the data PVC. Restated here
+      # explicitly so an operator can audit it without grepping the chart.
+      filesHelperImage: "alpine@sha256:21dc6063fd678b478f57c0e13f47560d0ea4b4e6c19720b88d02a8c01cf91d04"
 
     persistence:
       enabled: true
       storageClassName: fast
       size: 1Gi
+
+    # Panel pod budget. Homelab is overprovisioned; bump the limit if the
+    # capabilities endpoint or modpack poller hits the ceiling.
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 1000m
+        memory: 512Mi
+
+    rbac:
+      create: true
+      # Empty -> chart auto-generates a SA named after the release.
+      serviceAccountName: ""
 
     ingress:
       enabled: true
@@ -70,6 +100,9 @@ spec:
       issuerUrl: "https://authentik.cherkaoui.ch/application/o/anvil/"
       clientId: "8JPIVp0vfqq3M0GloOkymTnJfrsYxq37gSgt02Oi"
       redirectUrl: "https://anvil.cherkaoui.ch/api/auth/callback"
+      # Comma-separated Authentik subject UUIDs. Empty = any user the
+      # Authentik application is bound to is allowed in.
+      allowedSubs: ""
       existingSecret: anvil-oidc
 
     logLevel: info
