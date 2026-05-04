@@ -154,3 +154,16 @@ metadata:
 spec:
   interval: 1h
   url: https://charts.alekc.dev
+---
+# Anvil chart, published as an OCI artifact by the project's GitLab CI
+# (`helm-publish` job → gitlab.cherkaoui.ch/hadicherkaoui/anvil/anvil:<ver>).
+# Project is public — no auth needed for Flux to pull.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: anvil
+  namespace: flux-system
+spec:
+  type: oci
+  interval: 1h
+  url: oci://gitlab.cherkaoui.ch/hadicherkaoui/anvil

@@ -1,7 +1,20 @@
+---
+# Where managed Minecraft StatefulSets/PVCs/Services live (referenced by
+# the chart's RBAC Role + RoleBinding via .Values.mcNamespace).
 apiVersion: v1
 kind: Namespace
 metadata:
   name: mc
   labels:
     name: mc
+    app.kubernetes.io/part-of: anvil
+---
+# Where the panel itself runs (HelmRelease target namespace, panel PVC,
+# Service, IngressRoute).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: anvil
+  labels:
+    name: anvil
     app.kubernetes.io/part-of: anvil

@@ -1,0 +1,58 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: anvil
+  namespace: anvil
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: anvil
+      # Bump in lockstep with deploy/Chart.yaml in the anvil repo when a
+      # new chart version is published. Range syntax (^1.0.0) lets Flux
+      # adopt 1.x patch releases automatically; pin to an exact version
+      # like "1.0.0" if you want stricter control.
+      version: "^1.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: anvil
+        namespace: flux-system
+  install:
+    createNamespace: false
+  upgrade:
+    cleanupOnFail: true
+  values:
+    image:
+      # Tag is rolled by GitLab CI's docker-build job (commit SHA + :latest).
+      # `latest` + Always means each chart upgrade re-pulls, so a CI image
+      # rebuild lands on the next reconcile without bumping this file.
+      repo: gitlab.cherkaoui.ch/hadicherkaoui/anvil
+      tag: latest
+      pullPolicy: Always
+
+    mcNamespace: mc
+
+    # mcDefaults.storageClassName is REQUIRED — the chart fails to render
+    # without it. `tank` is the cluster default-marked SC (zfs.csi.openebs.io)
+    # per docs/cluster-profile.md in the anvil repo.
+    mcDefaults:
+      storageClassName: tank
+      serviceType: LoadBalancer
+
+    persistence:
+      enabled: true
+      storageClassName: fast
+      size: 1Gi
+
+    ingress:
+      enabled: true
+      entryPoint: websecure
+      host: anvil.cherkaoui.ch
+      middlewares:
+        - name: security-headers
+          namespace: traefik
+      tls:
+        enabled: true
+        certResolver: letsencrypt
+
+    logLevel: info
