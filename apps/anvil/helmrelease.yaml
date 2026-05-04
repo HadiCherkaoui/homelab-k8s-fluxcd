@@ -31,6 +31,16 @@ spec:
       pullPolicy: Always
     secrets:
       cfApiKeyExistingSecret: anvil-cf
+
+    # CurseForge feature is active (cfApiKeyExistingSecret set), so the
+    # backend requires a snapshots PVC for tar-based modpack backups —
+    # startup fails closed otherwise (ANVIL_MODPACK_SNAPSHOTS_PVC unset).
+    modpack:
+      snapshotsPvc:
+        enabled: true
+        storageClass: tank
+        size: 100Gi
+
     mcNamespace: mc
 
     # mcDefaults.storageClassName is REQUIRED — the chart fails to render
