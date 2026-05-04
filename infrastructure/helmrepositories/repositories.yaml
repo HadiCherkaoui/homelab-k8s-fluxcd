@@ -156,8 +156,10 @@ spec:
   url: https://charts.alekc.dev
 ---
 # Anvil chart, published as an OCI artifact by the project's GitLab CI
-# (`helm-publish` job → gitlab.cherkaoui.ch/hadicherkaoui/anvil/anvil:<ver>).
-# Project is public — no auth needed for Flux to pull.
+# (`helm-publish` job → registry.cherkaoui.ch/hadicherkaoui/anvil/anvil:<ver>).
+# The container registry hostname (registry.cherkaoui.ch) is separate from
+# the GitLab UI (gitlab.cherkaoui.ch); using the UI host returns an HTML
+# sign-in page instead of OCI tags. Project is public — no auth needed.
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
@@ -166,4 +168,4 @@ metadata:
 spec:
   type: oci
   interval: 1h
-  url: oci://gitlab.cherkaoui.ch/hadicherkaoui/anvil
+  url: oci://registry.cherkaoui.ch/hadicherkaoui/anvil
