@@ -8,11 +8,7 @@ spec:
   chart:
     spec:
       chart: anvil
-      # Bump in lockstep with deploy/Chart.yaml in the anvil repo when a
-      # new chart version is published. Range syntax (^1.0.0) lets Flux
-      # adopt 1.x patch releases automatically; pin to an exact version
-      # like "1.0.0" if you want stricter control.
-      version: "^1.0.0"
+      version: "1.0.2"
       sourceRef:
         kind: HelmRepository
         name: anvil
