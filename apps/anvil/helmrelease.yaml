@@ -48,11 +48,10 @@ spec:
     mcDefaults:
       storageClassName: tank
       serviceType: LoadBalancer
-      # External hostname/IP that resolves to a cluster node. Used by the
+      # IP of the cluster node (single-node k0s on homelab). Used by the
       # panel to display NodePort server addresses (host:nodePort) when a
-      # user picks NodePort exposure. Adjust if the homelab gets a different
-      # public hostname.
-      nodeHost: homelab.cherkaoui.ch
+      # user picks NodePort exposure.
+      nodeHost: 172.26.20.250
       # Cilium LB-IPAM is configured on this cluster (see cluster-profile.md),
       # so LoadBalancer Services actually get external IPs.
       loadbalancerSupported: true
