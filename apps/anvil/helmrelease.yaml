@@ -26,7 +26,7 @@ spec:
       # Tag is rolled by GitLab CI's docker-build job (commit SHA + :latest).
       # `latest` + Always means each chart upgrade re-pulls, so a CI image
       # rebuild lands on the next reconcile without bumping this file.
-      repo: gitlab.cherkaoui.ch/hadicherkaoui/anvil
+      repo: registry.cherkaoui.ch/hadicherkaoui/anvil
       tag: latest
       pullPolicy: Always
     secrets:
