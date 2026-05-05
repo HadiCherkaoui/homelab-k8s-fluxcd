@@ -155,15 +155,6 @@ spec:
   interval: 1h
   url: https://charts.alekc.dev
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: metrics-server
-  namespace: flux-system
-spec:
-  interval: 1h
-  url: https://kubernetes-sigs.github.io/metrics-server/
----
 # Anvil chart, published as an OCI artifact by the project's GitLab CI
 # (`helm-publish` job → registry.cherkaoui.ch/hadicherkaoui/anvil/anvil:<ver>).
 # The container registry hostname (registry.cherkaoui.ch) is separate from
