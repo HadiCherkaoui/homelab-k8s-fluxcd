@@ -58,7 +58,7 @@ spec:
       # Per-server "files-helper" Pod image — pinned by digest so a tag
       # mutation can't swap it out from under the data PVC. Restated here
       # explicitly so an operator can audit it without grepping the chart.
-      filesHelperImage: "alpine@3.20"
+      filesHelperImage: "alpine:3.20"
 
     persistence:
       enabled: true
