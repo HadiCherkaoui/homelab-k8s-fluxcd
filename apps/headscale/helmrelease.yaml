@@ -58,8 +58,8 @@ spec:
           paths:
             - /var/lib/headscale/derp-map.json
           auto_update_enabled: false
-        acl:
-          policy_mode: "db"
+        policy:
+          mode: "database"
         dns:
           base_domain: tail.cherkaoui.ch
         oidc:
