@@ -60,8 +60,8 @@ spec:
       error_reporting:
         enabled: false
       email:
-        host: "proton-birdge-protonmail-bridge.gitlab.svc.cluster.local"
-        port: 25
+        host: "smtp.protonmail.ch"
+        port: 587
         use_tls: false
         use_ssl: false
         timeout: 30

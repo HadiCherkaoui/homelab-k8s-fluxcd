@@ -53,12 +53,12 @@ spec:
           enabled: false
       smtp:
         enabled: true
-        address: proton-birdge-protonmail-bridge
-        port: 25
+        address: smtp.protonmail.ch
+        port: 587
         password:
           secret: gitlab-smtp
           key: password
-        domain: proton-bridge.gitlab.svc.cluster.local
+        domain: smtp.protonmail.ch
         authentication: plain
         starttls_auto: true
         openssl_verify_mode: none
