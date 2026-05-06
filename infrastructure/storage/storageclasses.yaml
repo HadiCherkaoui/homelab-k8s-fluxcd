@@ -25,3 +25,20 @@ parameters:
   thinProvision: "yes"
 provisioner: zfs.csi.openebs.io
 volumeBindingMode: WaitForFirstConsumer
+---
+# Mirror of `tank` with Immediate binding. Used by chart-managed PVCs that
+# have no eager pod consumer (e.g. anvil's `mc-snapshots`), where WFC would
+# leave the PVC Pending and deadlock helm --wait. Safe on single-node k0s:
+# Immediate has no scheduling downside when there's only one node.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: tank-immediate
+allowVolumeExpansion: true
+parameters:
+  shared: "yes"
+  fstype: "zfs"
+  poolname: "tank/k0s"
+  thinProvision: "yes"
+provisioner: zfs.csi.openebs.io
+volumeBindingMode: Immediate

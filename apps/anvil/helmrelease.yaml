@@ -37,7 +37,9 @@ spec:
       pollIntervalMinutes: 60
       snapshotsPvc:
         enabled: true
-        storageClass: tank
+        # Immediate-bound SC: WFC + helm --wait deadlocks since the PVC has
+        # no chart-side consumer (only runtime backup/restore Jobs mount it).
+        storageClass: tank-immediate
         size: 100Gi
 
     mcNamespace: mc
