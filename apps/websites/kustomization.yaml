@@ -4,6 +4,7 @@ namespace: websites
 resources:
   - namespace.yaml
   - middleware-security-headers.yaml
+  - middleware-security-headers-webhook.yaml
   - pvc-websites.yaml
   - deploy-cherkaoui-homepage.yaml
   - svc-cherkaoui-homepage.yaml

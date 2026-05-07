@@ -14,7 +14,7 @@ spec:
     - match: Host(`hadi.cherkaoui.ch`) && PathPrefix(`/`)
       kind: Rule
       middlewares:
-        - name: security-headers
+        - name: security-headers-webhook
           namespace: websites
       services:
         - name: hadi
