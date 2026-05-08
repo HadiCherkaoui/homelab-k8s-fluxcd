@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: anvil
-      version: "1.0.9"
+      version: "1.0.12"
       sourceRef:
         kind: HelmRepository
         name: anvil
@@ -57,10 +57,22 @@ spec:
       # Cilium LB-IPAM is configured on this cluster (see cluster-profile.md),
       # so LoadBalancer Services actually get external IPs.
       loadbalancerSupported: true
-      # Per-server "files-helper" Pod image — pinned by digest so a tag
-      # mutation can't swap it out from under the data PVC. Restated here
-      # explicitly so an operator can audit it without grepping the chart.
-      filesHelperImage: "alpine:3.20"
+      # Alpine image — used by the per-server file-browser helper Pod and
+      # the modpack mod-sync Job. Both mount per-server data, so pin by
+      # digest in production. Restated here so an operator can audit the
+      # tag without grepping the chart.
+      alpineImage: "alpine:3.20"
+      # TZ env stamped onto every managed MC pod. Override of the chart
+      # default (Etc/UTC) to keep log timestamps in local time — matches
+      # the literal that was hardcoded before chart 1.0.11.
+      timezone: "Europe/Zurich"
+      # Image for every managed MC StatefulSet (vanilla, modded, modrinth,
+      # paper, curseforge). Restated here so an operator can audit the
+      # tag without grepping the chart.
+      itzgImage: "itzg/minecraft-server:java25"
+      # Image for backup, restore, and snapshot-cleanup Jobs. Restated
+      # for the same reason.
+      busyboxImage: "busybox:1.36"
 
     persistence:
       enabled: true
