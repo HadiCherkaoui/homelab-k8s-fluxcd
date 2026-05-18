@@ -17,3 +17,4 @@ resources:
   - changedetection
   - wallos
   - anvil
+  - filebrowser

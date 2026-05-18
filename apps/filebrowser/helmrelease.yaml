@@ -1,0 +1,64 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: filebrowser
+  namespace: filebrowser
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: ./filebrowser
+      sourceRef:
+        kind: GitRepository
+        name: filebrowser-chart
+        namespace: flux-system
+  install:
+    createNamespace: false
+  upgrade:
+    cleanupOnFail: true
+  values:
+    ingress:
+      enabled: false
+    persistence:
+      enabled: true
+      keep: true
+      accessMode: ReadWriteOnce
+      data:
+        size: 200Gi
+        storageClass: tank
+      config:
+        size: 1Gi
+        storageClass: fast
+    config:
+      server:
+        externalUrl: https://files.cherkaoui.ch
+        sources:
+          - path: /data
+            name: "Files"
+        auth:
+          methods:
+            password:
+              enabled: false
+            oidc:
+              enabled: true
+              issuerUrl: https://authentik.cherkaoui.ch/application/o/filebrowser/
+              adminGroup: "full access"
+      userDefaults:
+        loginMethod: oidc
+        permissions:
+          download: true
+          modify: true
+          create: true
+          share: true
+          delete: true
+    extraEnv:
+      - name: FILEBROWSER_OIDC_CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: filebrowser-oidc
+            key: FILEBROWSER_OIDC_CLIENT_ID
+      - name: FILEBROWSER_OIDC_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: filebrowser-oidc
+            key: FILEBROWSER_OIDC_CLIENT_SECRET

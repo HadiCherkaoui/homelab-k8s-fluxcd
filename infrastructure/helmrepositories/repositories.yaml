@@ -169,3 +169,14 @@ spec:
   type: oci
   interval: 1h
   url: oci://registry.cherkaoui.ch/hadicherkaoui/anvil
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: filebrowser-chart
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://github.com/Softwaredam/filebrowser-chart
+  ref:
+    tag: "1.3.1-stable"
