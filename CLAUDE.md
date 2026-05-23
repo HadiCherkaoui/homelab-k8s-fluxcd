@@ -177,11 +177,28 @@ spec:
 
 ## Secret Management
 
+### Default: lockbox (via `lbx` CLI)
+
+Application Secrets are managed by **lockbox** going forward. The `lockbox-k8s-controller` mirrors lockbox entries into `core/v1.Secret` objects in the namespaces dictated by the lockbox event. Provision new secrets with:
+
+```bash
+lbx set -n <k8s-namespace> <secret-name> KEY1=VALUE1 KEY2=VALUE2 ...
+```
+
+The controller picks them up on the next sync (~60 s). Existing secrets carry the `app.kubernetes.io/managed-by=lockbox-k8s-controller` label. List them with `lbx list`; inspect with `lbx get <name>`.
+
+**Stay SOPS-managed (do NOT push to lockbox):**
+
+- lockbox bootstrap material itself — `secrets/lockbox/{lockbox-auth,lockbox-config,lockbox-credentials}.secret.yaml`.
+- Secrets whose `type:` is anything other than `Opaque` (e.g. `kubernetes.io/dockerconfigjson`, `kubernetes.io/tls`). The controller writes every managed Secret as `Opaque`; kubelet and TLS consumers silently reject the substitution.
+
 ### CRITICAL: Never Commit Plaintext Secrets
 
-All secrets must be stored in `secrets/` directory and encrypted with SOPS.
+The SOPS workflow below still applies to the bootstrap + typed Secrets called out above.
 
-### Creating Encrypted Secrets
+All SOPS-managed secrets must be stored in `secrets/` directory and encrypted with SOPS.
+
+### Creating Encrypted Secrets (SOPS workflow — bootstrap + typed Secrets only)
 
 Use the helper script:
 
