@@ -596,7 +596,7 @@ Likely causes:
 - [ ] **Step 4: Confirm zero secrets adopted yet**
 
 ```bash
-kubectl get secret -A -l lockbox.io/managed=true
+kubectl get secret -A -l app.kubernetes.io/managed-by=lockbox-k8s-controller
 ```
 Expected: empty (no resources). The controller is polling but lockbox is empty (other than the smoke test from Task 10 which was deleted).
 
@@ -752,7 +752,7 @@ If errors appear about decryption, the CLI keypair must have rotated between `lb
 - [ ] **Step 3: Confirm adoption count**
 
 ```bash
-kubectl get secret -A -l lockbox.io/managed=true --no-headers | wc -l
+kubectl get secret -A -l app.kubernetes.io/managed-by=lockbox-k8s-controller --no-headers | wc -l
 ```
 Expected: `18`.
 
@@ -762,7 +762,7 @@ diff \
   <(find secrets -type f -name '*.secret.yaml' ! -path 'secrets/lockbox/*' \
     -exec sops --decrypt {} \; \
     | yq -r '"\(.metadata.namespace)/\(.metadata.name)"' | sort) \
-  <(kubectl get secret -A -l lockbox.io/managed=true \
+  <(kubectl get secret -A -l app.kubernetes.io/managed-by=lockbox-k8s-controller \
     -o jsonpath='{range .items[*]}{.metadata.namespace}/{.metadata.name}{"\n"}{end}' | sort)
 ```
 
@@ -816,7 +816,7 @@ git commit -m "$(cat <<'EOF'
 chore(secrets): retire SOPS-managed secrets after lockbox migration
 
 The 18 application Secrets that previously lived as SOPS files are now
-managed by the lockbox controller (label lockbox.io/managed=true on the
+managed by the lockbox controller (label app.kubernetes.io/managed-by=lockbox-k8s-controller on the
 live resources). The three secrets/lockbox/* files stay SOPS-managed —
 they are the bootstrap material for lockbox itself and cannot be sourced
 from lockbox.
@@ -869,7 +869,7 @@ Expected: reconciliation finishes; Flux prunes the 18 Secret resources whose sou
 - [ ] **Step 3: Verify the prune happened**
 
 ```bash
-kubectl get secret -A -l lockbox.io/managed=true --no-headers | wc -l
+kubectl get secret -A -l app.kubernetes.io/managed-by=lockbox-k8s-controller --no-headers | wc -l
 ```
 Expected immediately after prune: `0` (or close to 0 — depends on the race between Flux prune and controller poll).
 
@@ -885,7 +885,7 @@ This is the 60-second-or-less downtime window referenced in the spec.
 
 ```bash
 sleep 70
-kubectl get secret -A -l lockbox.io/managed=true --no-headers | wc -l
+kubectl get secret -A -l app.kubernetes.io/managed-by=lockbox-k8s-controller --no-headers | wc -l
 ```
 Expected: `18`.
 
@@ -893,7 +893,7 @@ If still less than 18 after 70s, force a sync:
 ```bash
 kubectl -n lockbox-system rollout restart deploy/lockbox-k8s-controller
 sleep 30
-kubectl get secret -A -l lockbox.io/managed=true --no-headers | wc -l
+kubectl get secret -A -l app.kubernetes.io/managed-by=lockbox-k8s-controller --no-headers | wc -l
 ```
 
 ---
