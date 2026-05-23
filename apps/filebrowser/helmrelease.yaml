@@ -35,14 +35,14 @@ spec:
         sources:
           - path: /data
             name: "Files"
-        auth:
-          methods:
-            password:
-              enabled: false
-            oidc:
-              enabled: true
-              issuerUrl: https://authentik.cherkaoui.ch/application/o/filebrowser/
-              adminGroup: "full access"
+      auth:
+        methods:
+          password:
+            enabled: false
+          oidc:
+            enabled: true
+            issuerUrl: https://authentik.cherkaoui.ch/application/o/filebrowser/
+            adminGroup: "full access"
       userDefaults:
         loginMethod: oidc
         permissions:
