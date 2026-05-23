@@ -1,0 +1,47 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: lockbox
+  namespace: lockbox-system
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: lockbox
+      version: "0.1.0-0df3cdfc"
+      sourceRef:
+        kind: HelmRepository
+        name: lockbox
+        namespace: flux-system
+  install:
+    createNamespace: false
+  upgrade:
+    cleanupOnFail: true
+  values:
+    image:
+      repo: registry.cherkaoui.ch/hadicherkaoui/lockbox
+      # Pinned to the SHA tag that matches chart 0.1.0-0df3cdfc.
+      tag: "0df3cdfcd3479cbc5c578bd3b01bbd93dc1e8fd2"
+      pullPolicy: IfNotPresent
+
+    auth:
+      # SOPS-encrypted Secret defined in secrets/lockbox/lockbox-auth.secret.yaml.
+      existingSecret: lockbox-auth
+
+    persistence:
+      enabled: true
+      size: 1Gi
+      # `fast` is the SC used by scolx CNPG — RWO, low-latency, matches
+      # SQLite's request profile.
+      storageClassName: fast
+
+    ingress:
+      enabled: true
+      entryPoint: websecure
+      host: lockbox.cherkaoui.ch
+      middlewares:
+        - name: security-headers
+          namespace: traefik
+      tls:
+        enabled: true
+        certResolver: letsencrypt

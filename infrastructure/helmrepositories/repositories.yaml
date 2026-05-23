@@ -180,3 +180,27 @@ spec:
   url: https://github.com/Softwaredam/filebrowser-chart
   ref:
     tag: "1.3.1-stable"
+---
+# Lockbox server chart, published as an OCI artifact by the project's
+# GitLab CI (helm-publish job → registry.cherkaoui.ch/hadicherkaoui/lockbox/lockbox:<ver>).
+# Project is public — no auth needed.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: lockbox
+  namespace: flux-system
+spec:
+  type: oci
+  interval: 1h
+  url: oci://registry.cherkaoui.ch/hadicherkaoui/lockbox
+---
+# Lockbox Kubernetes controller chart.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: lockbox-k8s-controller
+  namespace: flux-system
+spec:
+  type: oci
+  interval: 1h
+  url: oci://registry.cherkaoui.ch/hadicherkaoui/lockbox-k8s-controller
