@@ -4,3 +4,4 @@ namespace: lockbox-system
 resources:
   - namespace.yaml
   - helmrelease-lockbox.yaml
+  - helmrelease-controller.yaml
