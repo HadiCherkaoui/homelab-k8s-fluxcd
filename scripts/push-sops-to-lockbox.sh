@@ -18,6 +18,13 @@ if [[ -z "${SOPS_AGE_KEY:-}" ]]; then
 	exit 1
 fi
 
+for cmd in sops yq lbx find base64; do
+	if ! command -v "$cmd" >/dev/null 2>&1; then
+		echo "ERROR: required tool '$cmd' not on PATH" >&2
+		exit 1
+	fi
+done
+
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
@@ -29,7 +36,11 @@ while IFS= read -r -d '' f; do
 	secrets/lockbox/*) continue ;;
 	esac
 
-	plain=$(sops --decrypt "$f")
+	if ! plain=$(sops --decrypt "$f" 2>/dev/null); then
+		echo "  skip (sops decrypt failed): $f" >&2
+		FAILED+=("$f")
+		continue
+	fi
 	name=$(echo "$plain" | yq -r '.metadata.name')
 	ns=$(echo "$plain" | yq -r '.metadata.namespace')
 	if [[ -z "$name" || -z "$ns" || "$name" == "null" || "$ns" == "null" ]]; then
@@ -69,7 +80,9 @@ done < <(find secrets -type f -name '*.secret.yaml' -print0)
 
 echo
 echo "Pushed (${#PUSHED[@]}):"
-printf '  - %s\n' "${PUSHED[@]}"
+if [[ ${#PUSHED[@]} -gt 0 ]]; then
+	printf '  - %s\n' "${PUSHED[@]}"
+fi
 if [[ ${#FAILED[@]} -gt 0 ]]; then
 	echo
 	echo "FAILED (${#FAILED[@]}):"
