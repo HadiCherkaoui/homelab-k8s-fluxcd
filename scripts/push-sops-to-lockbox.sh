@@ -10,6 +10,12 @@
 #
 # Idempotent: lbx set overwrites, so re-running is safe.
 #
+# DO NOT migrate Secrets whose `type:` is anything other than `Opaque` (e.g.
+# `kubernetes.io/dockerconfigjson`, `kubernetes.io/tls`). The lockbox-k8s-
+# controller writes every managed Secret as Opaque — kubelet and other
+# special-type consumers reject Opaque substitutes silently. Keep typed
+# Secrets SOPS-managed.
+#
 # Requires: sops, yq (mikefarah v4+), lbx; SOPS_AGE_KEY exported.
 set -euo pipefail
 
@@ -50,18 +56,24 @@ while IFS= read -r -d '' f; do
 	fi
 
 	pairs=()
-	# stringData values are plain strings
-	while IFS=$'\t' read -r k v; do
-		[[ -z "$k" ]] && continue
+	# stringData values are plain strings. yq's @tsv escapes embedded
+	# newlines to literal "\n" — fatal for multi-line config values
+	# (alertmanager.yaml, OIDC provider blocks, etc.). Extract each value
+	# separately with a per-key yq call so newlines and other special bytes
+	# round-trip cleanly through bash variable assignment.
+	while IFS= read -r k; do
+		[[ -z "$k" || "$k" == "null" ]] && continue
+		v=$(echo "$plain" | yq -r ".stringData[\"$k\"]")
 		pairs+=("${k}=${v}")
-	done < <(echo "$plain" | yq -r '.stringData // {} | to_entries | .[] | [.key, .value] | @tsv')
+	done < <(echo "$plain" | yq -r '.stringData // {} | keys // [] | .[]')
 
-	# data values are base64
-	while IFS=$'\t' read -r k v; do
-		[[ -z "$k" ]] && continue
+	# data values are base64. Same per-key pattern.
+	while IFS= read -r k; do
+		[[ -z "$k" || "$k" == "null" ]] && continue
+		v=$(echo "$plain" | yq -r ".data[\"$k\"]")
 		decoded=$(printf '%s' "$v" | base64 -d)
 		pairs+=("${k}=${decoded}")
-	done < <(echo "$plain" | yq -r '.data // {} | to_entries | .[] | [.key, .value] | @tsv')
+	done < <(echo "$plain" | yq -r '.data // {} | keys // [] | .[]')
 
 	if [[ ${#pairs[@]} -eq 0 ]]; then
 		echo "  skip (no data): $f" >&2
