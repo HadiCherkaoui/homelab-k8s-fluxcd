@@ -418,6 +418,8 @@ flux suspend kustomization <name>
 flux resume kustomization <name>
 ```
 
+**lockbox-k8s-controller:** The controller is event-driven — a Secret deleted or pruned by Flux will not be self-healed until the next event or controller restart; if a lockbox-managed Secret is missing, run `kubectl -n lockbox-system rollout restart deploy/lockbox-k8s-controller` to force an immediate replay.
+
 ## Required Tools
 
 | Tool | Purpose | Version |
