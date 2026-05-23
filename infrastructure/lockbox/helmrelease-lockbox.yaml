@@ -20,8 +20,12 @@ spec:
   values:
     image:
       repo: registry.cherkaoui.ch/hadicherkaoui/lockbox
-      # Pinned to the SHA tag that matches chart 0.1.0-0df3cdfc.
-      tag: "0df3cdfcd3479cbc5c578bd3b01bbd93dc1e8fd2"
+      # Server build b57c232 — adds the secret_type field end-to-end
+      # (proto/store/server/CLI) and --from-file to lbx.  The chart pin
+      # at 0.1.0-0df3cdfc is intentional: this image is API-compatible
+      # with that chart's deployment shape, and CI didn't republish the
+      # chart because deploy/ wasn't touched by b57c232.
+      tag: "b57c2321e16f4598e0c26623cc79138e98797e9c"
       pullPolicy: IfNotPresent
 
     auth:
