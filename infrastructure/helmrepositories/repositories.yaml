@@ -194,7 +194,10 @@ spec:
   interval: 1h
   url: oci://registry.cherkaoui.ch/hadicherkaoui/lockbox
 ---
-# Lockbox Kubernetes controller chart.
+# Lockbox Kubernetes controller chart. Same publish pattern as the
+# server above: GitLab CI's helm-publish job pushes to the project's
+# container registry at registry.cherkaoui.ch/hadicherkaoui/lockbox-k8s-controller.
+# Project is public — no auth needed.
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
