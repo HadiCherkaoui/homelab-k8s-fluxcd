@@ -64,11 +64,11 @@ The controller chart's README example uses `lockbox-system`. The controller and 
 
 1. **Decrypt + push each secret.** With `SOPS_AGE_KEY=<key>` exported, decrypt each of the 17 SOPS files locally and push to lockbox with `lbx set -n <namespace> <secret-name> KEY=VALUE ...`. A loop script written in the implementation plan iterates the 17 files. The `name` matches the existing k8s Secret name; the `namespace` field on the lockbox secret IS the target k8s namespace.
 2. **Verify on lockbox.** `lbx list` returns 17 entries. Spot-check one with `lbx get`.
-3. **Force controller sync + verify adoption.** `kubectl -n lockbox-system rollout restart deploy/<controller>`. Wait for ready. Confirm `kubectl get secret -A -l lockbox.io/managed=true | wc -l` ≈ 17.
+3. **Force controller sync + verify adoption.** `kubectl -n lockbox-system rollout restart deploy/<controller>`. Wait for ready. Confirm `kubectl get secret -A -l app.kubernetes.io/managed-by=lockbox-k8s-controller | wc -l` ≈ 17.
 4. **Suspend the `secrets` Flux Kustomization.** `flux suspend ks secrets`.
 5. **Delete migrated SOPS files.** `git rm` all `secrets/<app>/*.secret.yaml` EXCEPT the three under `secrets/lockbox/`. Commit and push.
 6. **Resume + force reconcile.** `flux resume ks secrets` then `flux reconcile ks secrets --with-source`. Flux's pruner deletes 17 Secret resources (out of inventory). ~60 s window where they're gone.
-7. **Controller recreates within next poll cycle.** `kubectl get secret -A -l lockbox.io/managed=true` should return 17 again.
+7. **Controller recreates within next poll cycle.** `kubectl get secret -A -l app.kubernetes.io/managed-by=lockbox-k8s-controller` should return 17 again.
 8. **Spot-check pods.** Most apps loaded the secret into env vars at startup and don't notice. Anything that re-reads at runtime might log auth errors during the window — verify it self-recovered.
 
 ## Error handling and rollback
@@ -95,7 +95,7 @@ The controller chart's README example uses `lockbox-system`. The controller and 
 - `kubectl get hr -A` shows both `lockbox` and `lockbox-k8s-controller` as Ready=True
 
 **After migration:**
-- `kubectl get secret -A -l lockbox.io/managed=true` returns 17
+- `kubectl get secret -A -l app.kubernetes.io/managed-by=lockbox-k8s-controller` returns 17
 - For each namespace, one of: pod is Running and was not restarted (still has env from boot), or pod restarted and Running (got new Secret cleanly)
 - Spot-check at least one pod per namespace, focused on the riskier ones (paperless admin, monitoring alertmanager-discord, traefik cloudflare-dns)
 
@@ -105,3 +105,15 @@ The controller chart's README example uses `lockbox-system`. The controller and 
 - **Metrics scraping for the controller.** `metrics.enabled: false` initially. Flip on after the migration settles.
 - **Automated chart-version bumps.** The existing `scripts/update_helm_charts.sh` handles helm chart freshness; lockbox versions are pinned manually until the script learns the new repos.
 - **Image-update automation.** Both image tags are pinned in the HelmRelease values; no Flux ImagePolicy is being set up here.
+
+## Post-execution notes (added 2026-05-23)
+
+The actual count of SOPS files at execution time was **18**, not 17 — `secrets/anvil/` had three files (`anvil-cf`, `anvil-oidc`, `cf-api-key`) and the original count missed one. The plan was corrected; this section is preserved as-is for the historical design.
+
+Three issues surfaced during execution that the design didn't anticipate:
+
+1. **Multi-line `stringData` values were corrupted in transit.** The initial `push-sops-to-lockbox.sh` used `yq -r '... | @tsv'` to extract key/value pairs, and `@tsv` escapes embedded newlines (0x0a) to the literal two-byte sequence `\n` (0x5c 0x6e). Three secrets (`alertmanager-discord`, `gitlab-authentik`, `matrix-synapse-email`) lost their newlines. Alertmanager was running with a null route for ~30 minutes before remediation. Fix: per-key `yq` extraction so values round-trip through bash variables cleanly; documented in the script header.
+2. **Secret `type:` is not preserved.** The controller writes every managed Secret as `type: Opaque` regardless of the source. `scolx-registry` was originally `kubernetes.io/dockerconfigjson`; kubelet silently ignored the Opaque substitute as an imagePullSecret. Workloads kept running on cached images; the next pull would have failed. Remediation: restored `scolx-registry` to a SOPS file and removed the entry from lockbox. **Lockbox is for `Opaque` Secrets only.** Special-typed Secrets stay SOPS-managed.
+3. **Controller does not self-heal manually-deleted Secrets.** The controller uses a `since` cursor; once an event has been processed, it isn't re-applied unless the cursor resets (controller restart) or a new event arrives for that key. During the Phase E cutover, Flux pruned the 18 live Secrets but the controller sat at `count: 0` until restarted. Operationally: `kubectl -n lockbox-system rollout restart deploy/lockbox-k8s-controller` is the fix when a lockbox-managed Secret goes missing. Noted in `CLAUDE.md`'s Flux debugging section.
+
+The final cluster state has **17** controller-managed Secrets (the `Opaque` migratable ones) plus one SOPS-managed `kubernetes.io/dockerconfigjson` (`scolx-registry`) plus the three lockbox bootstrap SOPS files.
