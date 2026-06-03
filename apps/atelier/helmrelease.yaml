@@ -36,7 +36,10 @@ spec:
       entryPoint: websecure
       host: atelier.cherkaoui.ch
       middlewares:
-        - name: security-headers
+        # Permissive variant: Atelier renders model thumbnails + generated media
+        # from fal's CDNs (*.fal.media, storage.googleapis.com), which the strict
+        # security-headers CSP (img-src 'self') blocks. This one allows img/media *.
+        - name: security-headers-permissive
           namespace: traefik
       tls:
         enabled: true
