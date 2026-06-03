@@ -1,0 +1,60 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: atelier
+  namespace: atelier
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: atelier
+      version: "0.1.0"
+      sourceRef:
+        kind: HelmRepository
+        name: atelier
+        namespace: flux-system
+  install:
+    createNamespace: false
+  upgrade:
+    cleanupOnFail: true
+  values:
+    image:
+      # CI's docker-build rolls :<sha> + :latest; latest + Always re-pulls on
+      # each reconcile so a rebuild lands without bumping this file (as anvil).
+      repo: registry.cherkaoui.ch/hadicherkaoui/fal-ai-ui
+      tag: latest
+      pullPolicy: Always
+
+    # SQLite DB + all generated media live here (FALUI_DATA_DIR=/data).
+    persistence:
+      enabled: true
+      storageClassName: fast
+      size: 10Gi
+
+    ingress:
+      enabled: true
+      entryPoint: websecure
+      host: atelier.cherkaoui.ch
+      middlewares:
+        - name: security-headers
+          namespace: traefik
+      tls:
+        enabled: true
+        certResolver: letsencrypt
+
+    # Authentik OIDC — non-secret config. redirectUrl must equal the Authentik
+    # provider's Redirect URIs field exactly. clientSecret + sessionKey live in
+    # the lockbox-managed `atelier-secrets` Secret below.
+    oidc:
+      issuerUrl: "https://authentik.cherkaoui.ch/application/o/atelier/"
+      clientId: "kChNf4mjDxaqeZVyGFpBGZ9QZbKOXVc6nHW3IE4p"
+      redirectUrl: "https://atelier.cherkaoui.ch/api/auth/callback"
+      allowedSubs: ""
+
+    # Out-of-band Secret carrying FAL_KEY, FALUI_OIDC_CLIENT_SECRET,
+    # FALUI_SESSION_KEY. Created via lockbox (`lbx set -n atelier atelier-secrets
+    # ...`); the lockbox-k8s-controller materializes it into this namespace.
+    secrets:
+      existingSecret: atelier-secrets
+
+    logLevel: info

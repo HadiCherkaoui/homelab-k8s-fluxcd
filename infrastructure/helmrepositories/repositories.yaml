@@ -207,3 +207,17 @@ spec:
   type: oci
   interval: 1h
   url: oci://registry.cherkaoui.ch/hadicherkaoui/lockbox-k8s-controller
+---
+# Atelier (fal.ai media studio) chart, published as an OCI artifact by the
+# project's GitLab CI (helm-publish → registry.cherkaoui.ch/hadicherkaoui/fal-ai-ui/atelier:<ver>).
+# Container registry host (registry.cherkaoui.ch) ≠ GitLab UI (gitlab.cherkaoui.ch).
+# Project is public — no auth needed.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: atelier
+  namespace: flux-system
+spec:
+  type: oci
+  interval: 1h
+  url: oci://registry.cherkaoui.ch/hadicherkaoui/fal-ai-ui
