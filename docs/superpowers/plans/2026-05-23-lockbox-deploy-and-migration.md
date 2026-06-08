@@ -14,7 +14,7 @@
 
 ## Pre-flight (read before starting)
 
-- Export `SOPS_AGE_KEY=AGE-SECRET-KEY-REDACTED-ROTATED-2026-06-08` in the shell running these commands. Required for `sops --decrypt` and for Flux's in-cluster decryption is already configured via the `sops-age` Secret in `flux-system`.
+- Export `SOPS_AGE_KEY=<age-private-key>` in the shell running these commands. Load it from your secret store — **NEVER hardcode or commit the key** (the original key was leaked here in plaintext and rotated on 2026-06-08). Flux's in-cluster decryption uses the `sops-age` Secret in `flux-system`.
 - DNS for `lockbox.cherkaoui.ch` must already point at the cluster's Traefik LB IP. If unknown, check with `dig +short lockbox.cherkaoui.ch` against whatever resolver the cluster uses; confirm it matches `kubectl -n traefik get svc traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`. If DNS is missing, **stop and add the record before Task 5** — letsencrypt resolver needs DNS to issue the cert.
 - `lbx` CLI is already on PATH (`/usr/local/bin/lbx`, version 0.1.0). Existing state at `~/.local/share/lockbox/` points at `http://localhost:8080` from local dev — Task 12 wipes it.
 - All commits should follow the repo's commit-message style. End every message with `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>`.
