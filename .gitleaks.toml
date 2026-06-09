@@ -1,0 +1,32 @@
+# gitleaks config for this Flux/SOPS GitOps repo.
+# Used by BOTH the local pre-commit hook (.pre-commit-config.yaml) and the
+# `secret_detection` CI job (.gitlab-ci.yml), so detection is identical
+# everywhere. Born out of the 2026-06-08 incident where an age PRIVATE key
+# was committed in plaintext in a docs file.
+
+title = "homelab-k8s-fluxcd"
+
+[extend]
+useDefault = true   # keep all of gitleaks' built-in rules (AWS, GCP, tokens, PEM keys, ...)
+
+# --- Explicitly catch the thing that leaked: SOPS/age PRIVATE keys ---
+[[rules]]
+id = "age-secret-key"
+description = "age / SOPS private key"
+regex = '''AGE-SECRET-KEY-1[0-9A-Z]{58}'''
+keywords = ["AGE-SECRET-KEY"]
+
+[[rules]]
+id = "sops-age-key-env"
+description = "SOPS_AGE_KEY exported with a real key value"
+regex = '''SOPS_AGE_KEY\s*[:=]\s*["']?AGE-SECRET-KEY-1[0-9A-Z]{58}'''
+keywords = ["SOPS_AGE_KEY"]
+
+[allowlist]
+description = "Safe-to-commit by design: SOPS ciphertext, age PUBLIC recipients, the rotation redaction marker"
+# These are NOT secrets — they are meant to live in a SOPS GitOps repo.
+regexes = [
+  '''age1[0-9a-z]{58}''',                          # age PUBLIC recipients (.sops.yaml + secrets/*)
+  '''ENC\[AES256_GCM,[^\]]*\]''',                  # SOPS-encrypted values
+  '''AGE-SECRET-KEY-REDACTED-ROTATED-2026-06-08''', # the post-incident redaction placeholder
+]

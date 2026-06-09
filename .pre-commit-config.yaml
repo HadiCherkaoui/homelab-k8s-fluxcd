@@ -1,0 +1,35 @@
+# Local commit-time guard rails. One-time setup on each clone:
+#     pip install pre-commit   # or: pipx install pre-commit / brew install pre-commit
+#     pre-commit install
+# After that, `git commit` runs these automatically and blocks the commit on failure.
+# This is the FIRST line of defence; the GitLab CI job + server-side push rule
+# back it up for anyone who hasn't run `pre-commit install`.
+
+repos:
+  # Secret scanning — catches the 2026-06-08 leak class (age private keys) and more.
+  # Uses .gitleaks.toml in repo root for rules + allowlist.
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
+  # Cheap hygiene checks.
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: detect-private-key            # any PEM/SSH/EC private key block
+      - id: check-added-large-files       # stop accidental blobs
+        args: ["--maxkb=2048"]
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  # Repo-specific: anything under secrets/ MUST be SOPS-encrypted (have a `sops:` block).
+  # Stops a plaintext secret from ever being committed into secrets/.
+  - repo: local
+    hooks:
+      - id: secrets-must-be-sops-encrypted
+        name: secrets/ files must be SOPS-encrypted
+        language: system
+        files: '^secrets/.*\.(ya?ml)$'
+        exclude: '(^secrets/.*kustomization\.ya?ml$|/namespace\.ya?ml$)'
+        entry: bash -c 'for f in "$@"; do grep -q "^sops:" "$f" || { echo "NOT SOPS-encrypted: $f"; exit 1; }; done' --
