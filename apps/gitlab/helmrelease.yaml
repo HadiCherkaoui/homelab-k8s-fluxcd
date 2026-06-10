@@ -34,6 +34,33 @@ spec:
               key: provider
         usagePing:
           enabled: false
+        object_store:
+          enabled: true
+          proxy_download: true
+          connection:
+            secret: gitlab-rails-storage
+            key: connection
+        artifacts:
+          bucket: gitlab-artifacts
+        lfs:
+          bucket: git-lfs
+        uploads:
+          bucket: gitlab-uploads
+        packages:
+          bucket: gitlab-packages
+        externalDiffs:
+          bucket: gitlab-mr-diffs
+        terraformState:
+          bucket: gitlab-terraform-state
+        ciSecureFiles:
+          bucket: gitlab-ci-secure-files
+        dependencyProxy:
+          bucket: gitlab-dependency-proxy
+        backups:
+          bucket: gitlab-backups
+          tmpBucket: tmp
+      registry:
+        bucket: registry
       edition: ee
       hosts:
         domain: cherkaoui.ch
@@ -70,6 +97,13 @@ spec:
       monitoring:
         enabled: true
     gitlab:
+      toolbox:
+        backups:
+          objectStorage:
+            backend: s3
+            config:
+              secret: gitlab-s3cfg
+              key: config
       migrations:
         resources:
           requests: {}
@@ -92,6 +126,10 @@ spec:
         persistence:
           storageClass: fast
           size: 50Gi
+    registry:
+      storage:
+        secret: registry-storage
+        key: config
     installCertmanager: false
     nginx-ingress:
       enabled: false
