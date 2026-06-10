@@ -168,6 +168,8 @@ spec:
         cache:
           secretName: rustfs-cache-credentials
     installCertmanager: false
+    certmanager-issuer:
+      email: admin@cherkaoui.ch
     nginx-ingress:
       enabled: false
     prometheus:
