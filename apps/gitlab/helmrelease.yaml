@@ -132,6 +132,17 @@ spec:
       storage:
         secret: registry-storage
         key: config
+    gitlab-runner:
+      runners:
+        cache:
+          cacheType: s3
+          cachePath: "gitlab_runner"
+          cacheShared: true
+          s3ServerAddress: rustfs.gitlab.svc.cluster.local:9000
+          s3BucketName: runner-cache
+          s3BucketLocation: us-east-1
+          s3CacheInsecure: true
+          secretName: rustfs-cache-credentials
     installCertmanager: false
     nginx-ingress:
       enabled: false
