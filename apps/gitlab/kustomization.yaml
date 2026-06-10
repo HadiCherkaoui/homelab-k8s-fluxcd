@@ -6,7 +6,6 @@ resources:
   - pvc-rustfs.yaml
   - deploy-rustfs.yaml
   - svc-rustfs.yaml
-  - gitlab-public-key.config.yaml
   - helmrelease.yaml
   - ingressroute-gitlab.yaml
   - ingressroute-registry.yaml
