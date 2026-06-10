@@ -3,6 +3,9 @@ kind: Kustomization
 namespace: gitlab
 resources:
   - namespace.yaml
+  - pvc-rustfs.yaml
+  - deploy-rustfs.yaml
+  - svc-rustfs.yaml
   - gitlab-public-key.config.yaml
   - helmrelease.yaml
   - ingressroute-gitlab.yaml
