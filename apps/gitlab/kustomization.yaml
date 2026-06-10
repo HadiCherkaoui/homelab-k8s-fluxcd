@@ -6,6 +6,10 @@ resources:
   - pvc-rustfs.yaml
   - deploy-rustfs.yaml
   - svc-rustfs.yaml
+  - pvc-valkey.yaml
+  - deploy-valkey.yaml
+  - svc-valkey.yaml
+  - cnpg-cluster.yaml
   - helmrelease.yaml
   - ingressroute-gitlab.yaml
   - ingressroute-registry.yaml

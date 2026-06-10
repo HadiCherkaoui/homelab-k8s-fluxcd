@@ -98,6 +98,21 @@ spec:
         subject_suffix: ""
       monitoring:
         enabled: true
+      psql:
+        host: gitlab-postgres-rw.gitlab.svc
+        port: 5432
+        database: gitlabhq_production
+        username: gitlab
+        password:
+          secret: gitlab-postgres-app
+          key: password
+      redis:
+        host: gitlab-valkey.gitlab.svc
+        port: 6379
+        auth:
+          enabled: true
+          secret: gitlab-valkey-secret
+          key: password
     gitlab:
       toolbox:
         backups:
@@ -174,16 +189,6 @@ spec:
       enabled: false
     prometheus:
       install: false
-    postgresql:
-      primary:
-        persistence:
-          storageClass: fast
-          size: 20Gi
-    redis:
-      master:
-        persistence:
-          storageClass: fast
-          size: 8Gi
   valuesFrom:
     - kind: Secret
       name: gitlab-smtp
