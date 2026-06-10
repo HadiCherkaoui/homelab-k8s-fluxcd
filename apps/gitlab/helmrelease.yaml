@@ -32,7 +32,10 @@ spec:
           providers:
             - secret: gitlab-authentik
               key: provider
-      edition: ce
+        # Service Ping / usage statistics opt-out (Omnibus: gitlab_rails['usage_ping_enabled'] = false)
+        usagePing:
+          enabled: false
+      edition: ee
       hosts:
         domain: cherkaoui.ch
         https: true
@@ -105,6 +108,16 @@ spec:
         persistence:
           storageClass: fast
           size: 8Gi
+    gitlab-shell:
+      extraVolumes:
+        - name: license-key
+          configMap:
+            name: gitlab-license-key
+      extraVolumeMounts:
+        - name: license-key
+          readOnly: true
+          mountPath: /opt/gitlab/embedded/service/gitlab-rails/.license_encryption_key.pub
+          subPath: .license_encryption_key.pub
     minio:
       persistence:
         storageClass: tank

@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: gitlab
 resources:
   - namespace.yaml
+  - gitlab-public-key.config.yaml
   - helmrelease.yaml
   - ingressroute-gitlab.yaml
   - ingressroute-registry.yaml
