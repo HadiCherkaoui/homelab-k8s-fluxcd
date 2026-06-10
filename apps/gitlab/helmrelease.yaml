@@ -19,6 +19,8 @@ spec:
     global:
       kas:
         enabled: false
+      minio:
+        enabled: false
       gitaly:
         enabled: true
       appConfig:
