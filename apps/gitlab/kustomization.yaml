@@ -10,5 +10,4 @@ resources:
   - helmrelease.yaml
   - ingressroute-gitlab.yaml
   - ingressroute-registry.yaml
-  - ingressroute-minio.yaml
   - ingressroutetcp-ssh.yaml

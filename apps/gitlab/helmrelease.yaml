@@ -163,10 +163,6 @@ spec:
         persistence:
           storageClass: fast
           size: 8Gi
-    minio:
-      persistence:
-        storageClass: tank
-        size: 50Gi
     extraVolumes: |
       - name: license-key
         configMap:
