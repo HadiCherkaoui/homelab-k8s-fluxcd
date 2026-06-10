@@ -78,15 +78,6 @@ spec:
         maxReplicas: 1
         autoscaling:
           enabled: true
-        extraVolumes:
-          - name: license-key
-            configMap:
-              name: gitlab-license-key
-        extraVolumeMounts:
-          - name: license-key
-            readOnly: true
-            mountPath: /srv/gitlab/.license_encryption_key.pub
-            subPath: .license_encryption_key.pub
       sidekiq:
         minReplicas: 1
         maxReplicas: 1
@@ -120,6 +111,15 @@ spec:
       persistence:
         storageClass: tank
         size: 50Gi
+    extraVolumes: |
+      - name: license-key
+        configMap:
+          name: gitlab-license-key
+    extraVolumeMounts: |
+      - name: license-key
+        readOnly: true
+        mountPath: /srv/gitlab/.license_encryption_key.pub
+        subPath: .license_encryption_key.pub
   valuesFrom:
     - kind: Secret
       name: gitlab-smtp
