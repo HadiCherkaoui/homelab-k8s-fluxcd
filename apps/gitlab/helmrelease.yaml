@@ -132,6 +132,22 @@ spec:
       storage:
         secret: registry-storage
         key: config
+    gitlab-runner:
+      runners:
+        config: |
+          [[runners]]
+            [runners.kubernetes]
+              image = "ubuntu:22.04"
+            [runners.cache]
+              Type = "s3"
+              Shared = true
+              [runners.cache.s3]
+                ServerAddress = "rustfs.gitlab.svc.cluster.local:9000"
+                BucketName = "runner-cache"
+                BucketLocation = "us-east-1"
+                Insecure = true
+        cache:
+          secretName: rustfs-cache-credentials
     installCertmanager: false
     nginx-ingress:
       enabled: false
