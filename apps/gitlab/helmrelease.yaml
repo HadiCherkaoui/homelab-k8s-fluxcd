@@ -114,11 +114,29 @@ spec:
         maxReplicas: 1
         autoscaling:
           enabled: true
+        extraVolumes: |
+          - name: custom-license-key
+            secret:
+              secretName: gitlab-license-key
+        extraVolumeMounts: |
+          - name: custom-license-key
+            mountPath: /srv/gitlab/.license_encryption_key.pub
+            subPath: .license_encryption_key.pub
+            readOnly: true
       sidekiq:
         minReplicas: 1
         maxReplicas: 1
         autoscaling:
           enabled: true
+        extraVolumes: |
+          - name: custom-license-key
+            secret:
+              secretName: gitlab-license-key
+        extraVolumeMounts: |
+          - name: custom-license-key
+            mountPath: /srv/gitlab/.license_encryption_key.pub
+            subPath: .license_encryption_key.pub
+            readOnly: true
       gitlab-shell:
         minReplicas: 1
       registry:
@@ -138,7 +156,7 @@ spec:
           [[runners]]
             [runners.kubernetes]
               image = "ubuntu:22.04"
-	      priviledged = true
+              priviledged = true
             [runners.cache]
               Type = "s3"
               Shared = true
