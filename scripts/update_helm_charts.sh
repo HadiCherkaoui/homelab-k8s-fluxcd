@@ -196,6 +196,7 @@ invalid_versions="$(
 		grep -v '^$' |
 		grep -v '^null' |
 		grep -v '^default/:=$' |
+		grep -Ev ':\.?/' |
 		grep -Ev '=[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z\.-]+)?$' || true
 )"
 if [[ -n "$invalid_versions" ]]; then
