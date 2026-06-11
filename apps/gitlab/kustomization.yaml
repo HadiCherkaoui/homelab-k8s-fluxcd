@@ -9,6 +9,9 @@ resources:
   - pvc-valkey.yaml
   - deploy-valkey.yaml
   - svc-valkey.yaml
+  - pvc-elasticsearch.yaml
+  - deploy-elasticsearch.yaml
+  - svc-elasticsearch.yaml
   - cnpg-cluster.yaml
   - helmrelease.yaml
   - ingressroute-gitlab.yaml

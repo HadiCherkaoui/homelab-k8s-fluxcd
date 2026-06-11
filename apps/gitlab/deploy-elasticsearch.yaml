@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitlab-elasticsearch
+  namespace: gitlab
+  labels:
+    app.kubernetes.io/name: elasticsearch
+    app.kubernetes.io/part-of: gitlab
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate          # single RWO volume
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: elasticsearch
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: elasticsearch
+        app.kubernetes.io/part-of: gitlab
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:9.4.1
+          env:
+            # --- single-node, plaintext HTTP, basic auth (in-cluster only) ---
+            - name: discovery.type
+              value: single-node
+            - name: cluster.name
+              value: gitlab-search
+            - name: xpack.security.enabled
+              value: "true"
+            - name: xpack.security.http.ssl.enabled
+              value: "false"
+            - name: xpack.security.transport.ssl.enabled
+              value: "false"
+            - name: node.store.allow_mmap
+              value: "false"          # avoids a vm.max_map_count sysctl tweak on the nodes
+            - name: bootstrap.memory_lock
+              value: "false"          # don't pin pages — let the kernel reclaim when idle
+            # --- heap floats 512Mi -> 2Gi and is uncommitted to the OS when idle ---
+            - name: ES_JAVA_OPTS
+              value: "-Xms512m -Xmx2g -XX:+UseG1GC -XX:G1PeriodicGCInterval=60000 -XX:-G1PeriodicGCInvokesConcurrent"
+            - name: ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-elasticsearch
+                  key: ELASTIC_PASSWORD
+          ports:
+            - name: http
+              containerPort: 9200
+          startupProbe:
+            tcpSocket:
+              port: 9200
+            failureThreshold: 30
+            periodSeconds: 5          # up to ~150s to boot before liveness applies
+          readinessProbe:
+            tcpSocket:
+              port: 9200
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 9200
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          volumeMounts:
+            - name: data
+              mountPath: /usr/share/elasticsearch/data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: elasticsearch-data
