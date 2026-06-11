@@ -175,7 +175,7 @@ spec:
           [[runners]]
             [runners.kubernetes]
               image = "ubuntu:22.04"
-              priviledged = true
+              privileged = true
             [runners.cache]
               Type = "s3"
               Shared = true
