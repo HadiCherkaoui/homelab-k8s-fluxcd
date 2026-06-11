@@ -12,25 +12,9 @@ spec:
   storage:
     storageClass: fast
     size: 20Gi
-  # One-time migration: pg_dump/restore the bundled DB into this cluster on bootstrap.
+  # DB imported one-time from the bundled gitlab-postgresql on 2026-06-11.
+  # Import scaffolding (bootstrap.initdb.import + externalClusters) removed — no longer needed.
   bootstrap:
     initdb:
       database: gitlabhq_production
       owner: gitlab
-      import:
-        type: microservice
-        databases:
-          - gitlabhq_production
-        source:
-          externalCluster: bundled-gitlab-pg
-  externalClusters:
-    - name: bundled-gitlab-pg
-      connectionParameters:
-        host: gitlab-postgresql.gitlab.svc
-        port: "5432"
-        user: postgres
-        dbname: gitlabhq_production
-        sslmode: prefer
-      password:
-        name: gitlab-postgresql-password
-        key: postgresql-postgres-password
