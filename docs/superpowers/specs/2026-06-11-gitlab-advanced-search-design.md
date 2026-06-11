@@ -1,7 +1,7 @@
 # GitLab Advanced Search via Elasticsearch — Design
 
 - **Date:** 2026-06-11
-- **Status:** Approved (design)
+- **Status:** Implemented & verified live 2026-06-11 — ES 9.4.1 deployed (commit `4973697`); Advanced Search enabled via API; 24/24 projects indexed; search confirmed across blobs/commits/MRs/projects/users. Deviation from plan: enablement done via `glab` API (not toolbox rake) because the toolbox can't see the Ultimate license — see memory `project_gitlab_advanced_search`.
 - **Scope:** Advanced Search only. Advanced SAST is explicitly out of scope — the user
   configures it themselves; it is a `.gitlab-ci.yml` variable
   (`GITLAB_ADVANCED_SAST_ENABLED: "true"`) + the SAST template, with **no cluster
