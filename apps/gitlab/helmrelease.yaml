@@ -170,6 +170,7 @@ spec:
         secret: registry-storage
         key: config
     gitlab-runner:
+      concurrent: 5
       runners:
         config: |
           [[runners]]
