@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dind-daemon-config
+  namespace: gitlab
+data:
+  # Pin the Docker-in-Docker bridge (docker0) MTU to match the Cilium pod
+  # network path (1280: VXLAN over Tailscale). Without this, docker0 defaults
+  # to 1500; nested build-container traffic is NAT'd by dockerd and escapes
+  # Cilium's MSS clamping, so packets >1280 (e.g. crates.io TLS handshakes)
+  # are silently blackholed and cargo/curl time out after 30s. npm survives
+  # only because Cloudflare clamps MSS at its edge.
+  daemon.json: |
+    {
+      "mtu": 1280
+    }

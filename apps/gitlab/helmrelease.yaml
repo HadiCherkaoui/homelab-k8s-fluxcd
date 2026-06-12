@@ -186,6 +186,18 @@ spec:
             [runners.kubernetes]
               image = "ubuntu:24.04"
               privileged = true
+              # docker0 in the dind service defaults to MTU 1500, but the Cilium
+              # pod-network path is 1280 (VXLAN over Tailscale). Nested build
+              # traffic is NAT'd by dockerd and bypasses Cilium's MSS clamping,
+              # so >1280 packets (e.g. crates.io TLS handshakes) get blackholed
+              # and time out. Pin docker0 to 1280 via daemon.json, mounted into
+              # the dind service container (k8s executor mounts volumes into
+              # service containers too).
+              [[runners.kubernetes.volumes.config_map]]
+                name = "dind-daemon-config"
+                mount_path = "/etc/docker/daemon.json"
+                sub_path = "daemon.json"
+                read_only = true
             [runners.cache]
               Type = "s3"
               Shared = true

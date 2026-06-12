@@ -13,6 +13,7 @@ resources:
   - deploy-elasticsearch.yaml
   - svc-elasticsearch.yaml
   - cnpg-cluster.yaml
+  - configmap-dind-daemon.yaml
   - helmrelease.yaml
   - ingressroute-gitlab.yaml
   - ingressroute-registry.yaml
