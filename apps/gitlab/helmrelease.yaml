@@ -125,6 +125,15 @@ spec:
             config:
               secret: gitlab-s3cfg
               key: config
+        extraVolumes: |
+          - name: custom-license-key
+            secret:
+              secretName: gitlab-license-key
+        extraVolumeMounts: |
+          - name: custom-license-key
+            mountPath: /srv/gitlab/.license_encryption_key.pub
+            subPath: .license_encryption_key.pub
+            readOnly: true
       migrations:
         resources:
           requests: {}
@@ -175,7 +184,7 @@ spec:
         config: |
           [[runners]]
             [runners.kubernetes]
-              image = "ubuntu:22.04"
+              image = "ubuntu:24.04"
               privileged = true
             [runners.cache]
               Type = "s3"
