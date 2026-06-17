@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: anvil
-      version: "1.0.14"
+      version: "1.0.15"
       sourceRef:
         kind: HelmRepository
         name: anvil
@@ -27,7 +27,6 @@ spec:
       pullPolicy: Always
     secrets:
       cfApiKeyExistingSecret: anvil-cf
-
     # CurseForge feature is active (cfApiKeyExistingSecret set), so the
     # backend requires a snapshots PVC for tar-based modpack backups —
     # startup fails closed otherwise (ANVIL_MODPACK_SNAPSHOTS_PVC unset).
@@ -41,9 +40,7 @@ spec:
         # no chart-side consumer (only runtime backup/restore Jobs mount it).
         storageClass: tank-immediate
         size: 100Gi
-
     mcNamespace: mc
-
     # mcDefaults.storageClassName is REQUIRED — the chart fails to render
     # without it. `tank` is the cluster default-marked SC (zfs.csi.openebs.io)
     # per docs/cluster-profile.md in the anvil repo.
@@ -73,12 +70,10 @@ spec:
       # Image for backup, restore, and snapshot-cleanup Jobs. Restated
       # for the same reason.
       busyboxImage: "busybox:1.36"
-
     persistence:
       enabled: true
       storageClassName: fast
       size: 1Gi
-
     # Panel pod budget. Homelab is overprovisioned; bump the limit if the
     # capabilities endpoint or modpack poller hits the ceiling.
     resources:
@@ -88,12 +83,10 @@ spec:
       limits:
         cpu: 1000m
         memory: 512Mi
-
     rbac:
       create: true
       # Empty -> chart auto-generates a SA named after the release.
       serviceAccountName: ""
-
     ingress:
       enabled: true
       entryPoint: websecure
@@ -104,7 +97,6 @@ spec:
       tls:
         enabled: true
         certResolver: letsencrypt
-
     # Authentik OIDC. clientSecret + sessionKey live in the SOPS-encrypted
     # `anvil-oidc` Secret (referenced by `existingSecret`). The redirectUrl
     # must match the Redirect URIs field in the Authentik provider exactly.
@@ -117,5 +109,4 @@ spec:
       # Authentik application is bound to is allowed in.
       allowedSubs: ""
       existingSecret: anvil-oidc
-
     logLevel: info
