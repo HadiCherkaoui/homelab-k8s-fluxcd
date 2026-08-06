@@ -14,7 +14,14 @@ spec:
     - match: Host(`cherkaoui.ch`) && PathPrefix(`/`)
       kind: Rule
       middlewares:
-        - name: security-headers-webhook
+        # Was security-headers-webhook, whose only difference is
+        # `connect-src https://discord.com` — needed back when the browser
+        # posted the enquiry to Discord itself. It now posts to /api/anfrage
+        # on this origin, so 'self' covers it and the exemption would only
+        # widen where an injected script could exfiltrate to.
+        # (ingress-hadi still uses the webhook variant; the portfolio has not
+        # made the same move yet.)
+        - name: security-headers
           namespace: websites
       services:
         - name: cherkaoui-homepage
