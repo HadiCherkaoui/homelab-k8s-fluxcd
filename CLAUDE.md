@@ -187,10 +187,24 @@ lbx set -n <k8s-namespace> <secret-name> KEY1=VALUE1 KEY2=VALUE2 ...
 
 The controller picks them up on the next sync (~60 s). Existing secrets carry the `app.kubernetes.io/managed-by=lockbox-k8s-controller` label. List them with `lbx list`; inspect with `lbx get <name>`.
 
+Values that must not appear in `argv` (webhook URLs, tokens) go in via stdin instead:
+
+```bash
+printf '%s' "$VALUE" | lbx set -n <ns> <secret-name> --from-file KEY=-
+```
+
+**Non-`Opaque` Secrets are supported** — pass `--type`, e.g. a registry pull secret:
+
+```bash
+lbx set -n websites registry-cherkaoui \
+  --type kubernetes.io/dockerconfigjson --from-file .dockerconfigjson=-
+```
+
+The controller applies `--type` **on create only**, because the Kubernetes Secret `type` field is immutable. Converting an existing Secret therefore means `kubectl delete secret` first, then letting the controller recreate it — an in-place `lbx set --type` on a live Secret silently keeps the old type.
+
 **Stay SOPS-managed (do NOT push to lockbox):**
 
-- lockbox bootstrap material itself — `secrets/lockbox/{lockbox-auth,lockbox-config,lockbox-credentials}.secret.yaml`.
-- Secrets whose `type:` is anything other than `Opaque` (e.g. `kubernetes.io/dockerconfigjson`, `kubernetes.io/tls`). The controller writes every managed Secret as `Opaque`; kubelet and TLS consumers silently reject the substitution.
+- lockbox bootstrap material itself — `secrets/lockbox/{lockbox-auth,lockbox-config,lockbox-credentials}.secret.yaml`. Everything else in the cluster has migrated; `secrets/` now holds only these three.
 
 ### CRITICAL: Never Commit Plaintext Secrets
 
@@ -347,7 +361,7 @@ Before committing changes:
 
 1. **Secret Encryption**: All secrets must be SOPS-encrypted
 2. **Namespace Isolation**: Each app has its own namespace
-3. **Network Security**: 
+3. **Network Security**:
    - Traefik middleware for security headers
    - Cilium network policies (via Flux)
 4. **TLS**: All external traffic uses TLS via Let's Encrypt (DNS challenge with Cloudflare)

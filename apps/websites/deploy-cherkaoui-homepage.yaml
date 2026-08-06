@@ -14,9 +14,51 @@ spec:
       labels:
         app: cherkaoui-homepage
     spec:
+      # The GitLab project went private, so the registry no longer serves this
+      # image anonymously. Credentials are a read_registry-only deploy token.
+      imagePullSecrets:
+        - name: registry-cherkaoui
       containers:
         - name: cherkaoui-homepage
           image: registry.cherkaoui.ch/hadicherkaoui/cherkaoui-homepage:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
               name: main
+          envFrom:
+            # DISCORD_WEBHOOK_URL. The contact form moved server-side; the
+            # binary exits 1 without it, so a missing secret fails loudly.
+            - secretRef:
+                name: cherkaoui-homepage
+          env:
+            # Baked into the image, restated here because it is the deployment
+            # that knows this pod is only reachable through Traefik. If that
+            # ever stops being true, set 0 or clients spoof X-Forwarded-For
+            # past the per-IP rate limit.
+            - name: TRUST_PROXY
+              value: "1"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: main
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: main
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          # scratch image: one static binary, reads its files and nothing else.
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
