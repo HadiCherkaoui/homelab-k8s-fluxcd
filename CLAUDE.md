@@ -49,15 +49,10 @@ homelab-k8s-fluxcd/
 │   ├── openwebui/              # AI chat interface
 │   ├── craftycontroller/       # Minecraft server management
 │   └── wg-easy/                # WireGuard VPN
-├── secrets/                    # SOPS-encrypted secrets only
-│   ├── media/
-│   ├── scolx/
-│   ├── gitlab/
-│   ├── monitoring/
-│   ├── paperless/
-│   └── traefik/
+├── secrets/                    # SOPS-encrypted secrets — lockbox bootstrap only
+│   └── lockbox/                # everything else now lives in lockbox
 ├── scripts/                    # Helper scripts
-│   ├── encrypt-secret.sh       # Create encrypted secrets
+│   ├── encrypt-secret.sh       # Create encrypted secrets (bootstrap only)
 │   ├── update_helm_charts.sh   # Automated version updates
 │   └── remove-resource-limits.sh # Debug helper
 ├── .sops.yaml                  # SOPS encryption configuration
@@ -72,7 +67,7 @@ homelab-k8s-fluxcd/
 - **IngressRoutes**: `ingressroute-<name>.yaml` or `ingress-<name>.yaml`
 - **PVCs**: `pvc-<name>.yaml`
 - **CronJobs**: `cronjob-<name>.yaml`
-- **Secrets**: `<name>.secret.yaml` (must be SOPS-encrypted)
+- **Secrets**: provisioned with `lbx`, not committed. The only files left under `secrets/` are the lockbox bootstrap ones, named `<name>.secret.yaml` and SOPS-encrypted.
 - **Kustomization**: `kustomization.yaml`
 - **Namespaces**: `namespace.yaml`
 
@@ -174,6 +169,48 @@ spec:
     requests:
       storage: <size>Gi
 ```
+
+### Images from Private GitLab Projects
+
+`registry.cherkaoui.ch` serves images of **public** GitLab projects anonymously,
+so most deployments here need no pull credentials. A project flipped to private
+starts returning `401` on pull — and nothing breaks until the next pod restart,
+because the running pod keeps its already-pulled image. The failure surfaces
+later as `ImagePullBackOff`, far from the change that caused it.
+
+Check visibility before trusting a bare `image:`:
+
+```bash
+glab api "projects?search=<name>&membership=true" | jq -r '.[] | "\(.visibility) \(.path_with_namespace)"'
+```
+
+Give the namespace a scoped, read-only deploy token — never personal
+credentials, and never a token with more than `read_registry`:
+
+```bash
+glab api --method POST \
+  "projects/<id>/deploy_tokens?name=k8s-<ns>-pull&username=k8s-<ns>-pull&scopes[]=read_registry" \
+  --header "Content-Type: application/json" --input /dev/null
+```
+
+(`glab` cannot send JSON arrays via `--field`; query params are the way.)
+
+Store it as a `dockerconfigjson` Secret and reference it:
+
+```bash
+jq -nc --arg u "<username>" --arg p "<token>" --arg a "$(printf '<username>:<token>' | base64 -w0)" \
+  '{auths:{"registry.cherkaoui.ch":{username:$u,password:$p,auth:$a}}}' \
+  | lbx set -n <ns> registry-cherkaoui \
+      --type kubernetes.io/dockerconfigjson --from-file .dockerconfigjson=-
+```
+
+```yaml
+spec:
+  imagePullSecrets:
+    - name: registry-cherkaoui
+```
+
+Live example: `apps/websites/deploy-cherkaoui-homepage.yaml`.
 
 ## Secret Management
 
@@ -343,8 +380,8 @@ In kustomization files, order resources logically:
 Before committing changes:
 
 - [ ] YAML syntax is valid (`yq eval`)
-- [ ] Kustomize builds successfully (`kustomize build`)
-- [ ] Secrets are encrypted (check for `sops:` section)
+- [ ] Kustomize builds successfully (`kustomize build`, or `kubectl kustomize` — the standalone binary is not always installed)
+- [ ] Secrets go through `lbx`; anything under `secrets/` has a `sops:` section
 - [ ] Namespaces are explicitly created
 - [ ] HelmRelease `createNamespace: false` is set
 - [ ] File names follow conventions
@@ -359,7 +396,7 @@ Before committing changes:
 
 ## Security Considerations
 
-1. **Secret Encryption**: All secrets must be SOPS-encrypted
+1. **Secret Handling**: secrets live in lockbox, never in Git. The lockbox bootstrap material under `secrets/` is SOPS-encrypted.
 2. **Namespace Isolation**: Each app has its own namespace
 3. **Network Security**:
    - Traefik middleware for security headers
@@ -384,6 +421,14 @@ This enables:
 - CSP headers
 - Permissions policy
 
+The `websites` namespace keeps its own local copies (`namespace: websites`),
+including a `security-headers-webhook` variant. That variant differs in exactly
+one way — `connect-src` also allows `https://discord.com` — for sites whose
+contact form posts to a Discord webhook straight from the browser. **Use plain
+`security-headers` for new routes.** A form that posts to its own backend is
+covered by `'self'`, and the exemption only widens where an injected script
+could exfiltrate to. `ingress-hadi` is the remaining user.
+
 ## Common Tasks
 
 ### Adding a New Application
@@ -407,13 +452,11 @@ This enables:
 ### Adding a Secret
 
 ```bash
-./scripts/encrypt-secret.sh \
-  --namespace <namespace> \
-  --name <secret-name> \
-  --data KEY1=VALUE1 \
-  --data KEY2=VALUE2 \
-  --out secrets/<app>/<secret-name>.secret.yaml
+lbx set -n <namespace> <secret-name> KEY1=VALUE1 KEY2=VALUE2
 ```
+
+Nothing is committed — the controller creates the Secret within ~60 s. See
+[Secret Management](#secret-management) for stdin input and non-`Opaque` types.
 
 Then reference in your deployment:
 
