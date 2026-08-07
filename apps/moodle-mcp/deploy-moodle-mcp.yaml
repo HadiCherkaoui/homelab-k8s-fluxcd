@@ -30,8 +30,21 @@ spec:
           type: RuntimeDefault
       containers:
         - name: moodle-mcp
-          image: registry.cherkaoui.ch/hadicherkaoui/moodle-mcp:latest
-          imagePullPolicy: Always
+          # Pinned to a commit, not :latest. With a floating tag the pod spec
+          # never changes, so Flux has nothing to reconcile and a newly built
+          # image only lands via `kubectl rollout restart` — which Flux then
+          # reverts a few minutes later, because the restart annotation is not
+          # in git. That reverting restart kills the pod a second time, and MCP
+          # sessions live in pod memory, so a connected client loses its session
+          # mid-conversation and every call after that fails.
+          #
+          # Deploying is therefore a commit here: bump this to the app's commit
+          # sha (CI publishes one tag per commit) and let Flux do the rollout.
+          # It also makes an eviction or node reboot re-pull the same image
+          # rather than whatever :latest happens to be by then.
+          image: registry.cherkaoui.ch/hadicherkaoui/moodle-mcp:cbf1d6fa91b7ee8e0d37255b81110c1ff020a409
+          # The tag is immutable, so there is nothing to re-pull.
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
               name: http
