@@ -7,8 +7,7 @@ metadata:
     app: moodle-mcp
 spec:
   replicas: 1
-  # Sessions live in pod memory and the spool is an emptyDir, so a second pod
-  # loses sessions and 404s the first one's download links.
+  # One pod: sessions live in its memory, the spool is an emptyDir.
   strategy:
     type: Recreate
   selector:
@@ -19,11 +18,6 @@ spec:
       labels:
         app: moodle-mcp
     spec:
-      # No imagePullSecrets: the GitLab project is public, so the registry
-      # serves this image anonymously. If it is ever flipped back to private,
-      # nothing breaks until the next pod restart — the running pod keeps the
-      # image it already pulled — and it then surfaces as ImagePullBackOff far
-      # from the change that caused it.
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
@@ -32,20 +26,10 @@ spec:
           type: RuntimeDefault
       containers:
         - name: moodle-mcp
-          # Pinned to a commit, not :latest. With a floating tag the pod spec
-          # never changes, so Flux has nothing to reconcile and a newly built
-          # image only lands via `kubectl rollout restart` — which Flux then
-          # reverts a few minutes later, because the restart annotation is not
-          # in git. That reverting restart kills the pod a second time, and MCP
-          # sessions live in pod memory, so a connected client loses its session
-          # mid-conversation and every call after that fails.
-          #
-          # Deploying is therefore a commit here: bump this to the app's commit
-          # sha (CI publishes one tag per commit) and let Flux do the rollout.
-          # It also makes an eviction or node reboot re-pull the same image
-          # rather than whatever :latest happens to be by then.
+          # Commit sha, not :latest — a floating tag never changes the pod
+          # spec, so Flux has nothing to roll and only a manual restart moves
+          # it, which Flux then reverts. Bump this to deploy.
           image: registry.cherkaoui.ch/hadicherkaoui/moodle-mcp:1fd4c8059e5abfb85a32f8eabe2b5f354dea74b4
-          # The tag is immutable, so there is nothing to re-pull.
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -54,9 +38,8 @@ spec:
             # Setting a bind address is what selects HTTP mode over stdio.
             - name: MOODLE_MCP_HTTP_BIND
               value: "0.0.0.0:8080"
-            # Must be an origin with no path: the server appends
-            # /.well-known/... to this, which only matches RFC 9728 while the
-            # path is empty. Hence a host per MCP server rather than subpaths.
+            # Must be an origin with no path — the server appends
+            # /.well-known/... and that only matches RFC 9728 when it is empty.
             - name: MOODLE_MCP_PUBLIC_URL
               value: https://moodle.mcp.cherkaoui.ch
             # MOODLE_MCP_SPOOL_URL defaults to <public URL>/files.
@@ -65,8 +48,7 @@ spec:
             - name: RUST_LOG
               value: moodle_mcp=info
           envFrom:
-            # Moodle credentials + OIDC issuer/audience. Without the issuer the
-            # server leaves /mcp open.
+            # Without MOODLE_MCP_OIDC_ISSUER the server leaves /mcp open.
             - secretRef:
                 name: moodle-mcp
           volumeMounts:

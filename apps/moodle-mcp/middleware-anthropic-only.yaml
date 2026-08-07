@@ -4,11 +4,10 @@ metadata:
   name: anthropic-only
   namespace: moodle-mcp
 spec:
-  # OAuth gates /mcp; this removes the rest of the internet. No ipStrategy
-  # needed — these records are DNS-only rather than Cloudflare-proxied, and
-  # Cilium passes the real client address through.
+  # OAuth gates /mcp; this removes the rest of the internet. No ipStrategy —
+  # DNS is not Cloudflare-proxied, so the remote address is the real client.
   ipAllowList:
     sourceRange:
-      # Anthropic's *outbound* range. Not the 160.79.104.0/23 on the same docs
-      # page: that one is inbound, and narrowing to it blocks half their egress.
+      # Anthropic's *outbound* range. Not the /23 on the same docs page —
+      # that is inbound, and narrowing to it blocks half their egress.
       - 160.79.104.0/21
