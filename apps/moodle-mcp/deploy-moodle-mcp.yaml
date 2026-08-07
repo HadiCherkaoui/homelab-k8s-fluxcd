@@ -7,11 +7,8 @@ metadata:
     app: moodle-mcp
 spec:
   replicas: 1
-  # One replica, and Recreate so a rollout never briefly runs two. MCP sessions
-  # are held in the pod's memory, so a second pod answers mid-conversation
-  # requests with "session not found"; the spool is an emptyDir, so a download
-  # URL issued by one pod is a 404 on the other. Both failures are intermittent
-  # rather than clean, which is what makes them expensive to diagnose.
+  # Sessions live in pod memory and the spool is an emptyDir, so a second pod
+  # loses sessions and 404s the first one's download links.
   strategy:
     type: Recreate
   selector:
@@ -22,13 +19,7 @@ spec:
       labels:
         app: moodle-mcp
     spec:
-      # The GitLab project is private, so the registry no longer serves this
-      # image anonymously. Credentials are a read_registry-only deploy token,
-      # scoped to this project alone.
-      #
-      # Named per-namespace rather than a bare `registry-cherkaoui`: lockbox
-      # entry names are a single global namespace, so reusing that name here
-      # would overwrite the entry the websites namespace pulls with.
+      # Private project. Namespaced name because lockbox names are global.
       imagePullSecrets:
         - name: registry-cherkaoui-moodle-mcp
       securityContext:
@@ -45,40 +36,28 @@ spec:
             - containerPort: 8080
               name: http
           env:
-            # Setting a bind address is what switches the server from stdio to
-            # HTTP mode. Nothing else selects it.
+            # Setting a bind address is what selects HTTP mode over stdio.
             - name: MOODLE_MCP_HTTP_BIND
               value: "0.0.0.0:8080"
-            # Every URL the server hands out derives from this: the resource
-            # identifier in the OAuth metadata, the WWW-Authenticate pointer,
-            # and the spooled download links. It must equal the URL typed into
-            # claude.ai, path included, or discovery fails silently.
-            #
-            # It also has to name an origin with no path component. The server
-            # builds its metadata URL as <public URL>/.well-known/... , which
-            # only matches RFC 9728 — well-known inserted between authority and
-            # path — while that path is empty. Hence a host per MCP server
-            # rather than subpaths under a shared one.
+            # Must be an origin with no path: the server appends
+            # /.well-known/... to this, which only matches RFC 9728 while the
+            # path is empty. Hence a host per MCP server rather than subpaths.
             - name: MOODLE_MCP_PUBLIC_URL
               value: https://moodle.mcp.cherkaoui.ch
+            # MOODLE_MCP_SPOOL_URL defaults to <public URL>/files.
             - name: MOODLE_MCP_SPOOL_DIR
               value: /var/spool/moodle-mcp
-            # MOODLE_MCP_SPOOL_URL is deliberately unset: it defaults to
-            # <public URL>/files, which is exactly where this server serves them.
             - name: RUST_LOG
               value: moodle_mcp=info
           envFrom:
-            # MOODLE_{URL,USERNAME,PASSWORD} plus MOODLE_MCP_OIDC_{ISSUER,AUDIENCE}.
-            # The issuer is the load-bearing one: without it the server logs a
-            # warning and leaves /mcp open to anyone who can reach it, which is
-            # full read-write on the Moodle account, submissions included.
+            # Moodle credentials + OIDC issuer/audience. Without the issuer the
+            # server leaves /mcp open.
             - secretRef:
                 name: moodle-mcp
           volumeMounts:
             - name: spool
               mountPath: /var/spool/moodle-mcp
-          # /health is outside the auth boundary — only /mcp is gated — so a
-          # probe carrying no credential still answers 200.
+          # Only /mcp is gated, so an uncredentialed probe still gets 200.
           readinessProbe:
             httpGet:
               path: /health
@@ -88,33 +67,21 @@ spec:
             httpGet:
               path: /health
               port: http
-            # The server logs into Moodle before it binds the listener, so the
-            # first probes race two HTTP round trips. A failed login exits the
-            # process rather than hanging, so this delay only avoids a redundant
-            # restart on top of a crash that already reports itself.
             initialDelaySeconds: 10
             periodSeconds: 30
           resources:
             requests:
               cpu: 10m
               memory: 32Mi
-          # scratch image: one static binary that reads its config and writes
-          # the spool. Note there is no /tmp — anything that ever needs one has
-          # to be given another emptyDir.
+          # scratch image: one static binary, and no /tmp.
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
             capabilities:
               drop: ["ALL"]
       volumes:
-        # tmpfs, not a PVC. Spooled files are coursework, they live at most 15
-        # minutes, and they are unlinked the moment they are fetched — losing
-        # the directory costs an expired link the model can just re-request.
-        # Memory medium keeps coursework off disk entirely.
-        #
-        # sizeLimit is the only thing bounding this tmpfs, since the pod sets no
-        # memory limit. Don't drop it: without it a runaway fetch loop consumes
-        # node memory rather than failing.
+        # tmpfs: spooled files live 15 minutes and are unlinked once fetched.
+        # sizeLimit is the only bound, since the pod sets no memory limit.
         - name: spool
           emptyDir:
             medium: Memory

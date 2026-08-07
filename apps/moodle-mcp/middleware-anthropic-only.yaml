@@ -4,30 +4,11 @@ metadata:
   name: anthropic-only
   namespace: moodle-mcp
 spec:
-  # Nothing but Claude has any business reaching this host, and what sits behind
-  # it is full read-write on a Moodle account — submissions included. OAuth is
-  # the real gate; this just removes the rest of the internet from the picture.
-  #
-  # No ipStrategy: Cloudflare serves these records DNS-only rather than proxied,
-  # and Cilium does not masquerade inbound traffic to the LoadBalancer, so the
-  # connection's remote address is the true client IP. Verified with
-  # `hubble observe --to-pod traefik/...`, which shows real public source
-  # addresses arriving. If these records are ever switched to proxied, every
-  # source becomes a Cloudflare IP and this blocks Claude outright — the fix
-  # then is `ipStrategy.depth: 1` reading X-Forwarded-For, not a wider range.
+  # OAuth gates /mcp; this removes the rest of the internet. No ipStrategy
+  # needed — these records are DNS-only rather than Cloudflare-proxied, and
+  # Cilium passes the real client address through.
   ipAllowList:
     sourceRange:
-      # Anthropic's published *outbound* range — the addresses they make MCP
-      # tool calls from, which is the direction that matters here. Shared
-      # across all their services; per-organization addresses are not offered.
-      #
-      # Do not "correct" this to the 160.79.104.0/23 on the same docs page.
-      # That one is the inbound range, where Anthropic *receives* connections,
-      # and narrowing to it would block half of Anthropic's egress. The
-      # addresses actually phased out are 34.162.{46.92,102.82,136.91,142.92,
-      # 183.95}/32, none of which were ever listed here.
-      #
-      # IPv4 only, matching the docs: the outbound section lists no IPv6, while
-      # the inbound one does. If an outbound IPv6 range is ever published it
-      # needs adding here, or Claude silently fails over v6.
+      # Anthropic's *outbound* range. Not the 160.79.104.0/23 on the same docs
+      # page: that one is inbound, and narrowing to it blocks half their egress.
       - 160.79.104.0/21

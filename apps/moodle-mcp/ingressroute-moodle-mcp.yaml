@@ -11,34 +11,14 @@ spec:
   entryPoints:
     - websecure
   routes:
-    # Spooled downloads, reachable from anywhere. This is not a hole in the
-    # allowlist below, it is the one route that cannot live behind it.
-    #
-    # The MCP connector and Claude's sandbox are different infrastructure with
-    # different egress. The connector arrives from Anthropic's published
-    # outbound range; the sandbox — which is what actually fetches these links,
-    # via curl — was observed arriving from 34.29.237.63, a GCP address nowhere
-    # near that range. Allowlisting the whole host silently made every PDF on
-    # the site unreadable while every tool call kept working.
-    #
-    # Pinning that single IP instead would be worse: one host route out of an
-    # undocumented, presumably rotating pool, failing the same invisible way
-    # the next time it moves.
-    #
-    # Unauthenticated by necessity and safe by construction — curl in the
-    # sandbox carries none of your credentials, so the URL *is* the capability:
-    # 128 bits from the OS random source, single-use (the file is unlinked once
-    # served), and expiring in 15 minutes.
-    #
-    # Method(`GET`) is the deliberate part. It keeps a world-reachable route
-    # from doubling as an exfiltration sink: anything else falls through to the
-    # allowlisted route below and gets a 403.
+    # Claude's sandbox fetches spool links from different infrastructure than
+    # the connector — observed at 34.29.237.63, GCP — so this cannot sit behind
+    # the allowlist. Under it, every tool call works while every PDF 403s.
+    # Safe open: 128-bit single-use tokens, 15 minute expiry. GET-only so a
+    # world-reachable route is not also an exfiltration sink. Priority is
+    # explicit so a shorter rewrite cannot reorder it behind the catch-all.
     - match: Host(`moodle.mcp.cherkaoui.ch`) && PathPrefix(`/files/`) && Method(`GET`)
       kind: Rule
-      # Explicit rather than relying on Traefik's longest-rule-first ordering.
-      # This rule is longer today, but that is a property of how it happens to
-      # be written — a shorter spelling later would silently reorder it behind
-      # the catch-all and start 403ing downloads again.
       priority: 100
       middlewares:
         - name: security-headers
@@ -47,10 +27,9 @@ spec:
         - name: moodle-mcp
           port: 8080
 
-    # Everything else: /mcp, the metadata documents, /health. The server
-    # validates the inbound Host header against an allowlist derived from
-    # MOODLE_MCP_PUBLIC_URL, so this must stay a plain Host rule with no prefix
-    # rewriting in front of it.
+    # Everything else: /mcp, the metadata documents, /health. Plain Host rule —
+    # the server checks the Host header against MOODLE_MCP_PUBLIC_URL, so no
+    # prefix rewriting can go in front of it.
     - match: Host(`moodle.mcp.cherkaoui.ch`)
       kind: Rule
       priority: 1
