@@ -17,9 +17,17 @@ spec:
   # then is `ipStrategy.depth: 1` reading X-Forwarded-For, not a wider range.
   ipAllowList:
     sourceRange:
-      # Anthropic's published egress range, shared across all their services;
-      # per-organization addresses are not offered. A narrower 160.79.104.0/23
-      # is also documented, and it sits inside this block — so the /21 stays
-      # correct whichever one a given service actually egresses from, and it
-      # admits no one who is not Anthropic either way.
+      # Anthropic's published *outbound* range — the addresses they make MCP
+      # tool calls from, which is the direction that matters here. Shared
+      # across all their services; per-organization addresses are not offered.
+      #
+      # Do not "correct" this to the 160.79.104.0/23 on the same docs page.
+      # That one is the inbound range, where Anthropic *receives* connections,
+      # and narrowing to it would block half of Anthropic's egress. The
+      # addresses actually phased out are 34.162.{46.92,102.82,136.91,142.92,
+      # 183.95}/32, none of which were ever listed here.
+      #
+      # IPv4 only, matching the docs: the outbound section lists no IPv6, while
+      # the inbound one does. If an outbound IPv6 range is ever published it
+      # needs adding here, or Claude silently fails over v6.
       - 160.79.104.0/21
