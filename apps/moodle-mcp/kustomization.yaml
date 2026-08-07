@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: moodle-mcp
+resources:
+  - namespace.yaml
+  - deploy-moodle-mcp.yaml
+  - svc-moodle-mcp.yaml
+  - ingressroute-moodle-mcp.yaml

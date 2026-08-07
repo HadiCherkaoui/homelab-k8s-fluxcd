@@ -1,0 +1,26 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: moodle-mcp
+  namespace: moodle-mcp
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    # One host, matched at the root. The server validates the inbound Host
+    # header against an allowlist derived from MOODLE_MCP_PUBLIC_URL, so this
+    # must stay a plain Host rule with no prefix rewriting in front of it.
+    - match: Host(`moodle.mcp.cherkaoui.ch`)
+      kind: Rule
+      middlewares:
+        - name: security-headers
+          namespace: traefik
+      services:
+        - name: moodle-mcp
+          port: 8080
+  tls:
+    certResolver: letsencrypt
