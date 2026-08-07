@@ -19,9 +19,11 @@ spec:
       labels:
         app: moodle-mcp
     spec:
-      # Private project. Namespaced name because lockbox names are global.
-      imagePullSecrets:
-        - name: registry-cherkaoui-moodle-mcp
+      # No imagePullSecrets: the GitLab project is public, so the registry
+      # serves this image anonymously. If it is ever flipped back to private,
+      # nothing breaks until the next pod restart — the running pod keeps the
+      # image it already pulled — and it then surfaces as ImagePullBackOff far
+      # from the change that caused it.
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
