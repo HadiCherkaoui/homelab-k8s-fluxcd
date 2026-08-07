@@ -42,7 +42,7 @@ spec:
           # sha (CI publishes one tag per commit) and let Flux do the rollout.
           # It also makes an eviction or node reboot re-pull the same image
           # rather than whatever :latest happens to be by then.
-          image: registry.cherkaoui.ch/hadicherkaoui/moodle-mcp:cbf1d6fa91b7ee8e0d37255b81110c1ff020a409
+          image: registry.cherkaoui.ch/hadicherkaoui/moodle-mcp:1fd4c8059e5abfb85a32f8eabe2b5f354dea74b4
           # The tag is immutable, so there is nothing to re-pull.
           imagePullPolicy: IfNotPresent
           ports:
