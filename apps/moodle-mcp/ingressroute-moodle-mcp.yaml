@@ -17,6 +17,19 @@ spec:
     - match: Host(`moodle.mcp.cherkaoui.ch`)
       kind: Rule
       middlewares:
+        # Applied to the whole host, /files included. The spool endpoint is
+        # fetched by Claude's sandbox rather than the connector, and the two are
+        # only assumed to share an egress range — if downloads start failing
+        # while tools keep working, that assumption is wrong. The fix is a
+        # second, earlier route carrying security-headers alone:
+        #
+        #   - match: Host(`moodle.mcp.cherkaoui.ch`) && PathPrefix(`/files/`)
+        #
+        # Traefik sorts by rule length, so the more specific route wins without
+        # needing an explicit priority. /files is safe to leave open by design:
+        # 128-bit tokens, single-use, expiring, GET-only.
+        - name: anthropic-only
+          namespace: moodle-mcp
         - name: security-headers
           namespace: traefik
       services:

@@ -5,4 +5,5 @@ resources:
   - namespace.yaml
   - deploy-moodle-mcp.yaml
   - svc-moodle-mcp.yaml
+  - middleware-anthropic-only.yaml
   - ingressroute-moodle-mcp.yaml

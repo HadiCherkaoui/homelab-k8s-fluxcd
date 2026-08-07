@@ -1,0 +1,25 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: anthropic-only
+  namespace: moodle-mcp
+spec:
+  # Nothing but Claude has any business reaching this host, and what sits behind
+  # it is full read-write on a Moodle account — submissions included. OAuth is
+  # the real gate; this just removes the rest of the internet from the picture.
+  #
+  # No ipStrategy: Cloudflare serves these records DNS-only rather than proxied,
+  # and Cilium does not masquerade inbound traffic to the LoadBalancer, so the
+  # connection's remote address is the true client IP. Verified with
+  # `hubble observe --to-pod traefik/...`, which shows real public source
+  # addresses arriving. If these records are ever switched to proxied, every
+  # source becomes a Cloudflare IP and this blocks Claude outright — the fix
+  # then is `ipStrategy.depth: 1` reading X-Forwarded-For, not a wider range.
+  ipAllowList:
+    sourceRange:
+      # Anthropic's published egress range, shared across all their services;
+      # per-organization addresses are not offered. A narrower 160.79.104.0/23
+      # is also documented, and it sits inside this block — so the /21 stays
+      # correct whichever one a given service actually egresses from, and it
+      # admits no one who is not Anthropic either way.
+      - 160.79.104.0/21
