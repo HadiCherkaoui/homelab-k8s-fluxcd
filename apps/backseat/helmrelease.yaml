@@ -34,7 +34,7 @@ spec:
     # three blocks become redundant rather than wrong.
     image:
       repository: registry.cherkaoui.ch/hadicherkaoui/backseat/orchestrator
-      digest: sha256:83d764208e96211ccf010b203683ec4aacb779bee3896cb77e148a8adf313207
+      digest: sha256:c31de2809b91abc77ff0220bda453e209e394f59f1993bd64291a7d777fa219c
     sessionImages:
       browser:
         repository: registry.cherkaoui.ch/hadicherkaoui/backseat/browser
