@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # pre-commit hook: every file under secrets/ must be SOPS-encrypted
 # (i.e. carry a top-level `sops:` block). Blocks committing a plaintext
 # secret into secrets/. Invoked by .pre-commit-config.yaml.

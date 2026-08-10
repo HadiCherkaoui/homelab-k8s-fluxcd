@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # Local commit-time guard rails. One-time setup per clone:
 #     pipx install pre-commit     # or: pip install --user pre-commit / brew install pre-commit
 #     pre-commit install

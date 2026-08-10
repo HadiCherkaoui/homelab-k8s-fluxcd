@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 ---
 # Where managed Minecraft StatefulSets/PVCs/Services live (referenced by
 # the chart's RBAC Role + RoleBinding via .Values.mcNamespace).

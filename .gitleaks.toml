@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # gitleaks config for this Flux/SOPS GitOps repo.
 # Used by BOTH the local pre-commit hook (.pre-commit-config.yaml) and the
 # `secret_detection` CI job (.gitlab-ci.yml), so detection is identical

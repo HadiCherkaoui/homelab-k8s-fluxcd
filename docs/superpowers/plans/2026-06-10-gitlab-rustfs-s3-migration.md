@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # GitLab → RustFS S3 Migration Implementation Plan
 
 > **STATUS: IMPLEMENTED & VERIFIED 2026-06-10.** GitLab is live on RustFS. Deviations found during execution: the registry bucket is `registry` (not `gitlab-registry`), and `runner-cache`/`gitlab-pages` buckets also exist; `global.minio.enabled: false` is **required** (leaving MinIO enabled keeps the chart auto-wiring to it); push must happen *before* quiescing webservice (GitLab is its own git remote); the runner cache was repointed via `gitlab-runner.runners.config` inline TOML (chart 0.88.0), not the simple `s3*` keys. Old MinIO PVC retained (PV `Retain`) as a rollback anchor pending deletion after soak. Full notes in project memory `gitlab-rustfs-object-storage-migration`.

@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # homelab-k8s-fluxcd
 
 This repository contains Flux v2 GitOps manifests for the homelab Kubernetes cluster, migrated from the previous OpenTofu/Terraform setup.

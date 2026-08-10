@@ -1,4 +1,9 @@
 #!/bin/sh
+
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # GitLab server-side pre-receive hook — rejects a push that INTRODUCES a secret,
 # before it ever lands on the remote. This is the GitLab-CE equivalent of the
 # Premium-only `prevent_secrets` push rule (which returns 404 on this instance).
