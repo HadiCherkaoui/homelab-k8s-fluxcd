@@ -12,7 +12,10 @@ spec:
   chart:
     spec:
       chart: backseat
-      version: "0.1.0"
+      # semver plus the commit that produced it, as CI publishes it. This version
+      # names three image digests in its own values, so pinning it pins the
+      # images — see the `chart:publish` job in the backseat repo.
+      version: "0.1.0-03cd7343"
       sourceRef:
         kind: HelmRepository
         name: backseat
@@ -24,24 +27,15 @@ spec:
   values:
     publicUrl: https://backseat.cherkaoui.ch
 
-    # Pinned by digest, not tag. A tag plus pullPolicy: IfNotPresent means a
-    # rebuilt image never reaches a node that already cached that tag — the
-    # "silent tag move" the chart's own values comment warns about, and it cost
-    # one confusing rollout here before these were pinned.
+    # No image blocks. All three are pinned by digest inside the chart version
+    # above, written there by CI's `pin` job from the images that same commit
+    # built. Repeating them here is how a chart and the images it names drift:
+    # these three were still pinning the previous orchestrator after CI started
+    # publishing its own, and an override always wins.
     #
-    # CI's chart:publish job bakes these into the chart's own values from the
-    # `pin` artifact, so once a CI-published chart version is pinned below these
-    # three blocks become redundant rather than wrong.
-    image:
-      repository: registry.cherkaoui.ch/hadicherkaoui/backseat/orchestrator
-      digest: sha256:c31de2809b91abc77ff0220bda453e209e394f59f1993bd64291a7d777fa219c
-    sessionImages:
-      browser:
-        repository: registry.cherkaoui.ch/hadicherkaoui/backseat/browser
-        digest: sha256:f7d073c816fdc006e84db4b689e7668a6a0f0c6cd6f30e31918fe437250e1d80
-      driver:
-        repository: registry.cherkaoui.ch/hadicherkaoui/backseat/driver
-        digest: sha256:1d05b5ec1525322b0c4083de60df324542173c4a98ae9b3b4f99b474b50a204b
+    # Pinned by digest rather than tag because a tag plus pullPolicy:
+    # IfNotPresent means a rebuilt image never reaches a node that already
+    # cached that tag — one confusing rollout here was exactly that.
 
     auth:
       # The same authentik provider serves both credential types: an MCP client
