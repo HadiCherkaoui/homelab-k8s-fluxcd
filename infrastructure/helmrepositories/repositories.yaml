@@ -174,6 +174,19 @@ spec:
   interval: 1h
   url: oci://registry.cherkaoui.ch/hadicherkaoui/anvil
 ---
+# Same registry-host caveat as anvil above: the OCI host, not the GitLab UI host.
+# Published by `helm push deploy/ oci://registry.cherkaoui.ch/hadicherkaoui` from
+# the backseat repo.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: backseat
+  namespace: flux-system
+spec:
+  type: oci
+  interval: 1h
+  url: oci://registry.cherkaoui.ch/hadicherkaoui
+---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:

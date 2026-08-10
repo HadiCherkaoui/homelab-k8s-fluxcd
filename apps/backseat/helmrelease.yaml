@@ -1,0 +1,100 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: backseat
+  namespace: backseat
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: backseat
+      version: "0.1.0"
+      sourceRef:
+        kind: HelmRepository
+        name: backseat
+        namespace: flux-system
+  install:
+    createNamespace: false
+  upgrade:
+    cleanupOnFail: true
+  values:
+    publicUrl: https://backseat.cherkaoui.ch
+
+    image:
+      repository: registry.cherkaoui.ch/hadicherkaoui/backseat/orchestrator
+      tag: "0.1.0"
+    # Session pods. Both are pinned by tag here and should move to digests once
+    # CI's `pin` job is publishing them — the chart prefers a digest when one is
+    # set, which is what makes a session pod reproducible.
+    sessionImages:
+      browser:
+        repository: registry.cherkaoui.ch/hadicherkaoui/backseat/browser
+        tag: "0.1.0"
+      driver:
+        repository: registry.cherkaoui.ch/hadicherkaoui/backseat/driver
+        tag: "0.1.0"
+
+    auth:
+      # The same authentik provider serves both credential types: an MCP client
+      # presents a bearer token, a browser presents the session cookie the
+      # console mints. See ADR 0007 in the backseat repo.
+      issuer: https://authentik.cherkaoui.ch/application/o/backseat/
+      # REQUIRED with authentik: it does not implement RFC 8707 and always writes
+      # the provider's client id into `aud`, ignoring the `resource` parameter
+      # the MCP spec has clients send. This must be the client id, not the
+      # resource URI, or every token is rejected.
+      #
+      # ---> Replace both occurrences with the client id from the authentik
+      #      provider. Not a secret — an OAuth client id is a public identifier,
+      #      which is why it is inline here rather than in the sops secret.
+      audience: AdT583KdqBfiD8v5fcnujs3uV3GUyfWhQqMu370D
+      console:
+        clientId: AdT583KdqBfiD8v5fcnujs3uV3GUyfWhQqMu370D
+        # Holds `client-secret` and `session-key`, provisioned with lbx rather
+        # than committed — see CLAUDE.md § Secret Management. Not in secrets/,
+        # which is lockbox bootstrap only.
+        #
+        #   lbx set -n backseat backseat-console-auth \
+        #     --from-file client-secret=- --from-file session-key=<file>
+        #
+        # The chart refuses to render without this value, deliberately:
+        # `require_session` passes requests through when no key is configured,
+        # which is right on a laptop and a disaster here, where an open console
+        # is indistinguishable from a working one.
+        existingSecret: backseat-console-auth
+
+    ingress:
+      enabled: true
+      host: backseat.cherkaoui.ch
+      entryPoint: websecure
+      tls:
+        enabled: true
+        certResolver: letsencrypt
+      # No forward-auth. The orchestrator runs the login flow itself, and a proxy
+      # gate here would break /api/auth/callback — authentik has to reach it
+      # while the browser still has no session.
+      middlewares: []
+
+    persistence:
+      # Both on the SSD pool. The profile archive is not a preference: an init
+      # container clones it into the session pod's emptyDir *before Chromium
+      # starts*, and session_open blocks on that against a 30-second budget. A
+      # Chromium profile is thousands of small files, which is the access
+      # pattern the spinning pool handles worst, and every session start pays it.
+      data:
+        enabled: true
+        size: 2Gi
+        storageClass: fast
+      profiles:
+        enabled: true
+        size: 20Gi
+        storageClass: fast
+
+    session:
+      idleSeconds: 600
+      maxSeconds: 3600
+      takeoverTtlSeconds: 900

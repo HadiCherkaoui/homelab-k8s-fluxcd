@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+# Where the orchestrator runs: HelmRelease target namespace, its two PVCs,
+# Service and IngressRoute.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: backseat
+  labels:
+    name: backseat
+    app.kubernetes.io/part-of: backseat
+---
+# Where session pods live — one ephemeral Chromium pod per session, created and
+# deleted by the orchestrator through the Role/RoleBinding the chart installs.
+#
+# Separate from the orchestrator's own namespace, and that separation is load
+# bearing rather than tidy: the boot-time orphan sweep deletes every pod carrying
+# `app.backseat.io/managed-by=backseat` in this namespace, so pointing it at the
+# namespace holding the orchestrator would be a way to delete yourself.
+# `Config::from_env` refuses to start if the two are ever set equal, and the
+# chart refuses to render.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: backseat-sessions
+  labels:
+    name: backseat-sessions
+    app.kubernetes.io/part-of: backseat
