@@ -24,19 +24,24 @@ spec:
   values:
     publicUrl: https://backseat.cherkaoui.ch
 
+    # Pinned by digest, not tag. A tag plus pullPolicy: IfNotPresent means a
+    # rebuilt image never reaches a node that already cached that tag — the
+    # "silent tag move" the chart's own values comment warns about, and it cost
+    # one confusing rollout here before these were pinned.
+    #
+    # CI's chart:publish job bakes these into the chart's own values from the
+    # `pin` artifact, so once a CI-published chart version is pinned below these
+    # three blocks become redundant rather than wrong.
     image:
       repository: registry.cherkaoui.ch/hadicherkaoui/backseat/orchestrator
-      tag: "0.1.0"
-    # Session pods. Both are pinned by tag here and should move to digests once
-    # CI's `pin` job is publishing them — the chart prefers a digest when one is
-    # set, which is what makes a session pod reproducible.
+      digest: sha256:83d764208e96211ccf010b203683ec4aacb779bee3896cb77e148a8adf313207
     sessionImages:
       browser:
         repository: registry.cherkaoui.ch/hadicherkaoui/backseat/browser
-        tag: "0.1.0"
+        digest: sha256:f7d073c816fdc006e84db4b689e7668a6a0f0c6cd6f30e31918fe437250e1d80
       driver:
         repository: registry.cherkaoui.ch/hadicherkaoui/backseat/driver
-        tag: "0.1.0"
+        digest: sha256:1d05b5ec1525322b0c4083de60df324542173c4a98ae9b3b4f99b474b50a204b
 
     auth:
       # The same authentik provider serves both credential types: an MCP client
