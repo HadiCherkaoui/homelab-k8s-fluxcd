@@ -15,7 +15,7 @@ spec:
       # semver plus the commit that produced it, as CI publishes it. This version
       # names three image digests in its own values, so pinning it pins the
       # images — see the `chart:publish` job in the backseat repo.
-      version: "0.1.0-03cd7343"
+      version: "0.1.0-efc9d9d2"
       sourceRef:
         kind: HelmRepository
         name: backseat
