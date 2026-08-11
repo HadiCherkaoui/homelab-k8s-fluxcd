@@ -15,7 +15,7 @@ spec:
       # semver plus the commit that produced it, as CI publishes it. This version
       # names three image digests in its own values, so pinning it pins the
       # images — see the `chart:publish` job in the backseat repo.
-      version: "0.1.0-e975d27a"
+      version: "0.1.0-04b56f69"
       sourceRef:
         kind: HelmRepository
         name: backseat
@@ -79,11 +79,17 @@ spec:
       middlewares: []
 
     persistence:
-      # Both on the SSD pool. The profile archive is not a preference: an init
-      # container clones it into the session pod's emptyDir *before Chromium
-      # starts*, and session_open blocks on that against a 30-second budget. A
-      # Chromium profile is thousands of small files, which is the access
-      # pattern the spinning pool handles worst, and every session start pays it.
+      # Both on the SSD pool, and both mounted by the orchestrator alone. The
+      # profiles volume used to be mounted by every session pod, which is why only
+      # one session could ever run: it is a ZFS dataset, a dataset takes a single
+      # mountpoint, and the second pod's mount was retried until the session timed
+      # out. Session pods now fetch their profile over HTTP and mount nothing.
+      #
+      # SSD is not a preference: the orchestrator reads a profile out of here and
+      # streams it to a starting pod *before Chromium starts*, and session_open
+      # blocks on that against a 30-second budget. A Chromium profile is thousands
+      # of small files, which is the access pattern the spinning pool handles
+      # worst, and every session start pays it.
       data:
         enabled: true
         size: 2Gi
