@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: internal-only
+  namespace: traefik
+spec:
+  # No ipStrategy — DNS is not Cloudflare-proxied and Cilium preserves the
+  # source IP for the local Traefik backend, so the remote address is the
+  # real client. List this middleware before security-headers so denied
+  # requests are cut off before header rewriting.
+  ipAllowList:
+    sourceRange:
+      # Home LAN. Includes the router (172.26.20.1), which is the source of
+      # every NAT-loopback hit on the public IP — that is how LAN clients,
+      # in-cluster pods, and tailnet clients using the exit node arrive.
+      - 172.26.20.0/24
+      # Headscale tailnet. Only the source when a client addresses the LAN
+      # VIP (172.26.20.16) directly; public DNS points at the WAN IP, so a
+      # plain tailnet client resolving the hostname takes the LAN path above.
+      - 100.64.0.0/10

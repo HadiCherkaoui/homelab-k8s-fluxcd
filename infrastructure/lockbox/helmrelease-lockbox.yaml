@@ -45,6 +45,8 @@ spec:
       entryPoint: websecure
       host: lockbox.cherkaoui.ch
       middlewares:
+        - name: internal-only
+          namespace: traefik
         - name: security-headers
           namespace: traefik
       tls:

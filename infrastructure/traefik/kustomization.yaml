@@ -10,4 +10,5 @@ resources:
   - helmrelease.yaml
   - middleware-security-headers.yaml
   - middleware-security-headers-permissive.yaml
+  - middleware-internal-only.yaml
   - servicemonitor.yaml
