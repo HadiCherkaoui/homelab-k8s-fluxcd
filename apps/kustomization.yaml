@@ -12,7 +12,6 @@ resources:
   - immich
   - authentik
   - matrix
-  - sonarqube
   - ntfy
   - uptime-kuma
   - headscale
