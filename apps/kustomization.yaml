@@ -9,7 +9,6 @@ resources:
   - paperless
   - websites
   - gitlab
-  - searxng
   - immich
   - authentik
   - matrix
