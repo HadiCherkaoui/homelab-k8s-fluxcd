@@ -12,7 +12,7 @@ spec:
   chart:
     spec:
       chart: lockbox-k8s-controller
-      version: "0.1.0"
+      version: "0.2.0"
       sourceRef:
         kind: HelmRepository
         name: lockbox-k8s-controller
@@ -24,9 +24,11 @@ spec:
   values:
     image:
       repo: registry.cherkaoui.ch/hadicherkaoui/lockbox-k8s-controller
-      # `latest` is the only tag CI publishes for the controller image.
-      tag: latest
-      pullPolicy: Always
+      # Pinned by digest rather than `latest`, which CI repoints on every main
+      # commit — with pullPolicy: Always that made any pod restart a silent
+      # upgrade. This digest is tag 711bf1d, which understands AAD binding.
+      digest: "sha256:411b899a3e9c7ef1c5c913ba7ca9137a4d52e7c198f75f0d9f5614b07ba344fb"
+      pullPolicy: IfNotPresent
 
     lockbox:
       # SOPS-encrypted Secret defined in secrets/lockbox/lockbox-config.secret.yaml.
@@ -35,6 +37,9 @@ spec:
       # loads the seed and skips the API_KEY register path.
       skipBootstrapCheck: true
       syncInterval: 60s
+      # Safe only because `lbx reseal` has bound every field. Against unmigrated
+      # data this refuses every field of every secret — there is no fallback.
+      requireAAD: true
 
     leaderElection:
       enabled: true
