@@ -12,7 +12,7 @@ spec:
   chart:
     spec:
       chart: lockbox
-      version: "0.1.0-ea077972"
+      version: "0.1.0-0af4e088"
       sourceRef:
         kind: HelmRepository
         name: lockbox
@@ -24,12 +24,10 @@ spec:
   values:
     image:
       repo: registry.cherkaoui.ch/hadicherkaoui/lockbox
-      # Server build b57c232 — adds the secret_type field end-to-end
-      # (proto/store/server/CLI) and --from-file to lbx.  The chart pin
-      # at 0.1.0-0df3cdfc is intentional: this image is API-compatible
-      # with that chart's deployment shape, and CI didn't republish the
-      # chart because deploy/ wasn't touched by b57c232.
-      tag: "b57c2321e16f4598e0c26623cc79138e98797e9c"
+      # Chart and image both come from commit 0af4e088 — keep the two pins in
+      # step. This build reports each secret's namespace, which `lbx reseal`
+      # requires before the controller's LOCKBOX_REQUIRE_AAD can be relied on.
+      tag: "0af4e08899e0bb9c6edd60cb28f713af7adb3715"
       pullPolicy: IfNotPresent
     auth:
       # SOPS-encrypted Secret defined in secrets/lockbox/lockbox-auth.secret.yaml.
