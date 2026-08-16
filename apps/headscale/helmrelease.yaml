@@ -72,7 +72,9 @@ spec:
             - openid
             - profile
             - email
-          only_start_if_oidc_is_available: false
+          # Crashloop until Authentik answers rather than silently falling back
+          # to CLI-only registration, which survives the whole process lifetime.
+          only_start_if_oidc_is_available: true
   valuesFrom:
     - kind: Secret
       name: headscale-oidc
