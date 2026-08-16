@@ -51,12 +51,6 @@ spec:
               path: /
               port: main
             periodSeconds: 30
-          resources:
-            requests:
-              cpu: 10m
-              memory: 32Mi
-            limits:
-              memory: 128Mi
           # scratch image: one static binary, reads its files and nothing else.
           securityContext:
             runAsNonRoot: true

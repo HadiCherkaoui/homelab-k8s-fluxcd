@@ -78,15 +78,8 @@ spec:
       enabled: true
       storageClassName: fast
       size: 1Gi
-    # Panel pod budget. Homelab is overprovisioned; bump the limit if the
-    # capabilities endpoint or modpack poller hits the ceiling.
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        cpu: 1000m
-        memory: 512Mi
+    # Empty -> override the chart's default requests/limits with none.
+    resources: {}
     rbac:
       create: true
       # Empty -> chart auto-generates a SA named after the release.

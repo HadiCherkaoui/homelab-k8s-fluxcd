@@ -70,10 +70,6 @@ spec:
               port: http
             initialDelaySeconds: 10
             periodSeconds: 30
-          resources:
-            requests:
-              cpu: 10m
-              memory: 32Mi
           # scratch image: one static binary, and no /tmp.
           securityContext:
             allowPrivilegeEscalation: false
