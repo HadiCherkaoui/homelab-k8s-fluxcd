@@ -78,8 +78,9 @@ spec:
       enabled: true
       storageClassName: fast
       size: 1Gi
-    # Empty -> override the chart's default requests/limits with none.
-    resources: {}
+    # Explicit null, not {} — an empty map merges with the chart's default
+    # resources instead of clearing them.
+    resources: null
     rbac:
       create: true
       # Empty -> chart auto-generates a SA named after the release.
