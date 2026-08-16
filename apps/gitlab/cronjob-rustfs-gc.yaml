@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: rustfs-gc
+  namespace: gitlab
+  labels:
+    app.kubernetes.io/name: rustfs-gc
+    app.kubernetes.io/part-of: gitlab
+spec:
+  # Hourly, not daily: the leak filled a 60Gi volume in 19h of pipeline
+  # activity, so a daily sweep can miss the window entirely.
+  schedule: "17 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 600
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: rustfs-gc
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            # Same ids as the rustfs container — the data is owned by 10001
+            # and the sweep has to be able to unlink it.
+            runAsUser: 10001
+            runAsGroup: 10001
+            fsGroup: 10001
+          containers:
+            - name: gc
+              image: python:3.14-alpine
+              command: ["python3", "/scripts/gc.py"]
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+                - name: script
+                  mountPath: /scripts
+                  readOnly: true
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                # Same RWO claim the rustfs pod holds. Both land on the single
+                # node, which is what makes the shared mount legal.
+                claimName: rustfs-data
+            - name: script
+              configMap:
+                name: rustfs-gc-script

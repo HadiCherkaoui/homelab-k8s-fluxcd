@@ -18,7 +18,9 @@ resources:
   - svc-elasticsearch.yaml
   - cnpg-cluster.yaml
   - configmap-dind-daemon.yaml
+  - configmap-rustfs-gc.yaml
   - helmrelease.yaml
   - ingressroute-gitlab.yaml
   - ingressroute-registry.yaml
   - ingressroutetcp-ssh.yaml
+  - cronjob-rustfs-gc.yaml

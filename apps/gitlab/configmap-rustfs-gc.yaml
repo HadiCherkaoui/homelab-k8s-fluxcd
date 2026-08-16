@@ -1,0 +1,125 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rustfs-gc-script
+  namespace: gitlab
+data:
+  # RustFS 1.0.0-beta.8 does not free an object's previous data directory when
+  # the key is overwritten. Only buckets whose keys get rewritten are affected
+  # (runner-cache); content-addressed buckets never overwrite. Left alone this
+  # fills the volume, and a full RustFS returns 500 on every write — which is
+  # how it took GitLab artifact uploads down on 2026-08-16.
+  gc.py: |
+    #!/usr/bin/env python3
+    """Delete RustFS data directories no live object version references."""
+
+    import os
+    import shutil
+    import sys
+    import time
+
+    ROOT = "/data/rustfs0"
+    # An in-flight PUT writes its data directory before committing xl.meta, so
+    # a young unreferenced directory may be a live upload rather than garbage.
+    AGE_GUARD_SECONDS = 3600
+    DRY_RUN = os.environ.get("DRY_RUN") == "1"
+
+
+    def dir_size(path):
+        total = 0
+        for dirpath, _, filenames in os.walk(path):
+            for name in filenames:
+                try:
+                    total += os.lstat(os.path.join(dirpath, name)).st_size
+                except OSError:
+                    pass
+        return total
+
+
+    def is_uuid_dir(name):
+        parts = name.split("-")
+        return len(name) == 36 and len(parts) == 5 and all(
+            c in "0123456789abcdefABCDEF" for c in name.replace("-", "")
+        )
+
+
+    def collect(object_dir, meta, now):
+        """Return (orphans, referenced_count) for one object directory."""
+        orphans = []
+        referenced = 0
+        for entry in os.scandir(object_dir):
+            if not entry.is_dir(follow_symlinks=False) or not is_uuid_dir(entry.name):
+                continue
+            try:
+                raw = bytes.fromhex(entry.name.replace("-", ""))
+            except ValueError:
+                continue
+            if raw in meta:
+                referenced += 1
+            elif now - entry.stat().st_mtime < AGE_GUARD_SECONDS:
+                print(f"skip (age guard): {entry.path}")
+            else:
+                orphans.append(entry.path)
+        return orphans, referenced
+
+
+    def main():
+        now = time.time()
+        objects = deleted = skipped = 0
+        freed = 0
+
+        for dirpath, dirnames, filenames in os.walk(ROOT):
+            # Internal metadata: its own layout, never garbage-collect it.
+            if ".rustfs.sys" in dirnames:
+                dirnames.remove(".rustfs.sys")
+            if "xl.meta" not in filenames:
+                continue
+
+            objects += 1
+            try:
+                with open(os.path.join(dirpath, "xl.meta"), "rb") as fh:
+                    meta = fh.read()
+            except OSError as exc:
+                print(f"WARN unreadable xl.meta, skipping {dirpath}: {exc}")
+                continue
+
+            orphans, referenced = collect(dirpath, meta, now)
+            if not orphans:
+                continue
+
+            # Every live object must own at least one data directory. Zero means
+            # the metadata was not parsed as expected, so deleting here would
+            # destroy live data — leave it and surface it instead.
+            if referenced == 0:
+                print(f"WARN no referenced data dir, skipping {dirpath}")
+                skipped += len(orphans)
+                continue
+
+            for path in orphans:
+                size = dir_size(path)
+                if DRY_RUN:
+                    print(f"would delete {path} ({size} bytes)")
+                else:
+                    try:
+                        shutil.rmtree(path)
+                    except OSError as exc:
+                        print(f"WARN failed to delete {path}: {exc}")
+                        continue
+                    print(f"deleted {path} ({size} bytes)")
+                deleted += 1
+                freed += size
+
+        verb = "would free" if DRY_RUN else "freed"
+        print(
+            f"summary: objects={objects} orphans={deleted} "
+            f"{verb}={freed / 1073741824:.2f}GiB skipped={skipped}"
+        )
+        return 0
+
+
+    if __name__ == "__main__":
+        sys.exit(main())
