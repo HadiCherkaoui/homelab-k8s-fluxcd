@@ -33,7 +33,7 @@ spec:
           # Commit sha, not :latest — a floating tag never changes the pod
           # spec, so Flux has nothing to roll and only a manual restart moves
           # it, which Flux then reverts. Bump this to deploy.
-          image: registry.cherkaoui.ch/hadicherkaoui/moodle-mcp:1fd4c8059e5abfb85a32f8eabe2b5f354dea74b4
+          image: registry.cherkaoui.ch/hadicherkaoui/moodle-mcp:cdae9b006a1f0a59e72583afeec10c21fa0e18cc
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

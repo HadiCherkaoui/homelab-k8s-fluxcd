@@ -28,6 +28,23 @@ spec:
         - name: moodle-mcp
           port: 8080
 
+    # The inbound half, and open for the same reason: whoever holds the bytes
+    # is the sandbox or the user's own browser, neither of which carries a
+    # credential or a predictable source address. This one *writes*, so what it
+    # will accept is fixed before its token exists — one assignment, one
+    # filename, one body under a cap enforced as it streams, once. No GET, so
+    # nothing can be read back out of it. Methods are pinned here as well as in
+    # the server, since an ingress rule is the cheaper place to be sure.
+    - match: Host(`moodle.mcp.cherkaoui.ch`) && PathPrefix(`/uploads/`) && (Method(`PUT`) || Method(`POST`))
+      kind: Rule
+      priority: 100
+      middlewares:
+        - name: security-headers
+          namespace: traefik
+      services:
+        - name: moodle-mcp
+          port: 8080
+
     # Everything else. Plain Host rule — the server checks the Host header
     # against MOODLE_MCP_PUBLIC_URL, so no prefix rewriting in front of it.
     - match: Host(`moodle.mcp.cherkaoui.ch`)
