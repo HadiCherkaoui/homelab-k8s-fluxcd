@@ -12,7 +12,7 @@ spec:
   chart:
     spec:
       chart: lockbox
-      version: "0.1.0-0af4e088"
+      version: "0.1.0-ea077972"
       sourceRef:
         kind: HelmRepository
         name: lockbox
