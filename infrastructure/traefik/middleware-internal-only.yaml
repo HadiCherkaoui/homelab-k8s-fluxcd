@@ -14,10 +14,15 @@ spec:
   # requests are cut off before header rewriting.
   ipAllowList:
     sourceRange:
-      # Home LAN. Includes the router (172.26.20.1), which is the source of
-      # every NAT-loopback hit on the public IP — that is how LAN clients,
-      # in-cluster pods, and tailnet clients using the exit node arrive.
+      # Server VLAN, holding the node (172.26.20.250) and the Traefik VIP
+      # (172.26.20.16). Includes the router (172.26.20.1), which is the source
+      # of NAT-loopback hits originating on this VLAN — that is how LAN
+      # clients, in-cluster pods, and tailnet exit-node clients arrive.
       - 172.26.20.0/24
+      # Client VLAN. Hits the public IP rather than the VIP, and the router
+      # rewrites the source on that loopback, so neither the host address nor
+      # the server VLAN's router covers it — the whole /24 has to be listed.
+      - 172.26.10.0/24
       # Headscale tailnet. Only the source when a client addresses the LAN
       # VIP (172.26.20.16) directly; public DNS points at the WAN IP, so a
       # plain tailnet client resolving the hostname takes the LAN path above.
