@@ -1,0 +1,62 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nitter-conf
+  namespace: nitter
+data:
+  # Template, not the live file. @HMAC_KEY@ is substituted by the render-conf
+  # initContainer, because nitter parses one INI file and honours no env-var
+  # overrides — so the one secret value in it cannot be injected any other way.
+  nitter.conf: |
+    [Server]
+    hostname = "nitter.cherkaoui.ch"
+    title = "nitter"
+    address = "0.0.0.0"
+    port = 8080
+    https = true
+    httpMaxConnections = 100
+    staticDir = "./public"
+
+    [Cache]
+    listMinutes = 240
+    rssMinutes = 10
+    redisHost = "nitter-valkey"
+    redisPort = 6379
+    redisPassword = ""
+    redisConnections = 20
+    redisMaxConnections = 30
+
+    [Config]
+    hmacKey = "@HMAC_KEY@"
+    base64Media = false
+    # Every feed poll spends quota from the shared session pool, unattended.
+    # With a one-account pool an RSS reader will exhaust it before either of
+    # you notices; add accounts to sessions.jsonl before turning this on.
+    enableRSS = false
+    enableRSSUserTweets = true
+    enableRSSUserReplies = true
+    enableRSSUserMedia = true
+    enableRSSUserArticles = true
+    enableRSSSearch = true
+    enableRSSList = true
+    enableDebug = false
+    proxy = ""
+    proxyAuth = ""
+    apiProxy = ""
+    disableTid = false
+    maxConcurrentReqs = 2
+    maxRetries = 1
+    retryDelayMs = 150
+
+    [Preferences]
+    theme = "Nitter"
+    replaceTwitter = "nitter.cherkaoui.ch"
+    replaceYouTube = ""
+    replaceReddit = ""
+    proxyVideos = true
+    hlsPlayback = false
+    infiniteScroll = false

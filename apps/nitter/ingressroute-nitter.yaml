@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nitter
+  namespace: nitter
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`nitter.cherkaoui.ch`)
+      kind: Rule
+      middlewares:
+        # LAN and tailnet only, and listed first so denied requests are cut
+        # off before header rewriting. This is load-bearing beyond privacy:
+        # a publicly reachable instance draws crawler traffic that spends the
+        # session pool's rate limit and gets the backing X account suspended.
+        - name: internal-only
+          namespace: traefik
+        - name: security-headers
+          namespace: traefik
+      services:
+        - name: nitter
+          port: 8080
+  tls:
+    certResolver: letsencrypt

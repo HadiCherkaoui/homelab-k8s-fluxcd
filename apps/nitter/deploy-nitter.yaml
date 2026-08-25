@@ -1,0 +1,100 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nitter
+  namespace: nitter
+  labels:
+    app.kubernetes.io/name: nitter
+    app.kubernetes.io/part-of: nitter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nitter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nitter
+        app.kubernetes.io/part-of: nitter
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+      initContainers:
+        # Same image as the app so this pulls nothing extra; all it needs is
+        # busybox sed. The key is hex, so it carries no character that could
+        # be read as a sed delimiter or backreference.
+        - name: render-conf
+          image: docker.io/zedeus/nitter@sha256:8ca440fa51d8ce4618d51a6341dabbce784407025e2531343c36e540e0e3c4ba
+          command: ["/bin/sh", "-c"]
+          args:
+            - sed "s|@HMAC_KEY@|${HMAC_KEY}|" /config/nitter.conf > /run/nitter/nitter.conf
+          env:
+            - name: HMAC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: nitter-hmac
+                  key: hmacKey
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: runtime-conf
+              mountPath: /run/nitter
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+      containers:
+        - name: nitter
+          image: docker.io/zedeus/nitter@sha256:8ca440fa51d8ce4618d51a6341dabbce784407025e2531343c36e540e0e3c4ba
+          # Image CMD is `sh -c ./nitter` from WORKDIR /src/, which is also
+          # where staticDir = "./public" resolves. Do not override it.
+          env:
+            - name: NITTER_CONF_FILE
+              value: /run/nitter/nitter.conf
+            # Read once at startup into an in-memory pool; nitter never writes
+            # back, which is what makes a read-only Secret mount viable. Adding
+            # an account therefore needs a pod restart, not just an lbx set.
+            - name: NITTER_SESSIONS_FILE
+              value: /run/sessions/sessions.jsonl
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 30
+          volumeMounts:
+            - name: runtime-conf
+              mountPath: /run/nitter
+              readOnly: true
+            - name: sessions
+              mountPath: /run/sessions
+              readOnly: true
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+      volumes:
+        - name: config
+          configMap:
+            name: nitter-conf
+        - name: runtime-conf
+          emptyDir: {}
+        - name: sessions
+          secret:
+            secretName: nitter-sessions

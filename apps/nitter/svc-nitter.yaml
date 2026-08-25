@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nitter
+  namespace: nitter
+  labels:
+    app.kubernetes.io/name: nitter
+    app.kubernetes.io/part-of: nitter
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: nitter
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

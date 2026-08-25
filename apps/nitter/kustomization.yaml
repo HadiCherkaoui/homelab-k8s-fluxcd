@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: nitter
+resources:
+  - namespace.yaml
+  - configmap-nitter.yaml
+  - deploy-valkey.yaml
+  - svc-valkey.yaml
+  - deploy-nitter.yaml
+  - svc-nitter.yaml
+  - ingressroute-nitter.yaml

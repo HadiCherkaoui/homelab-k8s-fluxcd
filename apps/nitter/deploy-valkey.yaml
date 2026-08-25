@@ -1,0 +1,54 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nitter-valkey
+  namespace: nitter
+  labels:
+    app.kubernetes.io/name: valkey
+    app.kubernetes.io/part-of: nitter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: valkey
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: valkey
+        app.kubernetes.io/part-of: nitter
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: valkey
+          image: valkey/valkey:9.1-alpine
+          # Pure cache of public timeline data, so no appendonly and no PVC —
+          # an eviction or a restart costs one cold fetch. allkeys-lru rather
+          # than noeviction: dropping a cached tweet is correct here, refusing
+          # a write is not.
+          args:
+            - --save
+            - ""
+            - --maxmemory
+            - 256mb
+            - --maxmemory-policy
+            - allkeys-lru
+          ports:
+            - name: redis
+              containerPort: 6379
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 15
+            periodSeconds: 20
