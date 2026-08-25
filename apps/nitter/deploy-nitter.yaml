@@ -28,12 +28,16 @@ spec:
       initContainers:
         # Same image as the app so this pulls nothing extra; all it needs is
         # busybox sed. The key is hex, so it carries no character that could
-        # be read as a sed delimiter or backreference.
+        # be read as a sed delimiter or backreference. It is stripped of
+        # whitespace first: a secret piped in from a generator arrives with a
+        # trailing newline, which would end the s|| expression early.
         - name: render-conf
           image: docker.io/zedeus/nitter@sha256:8ca440fa51d8ce4618d51a6341dabbce784407025e2531343c36e540e0e3c4ba
           command: ["/bin/sh", "-c"]
           args:
-            - sed "s|@HMAC_KEY@|${HMAC_KEY}|" /config/nitter.conf > /run/nitter/nitter.conf
+            - |
+              key=$(printf %s "$HMAC_KEY" | tr -d '[:space:]')
+              sed "s|@HMAC_KEY@|$key|" /config/nitter.conf > /run/nitter/nitter.conf
           env:
             - name: HMAC_KEY
               valueFrom:
