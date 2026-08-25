@@ -15,15 +15,29 @@ spec:
   entryPoints:
     - websecure
   routes:
+    # Two routes on one host: the higher priority one matches internal clients
+    # and skips the password, so only requests arriving from outside are
+    # challenged. Priorities are explicit because Traefik otherwise orders
+    # rules by length, which would silently reorder if either rule is edited.
+    - match: Host(`nitter.cherkaoui.ch`) && (ClientIP(`172.26.20.0/24`) || ClientIP(`172.26.10.0/24`) || ClientIP(`100.64.0.0/10`))
+      kind: Rule
+      priority: 20
+      middlewares:
+        - name: security-headers
+          namespace: traefik
+      services:
+        - name: nitter
+          port: 8080
+    # Everyone else. The password is what keeps crawlers off the instance —
+    # they find the hostname in certificate transparency logs within hours,
+    # and unauthenticated traffic would spend the session pool's rate limit
+    # and get the backing X account suspended.
     - match: Host(`nitter.cherkaoui.ch`)
       kind: Rule
+      priority: 10
       middlewares:
-        # LAN and tailnet only, and listed first so denied requests are cut
-        # off before header rewriting. This is load-bearing beyond privacy:
-        # a publicly reachable instance draws crawler traffic that spends the
-        # session pool's rate limit and gets the backing X account suspended.
-        - name: internal-only
-          namespace: traefik
+        - name: basic-auth
+          namespace: nitter
         - name: security-headers
           namespace: traefik
       services:

@@ -12,4 +12,5 @@ resources:
   - svc-valkey.yaml
   - deploy-nitter.yaml
   - svc-nitter.yaml
+  - middleware-basic-auth.yaml
   - ingressroute-nitter.yaml

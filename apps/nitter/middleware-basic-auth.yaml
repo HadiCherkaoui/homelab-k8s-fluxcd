@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: basic-auth
+  namespace: nitter
+spec:
+  basicAuth:
+    # Traefik resolves this Secret in the Middleware's own namespace, which is
+    # why this lives in nitter rather than alongside the shared middlewares.
+    secret: nitter-basicauth
+    realm: nitter
+    # Nitter has no use for the credentials; don't pass them to the backend.
+    removeHeader: true
