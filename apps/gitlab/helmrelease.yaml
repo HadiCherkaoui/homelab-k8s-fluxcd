@@ -19,8 +19,12 @@ spec:
         namespace: flux-system
   install:
     createNamespace: false
+    # The bundled Envoy Gateway ships the Gateway API CRDs; Flux's default
+    # policy only creates missing CRDs, so chart bumps that need newer ones fail.
+    crds: CreateReplace
     disableWaitForJobs: true
   upgrade:
+    crds: CreateReplace
     disableWaitForJobs: true
   timeout: 20m
   values:
