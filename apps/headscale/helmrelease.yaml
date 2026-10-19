@@ -58,6 +58,8 @@ spec:
             region_id: 999
             region_code: "headscale"
             region_name: "Headscale Embedded DERP"
+            # Lets clients bootstrap-resolve the control server when an exit node blackholes their DNS.
+            ipv4: 178.82.120.243
           urls: []
           paths:
             - /var/lib/headscale/derp-map.json
