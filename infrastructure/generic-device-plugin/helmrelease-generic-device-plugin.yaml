@@ -1,0 +1,69 @@
+# SPDX-FileCopyrightText: Hadi Cherkaoui <contact@hide.cherkaoui.ch>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Hands host devices to unprivileged pods as an extended resource. A hostPath
+# mount alone gets EPERM from the device cgroup; the plugin is what adds the
+# device to the pod's allow list.
+#
+# Used by backseat, whose session browsers render WebGL on the iGPU's render
+# node. Each session pod asks for one `squat.ai/dri`.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: generic-device-plugin
+  # The release namespace, because the ServiceAccount follows it while the
+  # DaemonSet is hardcoded to kube-system.
+  namespace: kube-system
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: generic-device-plugin
+      version: "0.2.0"
+      sourceRef:
+        kind: HelmRepository
+        name: squat
+        namespace: flux-system
+  install:
+    createNamespace: false
+  values:
+    image:
+      repository: ghcr.io/squat/generic-device-plugin
+      tag: "0.2.0"
+      pullPolicy: IfNotPresent
+    serviceAccount:
+      # The plugin talks to the kubelet over its socket, never to the API.
+      automount: false
+    deployPodMonitor: false
+    # Replaces the chart's default list (serial, video, fuse, audio), none of
+    # which anything here uses.
+    devices:
+      - name: dri
+        groups:
+          # Units of one shared node, not separate GPUs: this is how many
+          # session pods can hold it at once. A session past the count waits
+          # in Pending until session_open gives up on it.
+          - count: 10
+            paths:
+              - path: /dev/dri/renderD128
+  # k0s runs its kubelet out of /var/lib/k0s/kubelet, and the chart hardcodes
+  # the upstream path. A plugin socket anywhere else registers with nothing.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: DaemonSet
+              name: generic-device-plugin
+            patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: generic-device-plugin
+              spec:
+                template:
+                  spec:
+                    volumes:
+                      - name: device-plugin
+                        hostPath:
+                          path: /var/lib/k0s/kubelet/device-plugins

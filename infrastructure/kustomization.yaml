@@ -12,3 +12,4 @@ resources:
   - monitoring
   - cilium-l2
   - lockbox
+  - generic-device-plugin

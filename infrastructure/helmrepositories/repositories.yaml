@@ -40,6 +40,18 @@ spec:
   interval: 1h
   url: oci://8gears.container-registry.com/library
 ---
+# generic-device-plugin. ghcr rather than the chart-releaser pages, because the
+# OCI copy is the one upstream signs with cosign.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: squat
+  namespace: flux-system
+spec:
+  type: oci
+  interval: 1h
+  url: oci://ghcr.io/squat/charts
+---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
