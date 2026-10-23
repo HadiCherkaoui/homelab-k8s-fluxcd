@@ -15,7 +15,7 @@ spec:
       # semver plus the commit that produced it, as CI publishes it. This version
       # names three image digests in its own values, so pinning it pins the
       # images — see the `chart:publish` job in the backseat repo.
-      version: "0.1.0-3528c827"
+      version: "0.1.0-76132f04"
       sourceRef:
         kind: HelmRepository
         name: backseat
@@ -103,3 +103,10 @@ spec:
       idleSeconds: 600
       maxSeconds: 3600
       takeoverTtlSeconds: 900
+      # WebGL on the iGPU's render node rather than on the CPU, through
+      # infrastructure/generic-device-plugin. 993 is the gid that owns
+      # /dev/dri/renderD128 on the node; without it Chromium cannot open the
+      # device and quietly falls back to software.
+      gpu:
+        resource: devic.es/dri
+        renderGroup: 993
