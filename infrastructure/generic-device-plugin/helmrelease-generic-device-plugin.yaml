@@ -7,7 +7,8 @@
 # device to the pod's allow list.
 #
 # Used by backseat, whose session browsers render WebGL on the iGPU's render
-# node. Each session pod asks for one `squat.ai/dri`.
+# node. Each session pod asks for one `devic.es/dri`: the device name below
+# under the plugin's default domain.
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -47,23 +48,3 @@ spec:
           - count: 10
             paths:
               - path: /dev/dri/renderD128
-  # k0s runs its kubelet out of /var/lib/k0s/kubelet, and the chart hardcodes
-  # the upstream path. A plugin socket anywhere else registers with nothing.
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: DaemonSet
-              name: generic-device-plugin
-            patch: |
-              apiVersion: apps/v1
-              kind: DaemonSet
-              metadata:
-                name: generic-device-plugin
-              spec:
-                template:
-                  spec:
-                    volumes:
-                      - name: device-plugin
-                        hostPath:
-                          path: /var/lib/k0s/kubelet/device-plugins
